@@ -5,7 +5,9 @@ import 'package:parking_app/screens/home_page/home_page.dart';
 
 //authentication
 class LoginPage extends StatefulWidget {
-  LoginPage({Key key}) : super(key: key);
+  LoginPage({this.auth, this.onSignedIn});
+  final BaseAuth auth;
+  final VoidCallback onSignedIn;
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -74,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               child: MaterialButton(
                 onPressed: () async {
-                  bool shouldNavigate = await register(_emailField.text, _passwordField.text);
+                  bool shouldNavigate = await widget.auth.register(_emailField.text, _passwordField.text);
                   if(shouldNavigate){
                     //Navigate
                     Navigator.push(context,
@@ -98,8 +100,9 @@ class _LoginPageState extends State<LoginPage> {
               ),
               child: MaterialButton(
                 onPressed: () async{
-                  bool shouldNavigate = await signIn(_emailField.text, _passwordField.text);
+                  bool shouldNavigate = await widget.auth.signIn(_emailField.text, _passwordField.text);
                   if(shouldNavigate){
+                    widget.onSignedIn();
                     //Navigate
                     Navigator.push(context,
                       MaterialPageRoute(
