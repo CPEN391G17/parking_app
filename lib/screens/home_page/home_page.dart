@@ -1,19 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'add_view.dart';
+import '../coin_page/coin_page.dart';
 
-class HomeView extends StatefulWidget {
-  HomeView({Key key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  HomePage({Key key}) : super(key: key);
 
   @override
-  _HomeViewState createState() => _HomeViewState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -43,10 +42,10 @@ class _HomeViewState extends State<HomeView> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                        Text("ParKing Credits: ${document.id}"),
-                        Text("Quantity: ${document.data()['Amount']}"),
-                      ]
-                        ,)
+                          Text("${document.id}"),
+                          Text("Quantity: ${document.data()['Amount'].toStringAsFixed(2)}"),
+                        ],
+                      ),
                     );
                   }).toList(),
                 );
@@ -57,7 +56,7 @@ class _HomeViewState extends State<HomeView> {
         onPressed: (){
            Navigator.push(
                context,
-               MaterialPageRoute(builder: (context) => AddView(),
+               MaterialPageRoute(builder: (context) => AddCoinPage(),
             ),
           );
         },

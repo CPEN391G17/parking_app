@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:parking_app/resources/repository.dart';
-import 'package:parking_app/screens/home_view.dart';
+import 'package:parking_app/screens/home_page/home_page.dart';
 
 //authentication
-class Login extends StatefulWidget {
-  Login({Key key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  LoginPage({Key key}) : super(key: key);
 
   @override
-  _LoginState createState() => _LoginState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginPageState extends State<LoginPage> {
   //controller to capture input of user
   TextEditingController _emailField = TextEditingController();
   TextEditingController _passwordField =TextEditingController();
@@ -26,35 +26,45 @@ class _LoginState extends State<Login> {
            color: Colors.blueAccent,
          ),
          child: Column( //place everything positioned vertically
-           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+           mainAxisAlignment: MainAxisAlignment.center,
            children: <Widget>[
-            TextFormField(
-              controller: _emailField,
-              decoration: InputDecoration(
-                hintText: "something@email.com",
-                hintStyle: TextStyle(
-                  color: Colors.white,
-                ),
-                labelText: "Email",
-                labelStyle: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            TextFormField(
-              controller: _passwordField,
-              obscureText: true, //hide previously typed chars
-              decoration: InputDecoration(
-                hintText: "password",
-                hintStyle: TextStyle(
-                  color: Colors.white,
-                ),
-                labelText: "Password",
-                labelStyle: TextStyle(
-                  color: Colors.white,
+            Container(
+              width: MediaQuery.of(context).size.width / 1.3,
+              child: TextFormField(
+                style: TextStyle(color: Colors.white),
+                controller: _emailField,
+                decoration: InputDecoration(
+                  hintText: "something@email.com",
+                  hintStyle: TextStyle(
+                    color: Colors.white,
+                  ),
+                  labelText: "Email",
+                  labelStyle: TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),
+            SizedBox(height: MediaQuery.of(context).size.height / 35,),
+            Container(
+              width: MediaQuery.of(context).size.width / 1.3,
+              child: TextFormField(
+                style: TextStyle(color: Colors.white),
+                controller: _passwordField,
+                obscureText: true, //hide previously typed chars
+                decoration: InputDecoration(
+                  hintText: "password",
+                  hintStyle: TextStyle(
+                    color: Colors.white,
+                  ),
+                  labelText: "Password",
+                  labelStyle: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height / 35,),
             Container(
               width: MediaQuery.of(context).size.width / 1.4, //give me a width based on size of device
               height: 45,
@@ -69,7 +79,7 @@ class _LoginState extends State<Login> {
                     //Navigate
                     Navigator.push(context,
                       MaterialPageRoute(
-                        builder: (context) => HomeView(),
+                        builder: (context) => HomePage(),
                       ),
                     );
 
@@ -78,6 +88,7 @@ class _LoginState extends State<Login> {
                 child: Text("Register"),
               ),
             ),
+            SizedBox(height: MediaQuery.of(context).size.height / 35,),
             Container(
               width: MediaQuery.of(context).size.width / 1.4,
               height: 45,
@@ -92,7 +103,7 @@ class _LoginState extends State<Login> {
                     //Navigate
                     Navigator.push(context,
                       MaterialPageRoute(
-                        builder: (context) => HomeView(),
+                        builder: (context) => HomePage(),
                       ),
                     );
                   }
