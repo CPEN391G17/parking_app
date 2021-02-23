@@ -30,9 +30,15 @@ class _RootPageState extends State<RootPage> {
     });
   }
 
-  void _signIn() {
+  void _signedIn() {
     setState(() {
       _authStatus = AuthStatus.signedIn;
+    });
+  }
+
+  void _signedOut() {
+    setState(() {
+      _authStatus = AuthStatus.notSignedIn;
     });
   }
 
@@ -40,9 +46,9 @@ class _RootPageState extends State<RootPage> {
   Widget build(BuildContext context) {
     switch(_authStatus) {
       case AuthStatus.notSignedIn:
-        return LoginPage(auth: widget.auth, onSignedIn: _signIn,);
+        return LoginPage(auth: widget.auth, onSignedIn: _signedIn,);
       case AuthStatus.signedIn:
-        return HomePage();
+        return HomePage(auth: widget.auth, onSignedOut: _signedOut,);
     }
   }
 }
