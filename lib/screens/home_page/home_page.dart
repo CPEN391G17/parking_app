@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../coin_page/coin_page.dart';
 
@@ -13,59 +18,60 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  Completer<GoogleMapController> _controllerGoogleMap = Completer();
+  GoogleMapController newGoogleMapController;
+
+  Position currentPosition;
+
+  static LatLng _initialPosition;
+  
+  static final CameraPosition _kGooglePlex = CameraPosition(target: LatLng(49.246292, -123.116226), zoom: 14);
+
+
+
+  void locatePosition() async {
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    currentPosition = position;
+    setState(() {
+      _initialPosition = LatLng(position.latitude, position.longitude);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    locatePosition();
+  }
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-        ),
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: StreamBuilder(
-          stream: FirebaseFirestore.instance
-              .collection('Users')
-              .doc(FirebaseAuth.instance.currentUser.uid)
-              .collection('Coins') //coin.dart
-              .snapshots(),
-            builder: (BuildContext context,
-                AsyncSnapshot<QuerySnapshot> snapshot) {
-                if(!snapshot.hasData){
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-
-                return ListView(
-                  children: snapshot.data.docs.map((document) {
-                    return Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text("${document.id}"),
-                          Text("Quantity: ${document.data()['Amount'].toStringAsFixed(2)}"),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                );
-
-          }),
-        ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-           Navigator.push(
-               context,
-               MaterialPageRoute(builder: (context) => AddCoinPage(),
+      body: _initialPosition == null ? Container(
+        child: Center(
+          child:Text(
+            'loading map..',
+            style: TextStyle(
+                fontFamily: 'Avenir-Medium',
+                color: Colors.grey[400]),
             ),
-          );
-        },
-        child: Icon(
-          Icons.add,
-          color:Colors.white,
-        ),
+          ),
+        )
+          :Stack(
+        children: <Widget>[
+          GoogleMap(
+            myLocationEnabled: true,
+            zoomGesturesEnabled: true,
+            zoomControlsEnabled: true,
+            mapType: MapType.normal,
+            myLocationButtonEnabled: true,
+            initialCameraPosition: CameraPosition(
+              target: _initialPosition,
+              zoom: 14,
+            ),
+          ),
+        ],
       ),
-      );
-    //),
+    );
   }
 }
