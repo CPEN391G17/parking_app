@@ -52,13 +52,31 @@ class SideNavigationDrawer extends StatelessWidget {
               title: Text('Wallet'),
               onTap: () => onTap(2),
             ),
+
+            ListTile(
+              leading: Icon(
+                Icons.qr_code_scanner,
+                color: Theme.of(context).primaryColor,
+              ),
+              title: Text('Scan QR code'),
+              onTap: () => onTap(3),
+            ),
+
+            ListTile(
+              leading: Icon(
+                Icons.timer,
+                color: Theme.of(context).primaryColor,
+              ),
+              title: Text('Time Remaining'),
+              onTap: () => onTap(4),
+            ),
             ListTile(
               leading: Icon(
                 Icons.help_outline,
                 color: Theme.of(context).primaryColor,
               ),
               title: Text('Terms & Conditions'),
-              onTap: () => onTap(3),
+              onTap: () => onTap(5),
             ),
             ListTile(
               leading: Icon(
@@ -66,7 +84,7 @@ class SideNavigationDrawer extends StatelessWidget {
                 color: Theme.of(context).primaryColor,
               ),
               title: Text('Terms of Service'),
-              onTap: () => onTap(4),
+              onTap: () => onTap(6),
             ),
             ListTile(
               leading: Icon(
@@ -74,7 +92,7 @@ class SideNavigationDrawer extends StatelessWidget {
                 color: Theme.of(context).primaryColor,
               ),
               title: Text('FeedBack'),
-              onTap: () => onTap(5),
+              onTap: () => onTap(7),
             ),
           ],
         ),

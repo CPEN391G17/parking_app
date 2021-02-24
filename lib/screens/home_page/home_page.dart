@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:parking_app/resources/repository.dart';
 import 'package:parking_app/screens/coin_page/coin_page.dart';
+import 'package:parking_app/screens/qrscanner_page/qrscanner_page.dart';
 import 'package:parking_app/widgets/side_navigation.dart';
 
 class HomePage extends StatefulWidget {
@@ -120,12 +121,27 @@ class _HomePageState extends State<HomePage> {
         break;
 
       case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => QRPage()),
+        );
         break;
 
+  //timer
       case 4:
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => TimerPage()),
+      // );
         break;
 
       case 5:
+        break;
+
+      case 6:
+        break;
+
+      case 7:
         break;
 
       default:

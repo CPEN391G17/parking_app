@@ -24,6 +24,10 @@ dependencies:
   flutter:
     sdk: flutter
 
+  path_provider: ^1.6.27
+  qr_flutter: ^3.2.0
+  barcode_scan_fix: ^1.0.2
+
   # FlutterFire
   firebase_core: "^0.7.0"
   firebase_auth: "^0.20.0+1"
