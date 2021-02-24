@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:parking_app/resources/repository.dart';
-import 'file:///C:/UBC/CPEN391/Project/parking_app/lib/screens/profile/profile_page.dart';
 
 class AddCoinPage extends StatefulWidget {
   AddCoinPage({Key key}) : super(key: key);
