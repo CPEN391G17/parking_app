@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:parking_app/models/slider_model.dart';
-import 'package:parking_app/resources/repository.dart';
 import 'package:parking_app/screens/home_page/home_page.dart';
 import 'package:parking_app/screens/onboarding/slider_tile.dart';
 

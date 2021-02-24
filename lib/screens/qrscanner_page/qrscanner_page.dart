@@ -14,9 +14,21 @@ class _QRPageState extends State<QRPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child:Icon(Icons.arrow_back_ios),
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.black,
+        ),
         title: Text("Scan QR Code"),
+        backgroundColor: Colors.white,
       ),
       body: Container(
+        color: Colors.white,
         padding: EdgeInsets.all(20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -55,7 +67,6 @@ class _QRPageState extends State<QRPage> {
                 borderRadius: BorderRadius.circular(20.0),
               ),
             ),
-
           ],
         ),
       ),
