@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:parking_app/resources/repository.dart';
 import 'package:parking_app/screens/home_page/home_page.dart';
+import 'package:parking_app/screens/onboarding/onboarding.dart';
 
 //authentication
 class LoginPage extends StatefulWidget {
@@ -81,11 +82,10 @@ class _LoginPageState extends State<LoginPage> {
                     //Navigate
                     Navigator.push(context,
                       MaterialPageRoute(
-                        builder: (context) => HomePage(),
+                        builder: (context) => Onboarding(),
                       ),
                     );
-
-                  }
+                   }
                   },
                 child: Text("Register"),
               ),

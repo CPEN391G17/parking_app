@@ -23,17 +23,9 @@ class _HomePageState extends State<HomePage> {
   Completer<GoogleMapController> _controllerGoogleMap = Completer();
   GoogleMapController newGoogleMapController;
   Position currentPosition;
-  static LatLng _initialPosition;
+  LatLng _initialPosition;
 
   GlobalKey<ScaffoldState> _scaffoldState = GlobalKey<ScaffoldState>();
-
-  void locatePosition() async {
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    currentPosition = position;
-    setState(() {
-      _initialPosition = LatLng(position.latitude, position.longitude);
-    });
-  }
 
   void _currentLocation() async {
     final GoogleMapController controller = await _controllerGoogleMap.future;
@@ -45,12 +37,15 @@ class _HomePageState extends State<HomePage> {
         zoom: 14.0,
       ),
     ));
+    setState(() {
+      _initialPosition = LatLng(position.latitude, position.longitude);
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    locatePosition();
+    _currentLocation();
   }
 
   @override
@@ -64,32 +59,9 @@ class _HomePageState extends State<HomePage> {
           });
         }),
       ),
-      body: _initialPosition == null ? Container(
-        child: Center(
-          child:Text(
-            'loading map..',
-            style: TextStyle(
-                fontFamily: 'Avenir-Medium',
-                color: Colors.grey[400]),
-            ),
-          ),
-        )
-          :Stack(
+      body: Stack(
         children: <Widget>[
-          GoogleMap(
-            myLocationEnabled: true,
-            zoomGesturesEnabled: true,
-            zoomControlsEnabled: false,
-            mapType: MapType.normal,
-            myLocationButtonEnabled: false,
-            initialCameraPosition: CameraPosition(
-              target: _initialPosition,
-              zoom: 14,
-            ),
-            onMapCreated: (GoogleMapController controller) {
-              _controllerGoogleMap.complete(controller);
-            },
-          ),
+          map(),
           Positioned(
             left: 20,
             top: 30,
@@ -158,5 +130,22 @@ class _HomePageState extends State<HomePage> {
 
       default:
     }
+  }
+
+   map() {
+     return GoogleMap(
+        myLocationEnabled: true,
+        zoomGesturesEnabled: true,
+        zoomControlsEnabled: false,
+        mapType: MapType.normal,
+        myLocationButtonEnabled: false,
+        initialCameraPosition: CameraPosition(
+          target: _initialPosition?? LatLng(49.2827, -123.1207),
+          zoom: 14,
+        ),
+        onMapCreated: (GoogleMapController controller) {
+          _controllerGoogleMap.complete(controller);
+        },
+      );
   }
 }
