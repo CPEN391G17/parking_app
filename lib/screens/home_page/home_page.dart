@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:parking_app/resources/repository.dart';
 import 'package:parking_app/screens/profile_page/profile_page.dart';
 import 'package:parking_app/screens/qrscanner_page/qrscanner_page.dart';
+import 'package:parking_app/screens/timer_page/timer_page.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({this.auth, this.onSignedOut});
@@ -58,6 +59,7 @@ class _HomePageState extends State<HomePage> {
           myLocationButton(),
           qrButton(),
           profileButton(),
+          timerButton(),
         ],
       ),
     );
@@ -122,6 +124,33 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+
+  //
+  timerButton() {
+    return Positioned(
+      bottom: 20,
+      left: 20,
+      child: Material(
+        shape: CircleBorder(),
+        elevation: 10,
+        child: CircleAvatar(
+          backgroundColor: Colors.transparent,
+          radius: 20,
+          child: IconButton(
+            icon: Icon(Icons.timer),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => TimerPage()),
+            ),
+            color: Colors.black,
+          ),
+        ),
+      ),
+    );
+  }
+
+
 
   profileButton() {
     return Positioned(
