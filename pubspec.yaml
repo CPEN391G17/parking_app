@@ -37,6 +37,7 @@ dependencies:
   geolocator: ^6.2.0
   google_fonts: ^1.1.2
   location: ^3.2.4
+  image_picker: ^0.6.7+22
 
   circular_countdown_timer: ^0.1.0
 

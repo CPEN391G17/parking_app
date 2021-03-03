@@ -6,6 +6,7 @@ import 'package:parking_app/resources/repository.dart';
 import 'package:parking_app/screens/coin_page/coin_page.dart';
 import 'package:parking_app/screens/home_page/home_page.dart';
 import 'package:parking_app/screens/login_page/login_page.dart';
+import 'package:parking_app/screens/profile_page/edit_profile.dart';
 
 import '../login_page/root/root.dart';
 
@@ -145,7 +146,11 @@ class _ProfilePage extends State<ProfilePage> {
                                     flex: 4,
                                     child: Container(
                                       child: GestureDetector(
-                                        onTap: (){},
+                                        onTap: (){
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(builder: (context) => EditProfileScreen()));
+                                        },
                                         child: Text("Edit Profile",
                                           style: TextStyle(
                                             fontSize: 14,
