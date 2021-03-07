@@ -24,22 +24,26 @@ dependencies:
   flutter:
     sdk: flutter
 
-  path_provider: ^1.6.27
-  qr_flutter: ^3.2.0
-  barcode_scan_fix: ^1.0.2
+
 
   # FlutterFire
-  firebase_core: "^0.7.0"
-  firebase_auth: "^0.20.0+1"
-  cloud_firestore: "^0.16.0"
+  firebase_core: ^1.0.0
+  firebase_auth: ^1.0.0
+  cloud_firestore: ^1.0.0
   rxdart: any
-  google_maps_flutter: ^1.2.0
-  geolocator: ^6.2.0
-  google_fonts: ^1.1.2
-  location: ^3.2.4
-  image_picker: ^0.6.7+22
-
+  google_maps_flutter: ^2.0.1
+  geolocator: ^7.0.1
+  google_fonts: ^2.0.0
+  location: ^4.0.2
+  image_picker: ^0.7.2
+  fluttertoast: ^7.1.8
+  firebase_storage: ^8.0.0
+  path_provider: ^2.0.1
+  qr_flutter: ^3.2.0
+  barcode_scan_fix: ^1.0.2
   circular_countdown_timer: ^0.1.0
+  flutter_multi_formatter: ^1.3.6
+  image: ^3.0.1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -64,6 +68,11 @@ flutter:
   assets:
      - assets/images/test.jpg
      - assets/images/logo.png
+     - assets/images/current_location.png
+     - assets/images/destination.png
+     - assets/images/parking_logo.png
+     - assets/images/pin_location.png
+     - assets/images/profilepic.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

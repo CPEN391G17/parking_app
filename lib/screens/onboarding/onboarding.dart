@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:parking_app/models/slider_model.dart';
 import 'package:parking_app/screens/home_page/home_page.dart';
-import 'package:parking_app/screens/onboarding/slider_tile.dart';
+import 'package:parking_app/widgets/slider_tile.dart';
 
 class Onboarding extends StatefulWidget {
   @override
@@ -12,6 +12,7 @@ class Onboarding extends StatefulWidget {
 
 class _Onboarding extends State<Onboarding>{
 
+  // ignore: deprecated_member_use
   List<SliderModel> slides = new List<SliderModel>();
   int currentIndex = 0;
   PageController pageController = new PageController();

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:parking_app/resources/repository.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:parking_app/resources/firebase_provider.dart';
 
 class AddCoinPage extends StatefulWidget {
   AddCoinPage({Key key}) : super(key: key);
@@ -11,9 +12,9 @@ class AddCoinPage extends StatefulWidget {
 
 class _AddCoinPageState extends State<AddCoinPage>{
 
-  String coin = "ParKoin";
-
+  String id = 'parKoin';
   TextEditingController _amountController = TextEditingController();
+  FirebaseProvider _firebaseProvider = FirebaseProvider();
 
   @override
   Widget build(BuildContext context){
@@ -59,8 +60,13 @@ class _AddCoinPageState extends State<AddCoinPage>{
             ),
             child: MaterialButton(
               onPressed: () async{
-                await addCoin(coin, _amountController.text);
-                Navigator.of(context).pop();
+                if(double.parse(_amountController.text) > 0) {
+                  await _firebaseProvider.addCoin(id, _amountController.text);
+                  Navigator.of(context).pop();
+                }
+                else {
+                  Fluttertoast.showToast(msg: "Amount must be greater than 0");
+                }
               },
               child: Text("Add"),
             ),
