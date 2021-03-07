@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:parking_app/models/coin.dart';
 import 'package:parking_app/resources/firebase_provider.dart';
 
 class AddCoinPage extends StatefulWidget {
-  AddCoinPage({Key key}) : super(key: key);
+  double amount;
+  AddCoinPage({this.amount});
 
   @override
   _AddCoinPageState createState() => _AddCoinPageState();
@@ -31,6 +33,11 @@ class _AddCoinPageState extends State<AddCoinPage>{
         iconTheme: IconThemeData(
           color: Colors.black,
         ),
+        actions: [
+          IconButton(icon: Icon(Icons.done),
+              onPressed: () {Navigator.of(context).pop(true);}
+          )
+        ],
       ),
       body: Container(
         color: Colors.white,
@@ -39,6 +46,9 @@ class _AddCoinPageState extends State<AddCoinPage>{
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          Container(
+            child: Text("Previous Balance = " + widget.amount.toString()),
+          ),
           Container(
             color: Colors.white,
             width: MediaQuery.of(context).size.width / 1.3,
@@ -62,7 +72,6 @@ class _AddCoinPageState extends State<AddCoinPage>{
               onPressed: () async{
                 if(double.parse(_amountController.text) > 0) {
                   await _firebaseProvider.addCoin(id, _amountController.text);
-                  Navigator.of(context).pop();
                 }
                 else {
                   Fluttertoast.showToast(msg: "Amount must be greater than 0");

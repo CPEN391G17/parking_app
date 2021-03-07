@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:parking_app/models/coin.dart';
 import 'package:parking_app/models/parking_user.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
@@ -30,6 +31,7 @@ class FirebaseProvider {
       .collection("ParkingRequest");
 
   ParkingUser parkingUser;
+  Coin parkoin;
 
   //time
   final DateTime timestamp = DateTime.now();
@@ -78,13 +80,15 @@ class FirebaseProvider {
           displayName: name,
           lpn: lpn,
           phone: phone,
-          photoUrl: "gs://parking-ec847.appspot.com/profilepic.jpg",
+          photoUrl: await getUrl(),
           lastTime: Timestamp.now(),
         );
 
         await parkingUsers
             .doc(user.uid)
             .set(parkingUser.toMap(parkingUser));
+
+        addCoin('parKoin', '0');
         return true;
       } else {
         Fluttertoast.showToast(msg: "Failed to create user");
@@ -150,6 +154,13 @@ class FirebaseProvider {
     return await _storageReference.getDownloadURL();
   }
 
+  Future<String> getUrl() async {
+    _storageReference = firebase_storage.FirebaseStorage.instance
+        .ref().child("profilepic.jpg");
+    String url = (await _storageReference.getDownloadURL()).toString();
+    return url;
+  }
+
   Future<ParkingUser> retrieveParkingUserDetails(ParkingUser user) async {
     DocumentSnapshot _documentSnapshot =
     await parkingUsers.doc(user.uid).get();
@@ -199,5 +210,18 @@ class FirebaseProvider {
       return parkingUser;
     }
   }
+
+  Future<Coin> getAndSetCurrentBalance(
+      {bool forceRetrieve = false}) async {
+      User authUser = firebaseAuth.currentUser;
+      return await parkingUsers.doc(authUser.uid).collection('Coins').doc('parKoin').get().then(
+            (_documentSnapshot) {
+          Coin coin =
+          Coin.fromMap(_documentSnapshot.data());
+          print("user pulled from server");
+          parkoin = coin;
+          return coin;
+          });
+    }
 
 }

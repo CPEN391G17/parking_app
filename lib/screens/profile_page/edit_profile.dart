@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:parking_app/models/parking_user.dart';
 import 'package:parking_app/resources/firebase_provider.dart';
 import 'package:parking_app/widgets/progress.dart';
+import 'package:parking_app/widgets/text_formatter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as Im;
 
@@ -128,7 +129,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return _isLoading ? circularProgress()
+    : Scaffold(
       appBar: AppBar(
         elevation: 0,
         leading: GestureDetector(
@@ -201,6 +203,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                 ),
                 TextField(
+                  inputFormatters: [
+                    UpperCaseTextFormatter(),
+                  ],
                   controller: _lpnController,
                   decoration: InputDecoration(
                     labelText: 'License plate number',
@@ -230,16 +235,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           title: new Text(title),
           content: new Text(body),
           actions: <Widget>[
-            new FlatButton(
+            new TextButton(
               child: new Text(isComplex ? "Yes" : "Ok"),
               onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-                // Navigator.push(context, MaterialPageRoute(builder: (context) => ProfileScreen()));
+                Navigator.of(context).pop(true);
+                Navigator.of(context).pop(true);
               },
             ),
             isComplex
-                ? new FlatButton(
+                ? new TextButton(
               child: new Text("No"),
               onPressed: () {
                 Navigator.of(context).pop();

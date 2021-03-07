@@ -2,11 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 class Coin {
-  String id;
-  String amount;
+  double amount;
 
   Coin({
-    @required this.id,
     @required this.amount,
   });
 
