@@ -1,202 +1,234 @@
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:parking_app/main.dart';
-import 'package:parking_app/resources/repository.dart';
+import 'package:parking_app/resources/firebase_provider.dart';
 import 'package:parking_app/screens/coin_page/coin_page.dart';
-import 'package:parking_app/screens/home_page/home_page.dart';
-import 'package:parking_app/screens/login_page/login_page.dart';
-
-import '../login_page/root/root.dart';
+import 'package:parking_app/screens/profile_page/edit_profile.dart';
+import 'package:parking_app/widgets/progress.dart';
+import 'package:parking_app/models/parking_user.dart';
+import 'package:parking_app/models/coin.dart';
 
 // ignore: must_be_immutable
 class ProfilePage extends StatefulWidget {
-  ProfilePage({this.auth, this.onSignedOut});
-
-  BaseAuth auth;
-  VoidCallback onSignedOut;
-
   @override
   _ProfilePage createState() => _ProfilePage();
 }
 
 class _ProfilePage extends State<ProfilePage> {
+  FirebaseProvider _firebaseProvider = FirebaseProvider();
+  String uid;
+  bool forceReload = false;
+  ParkingUser user;
+
+  var _isInit = true;
+  var _isLoading0 = false;
+  var _isLoading1 = false;
+
+  String defaultUrl;
+
+  @override
+  initState() {
+    getDefaultUrl();
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isInit) {
+      setState(() {
+        _isLoading0 = true;
+        _isLoading1 = true;
+      });
+      _firebaseProvider.getAndSetCurrentUser().then((currUser) {
+        setState(() {
+          user = currUser;
+          _isLoading0 = false;
+        });
+      });
+      _isInit = false;
+      super.didChangeDependencies();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Container(
-            color: Colors.white,
-          ),
-          AppBar(
-            leading: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-                },
-              child:Icon(Icons.arrow_back_ios),
-            ),
-            backgroundColor: Colors.white,
-            iconTheme: IconThemeData(
-              color: Colors.black,
-              ),
-            actions: <Widget>[
-              Padding(
-                  padding: EdgeInsets.only(right: 20.0),
-                  child: GestureDetector(
-                    onTap: () async {
-                      try {
-                        await widget.auth.signOut();
-                        widget.onSignedOut();
-                        Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MyApp()));
-                      } catch (e) {
-                        print(e);
-                      }
-                    },
-                    child: Container(
-                      padding: EdgeInsets.only(top: 15, left: 10),
-                      child: Text(
-                        "Logout",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  )
-              ),
-            ],
-            ),
-            Column(
-              children: <Widget>[
+      body: _isLoading0 && _isLoading1 ? circularProgress()
+          : FutureBuilder(
+        future: Future.wait([_firebaseProvider.parkingUsers.doc(user.uid).get(),
+            _firebaseProvider.parkingUsers.doc(user.uid).collection('Coins').doc('parKoin').get()]),
+        builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
+          if(!snapshot.hasData) {
+            return circularProgress();
+          }
+          ParkingUser parkingUser = ParkingUser.fromDocument(snapshot.data[0]);
+          Coin coin = Coin.fromDocument(snapshot.data[1]);
+          return Stack(
+            children: <Widget>[
+              Column(
+                children: [
                   Expanded(
-                    flex: 1,
-                    child: Container(),
+                    flex: 6,
+                    child: Container(
+                      color: Colors.blue,
+                    ),
                   ),
                   Expanded(
-                      flex: 2,
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            flex: 1,
-                            child: Container(),
+                    flex: 4,
+                    child: Container(
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                children: <Widget>[
+                  AppBar(
+                    elevation: 0,
+                    leading: GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Icon(Icons.arrow_back_ios),
+                    ),
+                    backgroundColor: Colors.blue,
+                    actions: <Widget>[
+                      IconButton(
+                        icon: const Icon(Icons.edit),
+                        onPressed: () {
+                              editProfile(context, parkingUser);
+                            }
                           ),
-                          Expanded(
-                            flex: 4,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Expanded(
-                                    flex: 3,
-                                    child: Container(
-                                      child: Text("UserName",
-                                        style: TextStyle(
-                                          fontSize: 18
-                                        ),
-                                      ),
-                                    ),
-                                ),
-                                Expanded(
-                                    flex: 3,
-                                    child: Container(
-                                      child: Text("LPN: xxxxxx",
-                                        style: TextStyle(
-                                            fontSize: 14
-                                        ),
-                                      ),
-                                    ),
-                                ),
-                                Expanded(
-                                    flex: 4,
-                                    child: Container(
-                                      child: Text("Balance = x Coins",
-                                        style: TextStyle(
-                                            fontSize: 14
-                                        ),
-                                      ),
-                                    ),
-                                ),
-                              ],
-                            ),
+                    ],
+                    iconTheme: IconThemeData(
+                      color: Colors.black,
+                    ),
+                  ),
+                  Column(
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.all(20),
+                        width: 150,
+                        height: 150,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                              image: parkingUser.photoUrl == null
+                                  ? NetworkImage(defaultUrl)
+                                  : NetworkImage(parkingUser.photoUrl),
+                              fit: BoxFit.fill
                           ),
-                          Expanded(
-                              flex: 5,
+                        ),
+                      ),
+                      Container(
+                        child: Text(parkingUser.displayName,
+                          style: TextStyle(
+                              fontSize: 30
+                          ),
+                        ),
+                      ),
+                      Container(
+                        child: Text("LPN: " + parkingUser.lpn,
+                          style: TextStyle(
+                              fontSize: 20
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: MediaQuery
+                          .of(context)
+                          .size
+                          .height / 14,),
+                      Container(
+                        child: Text("Balance = " + coin.amount.toString() + " coins",
+                          style: TextStyle(
+                              fontSize: 20
+                          ),
+                        ),
+                      ),
+                      Container(
+                        height: MediaQuery
+                            .of(context)
+                            .size
+                            .height / 8,
+                        width: MediaQuery
+                            .of(context)
+                            .size
+                            .width / 1.5,
+                        child: Card(
+                          elevation: 5,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: InkWell(
+                            splashColor: Colors.blue.withAlpha(30),
+                            onTap: () {
+                              addCoin(context, coin.amount);
+                            },
+                            child: Container(
+                              width: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .width / 1.2,
+                              height: MediaQuery
+                                  .of(context)
+                                  .size
+                                  .height / 9,
                               child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                  Expanded(
-                                      flex: 7,
-                                      child: Container(
-                                        margin: EdgeInsets.all(20),
-                                        width: 200,
-                                        height: 200,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                              image: NetworkImage('https://googleflutter.com/sample_image.jpg'),
-                                              fit: BoxFit.fill
-                                          ),
-                                        ),
-                                      ),
-                                  ),
-                                  Expanded(
-                                    flex: 4,
-                                    child: Container(
-                                      child: GestureDetector(
-                                        onTap: (){},
-                                        child: Text("Edit Profile",
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                  Icon(Icons.account_balance_wallet),
+                                  Text(
+                                      'Add coins', textAlign: TextAlign.center),
                                 ],
                               ),
-                          ),
-                        ],
-                      ),
-                  ),
-                  Expanded(
-                    child: Card(
-                      elevation: 5,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: InkWell(
-                        splashColor: Colors.blue.withAlpha(30),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => AddCoinPage()));
-                        },
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 1.2,
-                          height: MediaQuery.of(context).size.height / 9,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment:CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Icon(Icons.account_balance_wallet),
-                              Text('Add coins', textAlign: TextAlign.center),
-                            ],
+                            ),
                           ),
                         ),
-                    ),
+                      ),
+                    ],
                   ),
-                  ),
-                Expanded(flex: 4,
-                    child: Container(),
-                )
-              ],
-            ),
-        ],
-      ),
+                ],
+              ),
+            ],
+          );
+        }
+
+    ),
     );
   }
+
+  Future<void> getDefaultUrl() async {
+    defaultUrl = await _firebaseProvider.getUrl();
+  }
+
+  void editProfile(context, parkingUser) async {
+    final result = await Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) =>
+            EditProfileScreen(
+              name: parkingUser.displayName,
+              photoUrl: parkingUser.photoUrl,
+              email: parkingUser.email,
+              lpn: parkingUser.lpn,
+              phone: parkingUser.phone,
+            )));
+    if (result) {
+      setState(() {});
+    }
+  }
+
+  void addCoin(context, amount) async {
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => AddCoinPage(amount: amount,)));
+    if(result) {
+      setState(() {});
+    }
+  }
+
 }
 
 
