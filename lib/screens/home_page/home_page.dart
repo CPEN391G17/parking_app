@@ -58,13 +58,17 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           map(),
           myLocationButton(),
+
           // qrButton(),
           // timerButton(),
         ],
       ),
+      //app bar change to either transparent or hovering icon
       appBar: AppBar(
         title: Text(""),
         backgroundColor: Colors.lightBlue,
+        elevation: 0.0,
+
       ),
       drawer: Drawer(
         child: ListView(
@@ -98,10 +102,10 @@ class _HomePageState extends State<HomePage> {
               context,
               MaterialPageRoute(builder: (context) => ProfilePage(auth: widget.auth, onSignedOut: widget.onSignedOut)),
             )}),
-            CustomListTile(Icons.account_balance_wallet, "Wallet", ()=>{Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AddCoinPage()),
-            )}),
+            // CustomListTile(Icons.account_balance_wallet, "Wallet", ()=>{Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => AddCoinPage()),
+            // )}),
             CustomListTile(Icons.qr_code_scanner, "QR Scanner", ()=>{Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => QRPage()),
@@ -110,6 +114,10 @@ class _HomePageState extends State<HomePage> {
             CustomListTile(Icons.help, "Help", ()=>{}),
             CustomListTile(Icons.settings, "Settings", ()=>{}),
             CustomListTile(Icons.logout, "Log Out", ()=>{}),
+            // CustomListTile(Icons.timer, "Timer", ()=>{Navigator.push(
+            //   context,
+            //   MaterialPageRoute(builder: (context) => TimerPage()),
+            // )}),
           ],
         ),
       ),

@@ -40,13 +40,13 @@ class _TimerPageState extends State<TimerPage> {
             ringGradient: null,
 
             // Filling Color for Countdown Widget.
-            fillColor: Colors.purpleAccent[100],
+            fillColor: Colors.blueAccent[100],
 
             // Filling Gradient for Countdown Widget.
             fillGradient: null,
 
             // Background Color for Countdown Widget.
-            backgroundColor: Colors.purple[500],
+            backgroundColor: Colors.blue[500],
 
             // Background Gradient for Countdown Widget.
             backgroundGradient: null,
@@ -62,10 +62,10 @@ class _TimerPageState extends State<TimerPage> {
                 fontSize: 33.0, color: Colors.white, fontWeight: FontWeight.bold),
 
             // Format for the Countdown Text.
-            textFormat: CountdownTextFormat.S,
+            textFormat: CountdownTextFormat.MM_SS,
 
             // Handles Countdown Timer (true for Reverse Countdown (max to 0), false for Forward Countdown (0 to max)).
-            isReverse: false,
+            isReverse: true,
 
             // Handles Animation Direction (true for Reverse Animation, false for Forward Animation).
             isReverseAnimation: false,
@@ -122,7 +122,7 @@ class _TimerPageState extends State<TimerPage> {
             style: TextStyle(color: Colors.white),
           ),
           onPressed: onPressed,
-          color: Colors.purple,
+          color: Colors.blue,
         ));
   }
 }
