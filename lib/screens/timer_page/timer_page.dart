@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'package:parking_app/resources/firebase_provider.dart';
 
 class TimerPage extends StatefulWidget {
   @override
@@ -9,12 +10,20 @@ class TimerPage extends StatefulWidget {
 class _TimerPageState extends State<TimerPage> {
   CountDownController _controller = CountDownController();
   int _duration = 3600;
+  bool started = false;
+  FirebaseProvider _firebaseProvider = FirebaseProvider();
+  String id = 'parKoin';
+
+
+  // void delete_coins(){
+  //   _firebaseProvider.addCoin(id, "-200");
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Timer"),
+        title: Text("Booking Time"),
       ),
       body: Center(
           child: CircularCountDownTimer(
@@ -76,17 +85,20 @@ class _TimerPageState extends State<TimerPage> {
             // Handles the timer start.
             autoStart: false,
 
-            // This Callback will execute when the Countdown Starts.
-            onStart: () {
-              // Here, do whatever you want
-              print('Countdown Started');
+            onStart: (){
+              setState(() {
+                //delete_coins();
+                _firebaseProvider.addCoin(id, "-200");
+                started = true;
+              });
             },
 
-            // This Callback will execute when the Countdown Ends.
-            onComplete: () {
-              // Here, do whatever you want
-              print('Countdown Ended');
+            onComplete: (){
+              setState(() {
+                started = false;
+              });
             },
+
           )),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -94,7 +106,26 @@ class _TimerPageState extends State<TimerPage> {
           SizedBox(
             width: 30,
           ),
-          _button(title: "Pay 200 Parkoin to Start", onPressed: () => _controller.start()),
+
+          // ElevatedButton(
+          //   onPressed:  !started ? ()=> _controller.start() : null , // ? null : () =>_controller.start()
+          //   child: Text('Pay 200 parKoins'),
+          // ),
+          _button(title: "Pay 200 Parkoin to Start", onPressed: !started ? ()=> _controller.start() : null), //() => _controller.start()
+
+          // MaterialButton(
+          //   onPressed: () {
+          //     if(started == false) {
+          //       delete_coins();
+          //       _controller.start();
+          //     }
+          //     else {
+          //       null;
+          //     }
+          //   },
+          //   child: Text("Pay 200 parKoins"),
+          // ),
+
           // SizedBox(
           //   width: 10,
           // ),
@@ -116,13 +147,15 @@ class _TimerPageState extends State<TimerPage> {
 
   _button({String title, VoidCallback onPressed}) {
     return Expanded(
-        child: RaisedButton(
+        child: ElevatedButton(
           child: Text(
             title,
             style: TextStyle(color: Colors.white),
           ),
-          onPressed: onPressed,
-          color: Colors.blue,
+          onPressed: onPressed,//onPressed,
+
+          //color: Colors.blue,
         ));
   }
+
 }

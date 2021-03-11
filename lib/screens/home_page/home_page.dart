@@ -108,6 +108,10 @@ class _HomePageState extends State<HomePage> {
               context,
               MaterialPageRoute(builder: (context) => QRPage()),
             )}),
+            CustomListTile(Icons.timer, "Timer", ()=>{ Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => TimerPage()),
+            )}),
             CustomListTile(Icons.history, "Booking History", ()=>{}),
             CustomListTile(Icons.help, "Help", ()=>{}),
             CustomListTile(Icons.settings, "Settings", ()=>{}),
