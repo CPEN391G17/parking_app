@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:parking_app/resources/firebase_provider.dart';
 import 'package:parking_app/screens/home_page/home_page.dart';
 import 'package:parking_app/screens/login_page/register_page.dart';
+import 'package:parking_app/screens/mainscreen/mainscreen.dart';
 
 //authentication
 class LoginPage extends StatefulWidget {
@@ -96,7 +97,8 @@ class _LoginPageState extends State<LoginPage> {
                     else {
                       bool auth = await _firebaseProvider.signIn(_emailField.text, _passwordField.text);
                       if(auth){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => MainScreen())); //commented out for testing maps
+                        // Navigator.push(context, MaterialPageRoute(builder: (context) => MainScreen()));
                       }
                     }
                   },

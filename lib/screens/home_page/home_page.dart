@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -62,16 +61,7 @@ class _HomePageState extends State<HomePage> {
           // timerButton(),
         ],
       ),
-// <<<<<<< HEAD
-//       //app bar change to either transparent or hovering icon
-//       appBar: AppBar(
-//         title: Text(""),
-//         backgroundColor: Colors.lightBlue,
-//         elevation: 0.0,
-//
-//       ),
-// =======
-// >>>>>>> c637f8f21346d0b15a4f4d018ec56f35c3c73275
+
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,

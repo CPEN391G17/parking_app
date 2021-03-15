@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:parking_app/resources/firebase_provider.dart';
 import 'package:parking_app/screens/home_page/home_page.dart';
+import 'package:parking_app/screens/mainscreen/mainscreen.dart';
 import '../login_page.dart';
 
 class RootPage extends StatefulWidget {
@@ -37,7 +38,8 @@ class _RootPageState extends State<RootPage> {
       case AuthStatus.notSignedIn:
         return LoginPage();
       case AuthStatus.signedIn:
-        return HomePage();
+        return MainScreen();
+        //return HomePage(); commented for testing purposes
     }
   }
 }
