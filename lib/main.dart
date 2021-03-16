@@ -10,6 +10,9 @@ import 'package:parking_app/screens/profile_page/edit_profile.dart';
 import 'package:parking_app/screens/profile_page/profile_page.dart';
 import 'package:parking_app/screens/qrscanner_page/qrscanner_page.dart';
 import 'package:parking_app/screens/timer_page/timer_page.dart';
+import 'package:provider/provider.dart';
+
+import 'DataHandler/appData.dart';
 
 /*
 void main() async {
@@ -21,10 +24,13 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'ParKing',
-      home: RootPage(),
+    return ChangeNotifierProvider(
+      create: (context) => AppData(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'ParKing',
+        home: RootPage(),
+      ),
     );
   }
 }
