@@ -11,7 +11,6 @@ import 'package:parking_app/assistant/assistantMethods.dart';
 import 'package:parking_app/models/directionDetails.dart';
 import 'package:parking_app/resources/firebase_provider.dart';
 import 'package:parking_app/screens/login_page/login_page.dart';
-import 'package:parking_app/screens/settings_page/settings_page.dart';
 import 'package:parking_app/screens/profile_page/profile_page.dart';
 import 'package:parking_app/screens/qrscanner_page/qrscanner_page.dart';
 import 'package:parking_app/screens/searchScreen/searhScreen.dart';
@@ -20,7 +19,6 @@ import 'package:parking_app/widgets/Divider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:parking_app/widgets/custom_tile.dart';
 import 'package:provider/provider.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 //parking app billing needs to enabled once it has been verified to enable Geocoding
 class MainScreen extends StatefulWidget{
@@ -166,10 +164,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
               )}),
               CustomListTile(Icons.history, "Booking History", ()=>{}),
               CustomListTile(Icons.help, "Help", ()=>{}),
-              CustomListTile(Icons.settings, "Settings", ()=>{ Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SettingsPage()),
-              )}),
+              CustomListTile(Icons.settings, "Settings", ()=>{}),
               CustomListTile(Icons.logout, "Log Out", () {
                 _firebaseProvider.signOut();
                 Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
