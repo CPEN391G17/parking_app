@@ -238,6 +238,7 @@ class PredictionTile extends StatelessWidget {
     if(response == "failed"){
       return;
     }
+
     if(response["status"] == "OK"){
       Address address = Address();
       address.placeName = response["result"]["name"];
@@ -245,11 +246,37 @@ class PredictionTile extends StatelessWidget {
       address.latitude = response["result"]["geometry"]["location"]["lat"];
       address.longitude = response["result"]["geometry"]["location"]["lng"];
 
-      Provider.of<AppData>(context, listen: false).updatEndLocationAddress(address);
-      print("This is Drop Off Location ::");
-      print(address.placeName);
+      //here i need to make request to nearest parking spot and return that as address along with other details
+      double lat = address.latitude;
+      double lng = address.longitude;
 
-      Navigator.pop(context, "obtainDirection");
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => Center(child: CircularProgressIndicator(),)//ProgressDialog(message: "Setting Destination, Please Wait...",),
+      );
+
+      String parkingPlaceDetailsURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$lat,$lng&rankby=distance&type=parking&key=$mapKey";
+      var parking_response = await RequestAssistant.getRequest(parkingPlaceDetailsURL);
+
+      Navigator.pop(context);
+
+      if(parking_response == "failed"){
+        return;
+      }
+      if(parking_response["status"] == "OK"){
+        Address parking_address = Address();
+        parking_address.placeName = parking_response["results"][0]["name"];
+        parking_address.placeId = parking_response["results"][0]["place_id"];
+        parking_address.latitude = parking_response["results"][0]["geometry"]["location"]["lat"];
+        parking_address.longitude = parking_response["results"][0]["geometry"]["location"]["lng"];
+
+        Provider.of<AppData>(context, listen: false).updatEndLocationAddress(parking_address);
+        print("This is Parking Location ::");
+        print(parking_address.placeName);
+
+        Navigator.pop(context, "obtainDirection");
+      }
+
     }
   }
 }
