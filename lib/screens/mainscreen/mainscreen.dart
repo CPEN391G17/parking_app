@@ -11,6 +11,7 @@ import 'package:parking_app/assistant/assistantMethods.dart';
 import 'package:parking_app/models/directionDetails.dart';
 import 'package:parking_app/resources/firebase_provider.dart';
 import 'package:parking_app/screens/login_page/login_page.dart';
+import 'package:parking_app/screens/settings_page/settings_page.dart';
 import 'package:parking_app/screens/profile_page/profile_page.dart';
 import 'package:parking_app/screens/qrscanner_page/qrscanner_page.dart';
 import 'package:parking_app/screens/searchScreen/searhScreen.dart';
@@ -165,7 +166,10 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
               )}),
               CustomListTile(Icons.history, "Booking History", ()=>{}),
               CustomListTile(Icons.help, "Help", ()=>{}),
-              CustomListTile(Icons.settings, "Settings", ()=>{}),
+              CustomListTile(Icons.settings, "Settings", ()=>{ Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SettingsPage()),
+              )}),
               CustomListTile(Icons.logout, "Log Out", () {
                 _firebaseProvider.signOut();
                 Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
