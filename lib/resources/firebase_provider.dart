@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:parking_app/models/coin.dart';
+import 'package:parking_app/models/parking_request.dart';
 import 'package:parking_app/models/parking_user.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
@@ -23,14 +24,15 @@ class FirebaseProvider {
   // firebase collections
   final CollectionReference parkingUsers = FirebaseFirestore.instance
       .collection('ParkingUsers');
-  final CollectionReference parkingProvider = FirebaseFirestore.instance
+  final CollectionReference parkingProviders = FirebaseFirestore.instance
       .collection('ParkingProvider');
-  final CollectionReference parkingSpace = FirebaseFirestore.instance
+  final CollectionReference parkingSpaces = FirebaseFirestore.instance
       .collection("ParkingSpace");
-  final CollectionReference parkingRequest = FirebaseFirestore.instance
+  final CollectionReference parkingRequests = FirebaseFirestore.instance
       .collection("ParkingRequest");
 
   ParkingUser parkingUser;
+  ParkingRequest parkingRequest;
   Coin parkoin;
 
   //time
@@ -223,5 +225,45 @@ class FirebaseProvider {
           return coin;
           });
     }
+
+
+    // parking request functions
+    Future<bool> createParkingRequest(String prid, String uid, String pid, String ppid,
+        String parkingPhotoUrl, DateTime timeOfBooking, DateTime timeOfCreation, double duration, bool status /*, double cost*/) async {
+      // prid = 'r_${args.restaurantId}h_${_repo.user().uid}d_${day.replaceAll('/', '')}t_$time${new Random().nextInt(100)}'
+      try {
+        parkingRequest = ParkingRequest(
+            prid: prid,
+            uid: uid,
+            pid: pid,
+            ppid: ppid,
+            parkingPhotoUrl: parkingPhotoUrl,
+            timeOfBooking: timeOfBooking,
+            timeOfCreation: timeOfCreation,
+            duration: duration,
+            status: status);
+
+        await parkingRequests.doc(uid).collection('parking').doc(prid).set(
+            parkingRequest.toMap(parkingRequest));
+        // var amount = -cost * duration;
+        // addCoin(uid, amount.toString());
+      } on Exception catch(e){
+        Fluttertoast.showToast(msg: e.toString());
+        return false;
+      }
+      return true;
+    }
+
+    Future deleteParkingRequest(String uid, String prid) async {
+      parkingRequests.doc(uid).collection('parking').doc(prid).get().then((doc) {
+        if(doc.exists) {
+          doc.reference.delete();
+        }
+      });
+    }
+
+
+
+
 
 }

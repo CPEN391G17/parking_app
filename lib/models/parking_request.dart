@@ -2,18 +2,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 class ParkingRequest {
+  String prid;
   String uid;
   String pid;
   String ppid;
   String parkingPhotoUrl;
   DateTime timeOfBooking;
   DateTime timeOfCreation;
-  int duration;
+  double duration;
   String qrInput;
   String qrEntryValue;
   bool status;
 
   ParkingRequest({
+    @required this.prid,
     @required this.uid,
     @required this.pid,
     @required this.ppid,
@@ -27,6 +29,7 @@ class ParkingRequest {
 
   factory ParkingRequest.fromDocument(DocumentSnapshot doc) {
     return ParkingRequest(
+      prid: doc.get('prid'),
       uid: doc.get('uid'),
       pid: doc.get('pid'),
       ppid: doc.get('ppid'),
@@ -41,6 +44,7 @@ class ParkingRequest {
 
   Map<String, dynamic> toMap(ParkingRequest parkingRequest) {
     return {
+      'prid': parkingRequest.prid,
       'uid': parkingRequest.uid,
       'pid': parkingRequest.pid,
       'ppid': parkingRequest.ppid,
@@ -54,6 +58,7 @@ class ParkingRequest {
   }
 
   ParkingRequest.fromMap(Map<String, dynamic> mapData) {
+    prid = mapData['prid'];
     uid = mapData['uid'];
     pid = mapData['pid'];
     ppid = mapData['ppid'];
