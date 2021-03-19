@@ -450,7 +450,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.0),
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             print("Parking Requested");
                             displayRequestContainer();
                             var loc = Provider.of<AppData>(context, listen: false).endLocation;
@@ -461,13 +461,13 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                             var timeOfCreation = DateTime.now();
                             var duration = 1.0;
                             var prid = 'r_${pid}h_${uid}d_t_${DateTime.now()}${new Random().nextInt(100)}';
-                            _firebaseProvider.createParkingRequest(prid,
+                            createdRequest = await _firebaseProvider.createParkingRequest(prid,
                                 uid, pid, lat, lng, timeOfBooking, timeOfCreation, duration);
-                            // if(createdRequest)
-                            //   setState(() async {
-                            //     createdRequest = false;
-                            //     Navigator.pop(context);
-                            //   });
+                            if(createdRequest)
+                              setState(() {
+                                createdRequest = false;
+                                requestRideContainerHeight = 0.0;
+                              });
                           },
                           // color: Theme.of(context).accentColor,
                           child: Padding(
