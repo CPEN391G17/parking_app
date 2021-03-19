@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
@@ -6,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:parking_app/models/coin.dart';
+import 'package:parking_app/models/parking.dart';
 import 'package:parking_app/models/parking_request.dart';
 import 'package:parking_app/models/parking_user.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -33,6 +35,7 @@ class FirebaseProvider {
 
   ParkingUser parkingUser;
   ParkingRequest parkingRequest;
+  Parking parkingSpace;
   Coin parkoin;
 
   //time
@@ -228,25 +231,22 @@ class FirebaseProvider {
 
 
     // parking request functions
-    Future<bool> createParkingRequest(String prid, String uid, String pid, String ppid,
-        String parkingPhotoUrl, DateTime timeOfBooking, DateTime timeOfCreation, double duration, bool status /*, double cost*/) async {
-      // prid = 'r_${args.restaurantId}h_${_repo.user().uid}d_${day.replaceAll('/', '')}t_$time${new Random().nextInt(100)}'
+    Future<bool> createParkingRequest(String prid, String uid, String pid, double lat, double lng,
+        DateTime timeOfBooking, DateTime timeOfCreation, double duration) async {
       try {
         parkingRequest = ParkingRequest(
             prid: prid,
             uid: uid,
             pid: pid,
-            ppid: ppid,
-            parkingPhotoUrl: parkingPhotoUrl,
+            ppid: pid,
             timeOfBooking: timeOfBooking,
             timeOfCreation: timeOfCreation,
             duration: duration,
-            status: status);
-
+            progress: "AwaitingConfirmation",
+        );
         await parkingRequests.doc(uid).collection('parking').doc(prid).set(
             parkingRequest.toMap(parkingRequest));
-        // var amount = -cost * duration;
-        // addCoin(uid, amount.toString());
+        createParking(pid, lat, lng);
       } on Exception catch(e){
         Fluttertoast.showToast(msg: e.toString());
         return false;
@@ -262,8 +262,61 @@ class FirebaseProvider {
       });
     }
 
+  Future<void> updateParkingRequestDuration(String uid, String prid, double duration) async {
+    Map<String, dynamic> map = Map();
+    map['duration'] = duration;
+    return await parkingRequests.doc(uid).collection('parking').doc(prid).update(map);
+  }
 
+  Future<void> confirmParkingRequestProgress(String uid, String prid) async {
+    Map<String, dynamic> map = Map();
+    map['progress'] = "Confirmed";
+    return await parkingRequests.doc(uid).collection('parking').doc(prid).update(map);
+  }
 
+  Future<void> endParkingRequestProgress(String uid, String prid, double duration) async {
+    Map<String, dynamic> map = Map();
+    map['progress'] = "OldRequest";
+    return await parkingRequests.doc(uid).collection('parking').doc(prid).update(map);
+  }
 
+  // parking functions
+  Future<bool> createParking(String pid, double lat, double lng, {int count = 10}) async {
+    try {
+      parkingSpaces.doc(pid).get().then((doc) async {
+        if(doc.exists) {
+          return true;
+        }
+        else {
+          parkingSpace = Parking(
+              pid: pid,
+              ppid: pid,
+              lat: lat,
+              lng: lng,
+              count: count,
+              qrValue: pid);
+          await parkingSpaces.doc(pid).set(parkingSpace.toMap(parkingSpace));
+        }
+      });
+    } on Exception catch(e){
+      Fluttertoast.showToast(msg: e.toString());
+      return false;
+    }
+    return true;
+  }
+
+  Future<Parking> retrieveParkingDetails(Parking parking) async {
+    DocumentSnapshot _documentSnapshot =
+    await parkingSpaces.doc(parking.pid).get();
+    return Parking.fromMap(_documentSnapshot.data());
+  }
+
+  Future<Parking> fetchParkingDetailsById(String pid) async {
+    return await parkingSpaces.doc(pid).get().then(
+          (documentSnapshot) {
+        return Parking.fromMap(documentSnapshot.data());
+      },
+    );
+  }
 
 }

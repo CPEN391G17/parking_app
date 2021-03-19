@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -19,6 +21,7 @@ import 'package:parking_app/widgets/Divider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:parking_app/widgets/custom_tile.dart';
 import 'package:provider/provider.dart';
+import 'package:parking_app/resources/firebase_provider.dart';
 
 //parking app billing needs to enabled once it has been verified to enable Geocoding
 class MainScreen extends StatefulWidget{
@@ -32,6 +35,8 @@ class MainScreen extends StatefulWidget{
 class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
   FirebaseProvider _firebaseProvider = FirebaseProvider();
+
+  String uid;
 
   Completer<GoogleMapController> _controllerGoogleMap = Completer();
   GoogleMapController newGoogleMapController;
@@ -54,6 +59,17 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   double requestRideContainerHeight = 0;
 
   bool drawerOpen = true;
+  bool createdRequest = false;
+
+  @override
+  void initState() {
+    super.initState();
+    getUid();
+  }
+
+  void getUid() async {
+    uid = await _firebaseProvider.currentUser();
+  }
 
   void displayRequestContainer(){
     setState(() {
@@ -393,7 +409,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                           padding: EdgeInsets.symmetric(horizontal: 16.0),
                           child: Row(
                             children: [
-                              Image.asset("assets/images/parking_logo.png", height: 70.0, width: 80.0),
+                              Image.asset("assets/images/parking_logo.png", height: 40.0, width: 40.0),
                               // Icon(FontAwesomeIcons.car, size: 70.0, color: Colors.grey,),
                               SizedBox(width: 16.0,),
                               Column(
@@ -409,7 +425,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                               ),
                               Expanded(child: Container()),
                               Text(
-                                ((tripdirectiondetails != null) ? '\Parkoin ${AssistantMethods.calculateFares(tripdirectiondetails)}' : ''), style: TextStyle(fontSize: 18.0, color: Colors.grey, fontFamily: "Brand-Bold",),
+                                ((tripdirectiondetails != null) ? '\ Parkoin ${AssistantMethods.calculateFares(tripdirectiondetails)}' : ''), style: TextStyle(fontSize: 18.0, color: Colors.grey, fontFamily: "Brand-Bold",),
                               ),
                             ],
                           ),
@@ -434,10 +450,24 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.0),
                         child: ElevatedButton(
-                          onPressed: (){
+                          onPressed: () {
                             print("Parking Requested");
                             displayRequestContainer();
-                            // firebase function
+                            var loc = Provider.of<AppData>(context, listen: false).endLocation;
+                            var pid = loc.placeId;
+                            var lat = loc.latitude;
+                            var lng = loc.longitude;
+                            var timeOfBooking = DateTime.now();
+                            var timeOfCreation = DateTime.now();
+                            var duration = 1.0;
+                            var prid = 'r_${pid}h_${uid}d_t_${DateTime.now()}${new Random().nextInt(100)}';
+                            _firebaseProvider.createParkingRequest(prid,
+                                uid, pid, lat, lng, timeOfBooking, timeOfCreation, duration);
+                            // if(createdRequest)
+                            //   setState(() async {
+                            //     createdRequest = false;
+                            //     Navigator.pop(context);
+                            //   });
                           },
                           // color: Theme.of(context).accentColor,
                           child: Padding(

@@ -7,6 +7,10 @@ import 'package:parking_app/models/address.dart';
 import 'package:parking_app/models/directionDetails.dart';
 import 'package:provider/provider.dart';
 
+extension Ex on double {
+  double toPrecision(int n) => double.parse(toStringAsFixed(n));
+}
+
 class AssistantMethods{
 
   //perform Geocoding req
@@ -64,7 +68,7 @@ class AssistantMethods{
     double totalFare = parkingFare + distanceFare; //can be changed later on right now just testing
     //$1 = $1.25
     double total  = (totalFare*1.25);
-    return 200+total;
+    return (200 + total).toPrecision(2);
   }
 
 }

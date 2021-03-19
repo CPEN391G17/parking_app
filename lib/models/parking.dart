@@ -5,23 +5,17 @@ class Parking {
 
   String pid;
   String ppid;
-  String parkingPhotoUrl;
   String qrValue;
-  String lat;
-  String lng;
-  String openTime;
-  String closeTime;
-  bool status;
+  double lat;
+  double lng;
+  int count;
 
   Parking({
     @required this.pid,
     @required this.ppid,
-    @required this.parkingPhotoUrl,
-    @required this.status,
+    @required this.count,
     @required this.lat,
     @required this.lng,
-    @required this.openTime,
-    @required this.closeTime,
     @required this.qrValue,
   });
 
@@ -29,13 +23,10 @@ class Parking {
     return Parking(
       pid: doc.get('pid'),
       ppid: doc.get('ppid'),
-      parkingPhotoUrl: doc.get('parkingPhotoUrl'),
-      status: doc.get('status'),
+      count: doc.get('count'),
       qrValue: doc.get('qrValue'),
       lat: doc.get('lat'),
       lng: doc.get('lng'),
-      openTime: doc.get('openTime'),
-      closeTime: doc.get('closeTime'),
     );
   }
 
@@ -43,25 +34,19 @@ class Parking {
     return {
       'pid': parking.pid,
       'ppid': parking.ppid,
-      'parkingPhotoUrl': parking.parkingPhotoUrl,
-      'status': parking.status,
+      'count': parking.count,
       'qrValue': parking.qrValue,
       'lat': parking.lat,
       'lng': parking.lng,
-      'openTime': parking.openTime,
-      'closeTime': parking.closeTime,
     };
   }
 
   Parking.fromMap(Map<String, dynamic> mapData) {
     pid = mapData['pid'];
     ppid = mapData['ppid'];
-    parkingPhotoUrl = mapData['parkingPhotoUrl'];
-    status = mapData['status'];
+    count = mapData['count'];
     qrValue = mapData['qrValue'];
     lat = mapData['lat'];
     lng = mapData['lng'];
-    openTime = mapData['openTime'];
-    closeTime = mapData['closeTime'];
   }
 }

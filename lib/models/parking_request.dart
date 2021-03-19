@@ -6,24 +6,22 @@ class ParkingRequest {
   String uid;
   String pid;
   String ppid;
-  String parkingPhotoUrl;
   DateTime timeOfBooking;
   DateTime timeOfCreation;
   double duration;
   String qrInput;
   String qrEntryValue;
-  bool status;
+  String progress;
 
   ParkingRequest({
     @required this.prid,
     @required this.uid,
     @required this.pid,
     @required this.ppid,
-    @required this.parkingPhotoUrl,
     @required this.timeOfBooking,
     @required this.timeOfCreation,
-    @required this.duration,
-    @required this.status,
+    this.duration,
+    @required this.progress,
     this.qrInput,
   });
 
@@ -33,12 +31,11 @@ class ParkingRequest {
       uid: doc.get('uid'),
       pid: doc.get('pid'),
       ppid: doc.get('ppid'),
-      parkingPhotoUrl: doc.get('parkingPhotoUrl'),
-      timeOfBooking: doc.get('timeOfBooking'),
-      timeOfCreation: doc.get('timeOfCreation'),
+      timeOfBooking: DateTime.tryParse(doc.get('timeOfBooking')),
+      timeOfCreation: DateTime.tryParse(doc.get('timeOfCreation')),
       duration: doc.get('duration'),
-      status: doc.get('status'),
       qrInput: doc.get('qrInput'),
+      progress: doc.get('progress'),
     );
   }
 
@@ -48,12 +45,11 @@ class ParkingRequest {
       'uid': parkingRequest.uid,
       'pid': parkingRequest.pid,
       'ppid': parkingRequest.ppid,
-      'parkingPhotoUrl': parkingRequest.parkingPhotoUrl,
       'timeOfBooking': parkingRequest.timeOfBooking,
       'timeOfCreation': parkingRequest.timeOfCreation,
       'duration': parkingRequest.duration,
-      'status': parkingRequest.status,
-      'qrInput': parkingRequest.qrInput
+      'qrInput': parkingRequest.qrInput,
+      'progress': parkingRequest.progress,
     };
   }
 
@@ -62,11 +58,10 @@ class ParkingRequest {
     uid = mapData['uid'];
     pid = mapData['pid'];
     ppid = mapData['ppid'];
-    parkingPhotoUrl = mapData['parkingPhotoUrl'];
     timeOfBooking = mapData['timeOfBooking'];
     timeOfCreation = mapData['timeOfCreation'];
     duration = mapData['duration'];
-    status = mapData['status'];
     qrInput = mapData['qrInput'];
+    progress = mapData['progress'];
   }
 }
