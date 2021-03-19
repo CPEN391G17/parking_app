@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -21,7 +21,6 @@ import 'package:parking_app/widgets/Divider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:parking_app/widgets/custom_tile.dart';
 import 'package:provider/provider.dart';
-import 'package:parking_app/resources/firebase_provider.dart';
 
 //parking app billing needs to enabled once it has been verified to enable Geocoding
 class MainScreen extends StatefulWidget{
@@ -57,9 +56,12 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   double rideDetailsContainerHeight = 0;
   double searchContainerHeight = 300.0;
   double requestRideContainerHeight = 0;
+  double verifyRideContainerHeight = 0.0;
+  double duration = 1.0;
 
   bool drawerOpen = true;
   bool createdRequest = false;
+  bool isButtonEnabled = false;
 
   @override
   void initState() {
@@ -71,25 +73,43 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
     uid = await _firebaseProvider.currentUser();
   }
 
-  reRoute() async{
+  reRoute() async {
     var initPos = Provider.of<AppData>(context, listen: false).startLocation;
     var finalPos = Provider.of<AppData>(context, listen: false).endLocation;
     var startLatLng = LatLng(initPos.latitude, initPos.longitude);
     var endLatLng = LatLng(finalPos.latitude, finalPos.longitude);
 
-    while(endLatLng != startLatLng){
+    while(Geolocator.distanceBetween(
+        endLatLng.latitude, endLatLng.longitude,
+        startLatLng.latitude, startLatLng.longitude) > 10) {
         print("Reroute called");
         locatePosition();
         await getPlaceDirection();
         initPos = Provider.of<AppData>(context, listen: false).startLocation;
         startLatLng = LatLng(initPos.latitude, initPos.longitude);
     }
-
+    print("exited reroute");
+    locatePosition();
+    await getPlaceDirection();
+    setState(() {
+      isButtonEnabled = true;
+    });
     print("reached destination");
+  }
+
+  void displayVerifyRequestContainer() {
+    setState(() {
+      verifyRideContainerHeight = 250.0;
+      requestRideContainerHeight = 0.0;
+      rideDetailsContainerHeight = 0;
+      bottomPaddingofMap = 230.0;
+      drawerOpen = true;
+    });
   }
 
   void displayRequestContainer(){
     setState(() {
+      verifyRideContainerHeight = 0;
       requestRideContainerHeight = 250.0;
       rideDetailsContainerHeight = 0;
       bottomPaddingofMap = 230.0;
@@ -104,6 +124,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
       rideDetailsContainerHeight = 0.0;
       bottomPaddingofMap = 230.0;
       requestRideContainerHeight = 0.0;
+      verifyRideContainerHeight = 0;
       polyLineSet.clear();
       markersSet.clear();
       circlesSet.clear();
@@ -454,11 +475,21 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                         padding: EdgeInsets.symmetric(horizontal: 20.0),
                         child: Row(
                           children: [
-                            Icon(FontAwesomeIcons.moneyCheckAlt, size: 18.0, color: Colors.black54,),
+                            IconButton(
+                              icon: Icon(Icons.access_time, size: 18.0, color: Colors.black54,),
+                              onPressed: () async {
+                                  var resultingDuration = await showDurationPicker(
+                                    context: context,
+                                    initialTime: Duration(minutes: (duration * 60).toInt()),
+                                  );
+                                  setState(() {
+                                    duration = (resultingDuration.inMinutes / 60);
+                                    print(duration);
+                                  });
+                                },
+                            ),
                             SizedBox(width: 16.0,),
-                            Text("Payment Method"),
-                            SizedBox(width: 6.0,),
-                            Icon(Icons.keyboard_arrow_down, color: Colors.black54, size: 16.0,),
+                            Text("duration: ${duration.toStringAsFixed(2)} hours"),
                           ],
                         ),
                       ),
@@ -476,14 +507,14 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                             var lng = loc.longitude;
                             var timeOfBooking = DateTime.now();
                             var timeOfCreation = DateTime.now();
-                            var duration = 1.0;
                             var prid = 'r_${pid}h_${uid}d_t_${DateTime.now()}${new Random().nextInt(100)}';
                             createdRequest = await _firebaseProvider.createParkingRequest(prid,
                                 uid, pid, lat, lng, timeOfBooking, timeOfCreation, duration);
-                            if(createdRequest){
+                            if(createdRequest) {
                               setState(() {
                                 createdRequest = false;
                                 requestRideContainerHeight = 0.0;
+                                verifyRideContainerHeight = 250;
                                 //here I have to call checker that updates user start point
                               });
                             }
@@ -586,6 +617,108 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                       width: double.infinity,
                       child: Text("Cancel booking", textAlign: TextAlign.center, style: TextStyle(fontSize: 12.0, fontFamily: "Brand-Bold" ,fontWeight: FontWeight.bold),),
                     ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          Positioned(
+            bottom: 0.0,
+            left: 0.0,
+            right: 0.0,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0)),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    spreadRadius: 0.5,
+                    blurRadius: 16.0,
+                    color: Colors.black54,
+                    offset: Offset(0.7, 0.7),
+                  ),
+                ],
+              ),
+              height: verifyRideContainerHeight,
+              child: Padding(
+                padding: const EdgeInsets.all(25.0),
+                child: Column(
+                  children: [
+                    SizedBox(height: 12.0,),
+                    SizedBox(
+                      width: double.infinity,
+                      child: isButtonEnabled ?
+                        ColorizeAnimatedTextKit(
+                        onTap: () {
+                          print("Tap Event");
+                        },
+                        text: [
+                          "Reached parking, please verify booking",
+                        ],
+                        textStyle: TextStyle(
+                          fontSize: 35.0,
+                          fontFamily: "Helvetica Neue",
+                        ),
+                        colors: [
+                          Colors.blueGrey,
+                          Colors.blueAccent,
+                          Colors.lightBlueAccent,
+                          Colors.lightBlue,
+                          Colors.blue,
+                          Colors.cyanAccent,
+                          Colors.cyan,
+                        ],
+                          textAlign: TextAlign.center,
+                        isRepeatingAnimation: true,
+                        repeatForever: true,
+                        )
+                          :ColorizeAnimatedTextKit(
+                        onTap: () {
+                          print("Tap Event");
+                        },
+                        text: [
+                          "Please reach parking to verify booking",
+                        ],
+                        textStyle: TextStyle(
+                          fontSize: 35.0,
+                          fontFamily: "Helvetica Neue",
+                        ),
+                        colors: [
+                          Colors.blueGrey,
+                          Colors.blueAccent,
+                          Colors.lightBlueAccent,
+                          Colors.lightBlue,
+                          Colors.blue,
+                          Colors.cyanAccent,
+                          Colors.cyan,
+                        ],
+                        textAlign: TextAlign.center,
+                        isRepeatingAnimation: true,
+                        repeatForever: true,
+                      ),
+                    ),
+                    SizedBox(height: 22.0,),
+
+                    GestureDetector(
+                      onTap: isButtonEnabled == true ? () {
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => QRPage()),
+                        );
+                      } : null,
+                      child: isButtonEnabled ? Container(
+                        height: 60.0,
+                        width: 60.0,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(26.0),
+                          border: Border.all(width: 2.0, color: Colors.grey[300]),
+                        ),
+                        child: Icon(Icons.qr_code_scanner, size: 26.0,),
+                      ) : Container(),
+                    ),
+                    SizedBox(height: 10.0,),
                   ],
                 ),
               ),
