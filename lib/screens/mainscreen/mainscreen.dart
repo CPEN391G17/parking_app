@@ -71,6 +71,23 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
     uid = await _firebaseProvider.currentUser();
   }
 
+  reRoute() async{
+    var initPos = Provider.of<AppData>(context, listen: false).startLocation;
+    var finalPos = Provider.of<AppData>(context, listen: false).endLocation;
+    var startLatLng = LatLng(initPos.latitude, initPos.longitude);
+    var endLatLng = LatLng(finalPos.latitude, finalPos.longitude);
+
+    while(endLatLng != startLatLng){
+        print("Reroute called");
+        locatePosition();
+        await getPlaceDirection();
+        initPos = Provider.of<AppData>(context, listen: false).startLocation;
+        startLatLng = LatLng(initPos.latitude, initPos.longitude);
+    }
+
+    print("reached destination");
+  }
+
   void displayRequestContainer(){
     setState(() {
       requestRideContainerHeight = 250.0;
@@ -112,7 +129,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
     LatLng latlanPosition = LatLng(_position.latitude, _position.longitude);
 
     CameraPosition cameraPosition = new CameraPosition(target: latlanPosition, zoom: 14);
-    newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    // newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
     String address = await AssistantMethods.searchCoordinateAddress(_position, context);
     print("This is your Address :: " + address);
@@ -463,11 +480,14 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                             var prid = 'r_${pid}h_${uid}d_t_${DateTime.now()}${new Random().nextInt(100)}';
                             createdRequest = await _firebaseProvider.createParkingRequest(prid,
                                 uid, pid, lat, lng, timeOfBooking, timeOfCreation, duration);
-                            if(createdRequest)
+                            if(createdRequest){
                               setState(() {
                                 createdRequest = false;
                                 requestRideContainerHeight = 0.0;
+                                //here I have to call checker that updates user start point
                               });
+                            }
+                            reRoute();
                           },
                           // color: Theme.of(context).accentColor,
                           child: Padding(
@@ -578,17 +598,17 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
     );
   }
 
-  Future<void> getPlaceDirection() async{
+  Future<void> getPlaceDirection() async{ //bool started added
     var initPos = Provider.of<AppData>(context, listen: false).startLocation;
     var finalPos = Provider.of<AppData>(context, listen: false).endLocation;
 
     var startLatLng = LatLng(initPos.latitude, initPos.longitude);
     var endLatLng = LatLng(finalPos.latitude, finalPos.longitude);
 
-    showDialog(
-        context: context,
-        builder: (BuildContext context) => Center(child: CircularProgressIndicator(),)//ProgressDialog(message: "Setting Destination, Please Wait...",),
-    );
+    // showDialog(
+    //     context: context,
+    //     builder: (BuildContext context) => Center(child: CircularProgressIndicator(),)//ProgressDialog(message: "Setting Destination, Please Wait...",),
+    // );
 
     var details = await AssistantMethods.obtainPlaceDirectionsDetails(startLatLng, endLatLng);
 
@@ -597,7 +617,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
     });
 
 
-    Navigator.pop(context);
+    // Navigator.pop(context);
 
     print("This is encoded points ::");
     print(details.encodedPoints);
@@ -629,21 +649,21 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
       polyLineSet.add(polyline); //added in here
     });
 
-    LatLngBounds latlngbounds;
-    if(startLatLng.latitude > endLatLng.latitude && startLatLng.longitude > endLatLng.longitude){
-      latlngbounds = LatLngBounds(southwest: endLatLng, northeast: startLatLng);
-    }
-    else if(startLatLng.longitude > endLatLng.longitude){
-      latlngbounds = LatLngBounds(southwest: LatLng(startLatLng.latitude, endLatLng.longitude), northeast: LatLng(endLatLng.latitude, startLatLng.longitude));
-    }
-    else if(startLatLng.latitude > endLatLng.latitude){
-      latlngbounds = LatLngBounds(southwest: LatLng(endLatLng.latitude, startLatLng.longitude), northeast: LatLng(startLatLng.latitude, endLatLng.longitude));
-    }
-    else{
-      latlngbounds = LatLngBounds(southwest: startLatLng, northeast: endLatLng);
-    }
-    
-    newGoogleMapController.animateCamera(CameraUpdate.newLatLngBounds(latlngbounds, 70));
+    // LatLngBounds latlngbounds;
+    // if(startLatLng.latitude > endLatLng.latitude && startLatLng.longitude > endLatLng.longitude){
+    //   latlngbounds = LatLngBounds(southwest: endLatLng, northeast: startLatLng);
+    // }
+    // else if(startLatLng.longitude > endLatLng.longitude){
+    //   latlngbounds = LatLngBounds(southwest: LatLng(startLatLng.latitude, endLatLng.longitude), northeast: LatLng(endLatLng.latitude, startLatLng.longitude));
+    // }
+    // else if(startLatLng.latitude > endLatLng.latitude){
+    //   latlngbounds = LatLngBounds(southwest: LatLng(endLatLng.latitude, startLatLng.longitude), northeast: LatLng(startLatLng.latitude, endLatLng.longitude));
+    // }
+    // else{
+    //   latlngbounds = LatLngBounds(southwest: startLatLng, northeast: endLatLng);
+    // }
+
+    // newGoogleMapController.animateCamera(CameraUpdate.newLatLngBounds(latlngbounds, 70));
 
     Marker startLocationMarker = Marker(
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
