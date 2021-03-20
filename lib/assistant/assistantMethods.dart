@@ -61,14 +61,14 @@ class AssistantMethods{
     return directiondetails;
   }
 
-  static double calculateFares(DirectionDetails directiondetails){
+  static double calculateFares(DirectionDetails directiondetails, double duration){
     //USD
     double parkingFare = (directiondetails.durationValue/60)*0.20;
     double distanceFare = (directiondetails.distanceValue/1000)*0.20;
     double totalFare = parkingFare + distanceFare; //can be changed later on right now just testing
     //$1 = $1.25
     double total  = (totalFare*1.25);
-    return (200 + total).toPrecision(2);
+    return (200*duration).toPrecision(2); //duration 200/hr
   }
 
 }
