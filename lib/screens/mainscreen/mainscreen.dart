@@ -150,13 +150,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
     LatLng latlanPosition = LatLng(_position.latitude, _position.longitude);
 
     CameraPosition cameraPosition = new CameraPosition(target: latlanPosition, zoom: 14);
-    // newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
     String address = await AssistantMethods.searchCoordinateAddress(_position, context);
     print("This is your Address :: " + address);
   }
-
-
 
   void locatePosition() async{
     Position _position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
@@ -816,6 +814,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
     Marker startLocationMarker = Marker(
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
+      // icon: await BitmapDescriptor.fromAssetImage(
+      //     ImageConfiguration(size: Size(5, 5)), 'assets/images/start.png'),
       infoWindow: InfoWindow(title: initPos.placeName, snippet: "My location"),
       position: startLatLng,
       markerId: MarkerId("startId"),
@@ -929,6 +929,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
     Marker startLocationMarker = Marker(
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
+      // icon: await BitmapDescriptor.fromAssetImage(
+      //     ImageConfiguration(size: Size(5, 5)), 'assets/images/start.png'),
       infoWindow: InfoWindow(title: initPos.placeName, snippet: "My location"),
       position: startLatLng,
       markerId: MarkerId("startId"),
