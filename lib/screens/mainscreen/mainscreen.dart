@@ -83,14 +83,14 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
         endLatLng.latitude, endLatLng.longitude,
         startLatLng.latitude, startLatLng.longitude) > 10) {
         print("Reroute called");
-        locatePosition();
-        await getPlaceDirection();
+        locateRoutePosition();
+        await getRoutePlaceDirection();
         initPos = Provider.of<AppData>(context, listen: false).startLocation;
         startLatLng = LatLng(initPos.latitude, initPos.longitude);
     }
     print("exited reroute");
-    locatePosition();
-    await getPlaceDirection();
+    locateRoutePosition();
+    await getRoutePlaceDirection();
     setState(() {
       isButtonEnabled = true;
     });
@@ -143,7 +143,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
     });
   }
 
-  void locatePosition() async{
+  void locateRoutePosition() async{
     Position _position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     currentPosition = _position;
 
@@ -151,6 +151,21 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
     CameraPosition cameraPosition = new CameraPosition(target: latlanPosition, zoom: 14);
     // newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+
+    String address = await AssistantMethods.searchCoordinateAddress(_position, context);
+    print("This is your Address :: " + address);
+  }
+
+
+
+  void locatePosition() async{
+    Position _position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    currentPosition = _position;
+
+    LatLng latlanPosition = LatLng(_position.latitude, _position.longitude);
+
+    CameraPosition cameraPosition = new CameraPosition(target: latlanPosition, zoom: 14);
+    newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
     String address = await AssistantMethods.searchCoordinateAddress(_position, context);
     print("This is your Address :: " + address);
@@ -436,7 +451,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                 ),
 
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 17.0),
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: Column(
                     children: [
                       Container(
@@ -444,10 +459,10 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                         color: Color.fromRGBO(54, 79, 107, 1),
                         // color: Colors.lightBlueAccent,
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          padding: EdgeInsets.symmetric(horizontal: 18.0),
                           child: Row(
                             children: [
-                              Image.asset("assets/images/parking_logo.png", height: 40.0, width: 40.0),
+                              Image.asset("assets/images/parking_logo.png", height: 60.0, width: 60.0),
                               // Icon(FontAwesomeIcons.car, size: 70.0, color: Colors.grey,),
                               SizedBox(width: 16.0,),
                               Column(
@@ -463,20 +478,21 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                               ),
                               Expanded(child: Container()),
                               Text(
-                                ((tripdirectiondetails != null) ? '\ Parkoin ${AssistantMethods.calculateFares(tripdirectiondetails)}' : ''), style: TextStyle(fontSize: 18.0, color: Colors.grey, fontFamily: "Brand-Bold",),
+                                ((tripdirectiondetails != null) ? '\ Parkoin ${AssistantMethods.calculateFares(tripdirectiondetails, duration)}' : ''), style: TextStyle(fontSize: 18.0, color: Colors.grey, fontFamily: "Brand-Bold",),
                               ),
                             ],
                           ),
                         ),
                       ),
 
-                      SizedBox(height: 20.0,),
+                      SizedBox(height: 15.0,),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20.0),
                         child: Row(
                           children: [
                             IconButton(
-                              icon: Icon(Icons.access_time, size: 18.0, color: Colors.black54,),
+                              hoverColor: Colors.blue,
+                              icon: Icon(Icons.access_time, size: 24.0, color: Colors.black54,),
                               onPressed: () async {
                                   var resultingDuration = await showDurationPicker(
                                     context: context,
@@ -489,7 +505,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                                 },
                             ),
                             SizedBox(width: 16.0,),
-                            Text("duration: ${duration.toStringAsFixed(2)} hours"),
+                            Text("duration: ${duration.toStringAsFixed(2)} hours", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
                           ],
                         ),
                       ),
@@ -715,7 +731,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                           borderRadius: BorderRadius.circular(26.0),
                           border: Border.all(width: 2.0, color: Colors.grey[300]),
                         ),
-                        child: Icon(Icons.qr_code_scanner, size: 26.0,),
+                        child: Icon(Icons.payment , size: 26.0,),
                       ) : Container(),
                     ),
                     SizedBox(height: 10.0,),
@@ -732,6 +748,119 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   }
 
   Future<void> getPlaceDirection() async{ //bool started added
+    var initPos = Provider.of<AppData>(context, listen: false).startLocation;
+    var finalPos = Provider.of<AppData>(context, listen: false).endLocation;
+
+    var startLatLng = LatLng(initPos.latitude, initPos.longitude);
+    var endLatLng = LatLng(finalPos.latitude, finalPos.longitude);
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => Center(child: CircularProgressIndicator(),)//ProgressDialog(message: "Setting Destination, Please Wait...",),
+    );
+
+    var details = await AssistantMethods.obtainPlaceDirectionsDetails(startLatLng, endLatLng);
+
+    setState(() {
+      tripdirectiondetails = details;
+    });
+
+
+    Navigator.pop(context);
+
+    print("This is encoded points ::");
+    print(details.encodedPoints);
+
+    PolylinePoints polylinepoints = PolylinePoints();
+    List<PointLatLng> decodedPolyLinePointsResult = polylinepoints.decodePolyline(details.encodedPoints);
+
+    pLineCoordinates.clear();
+
+    if(decodedPolyLinePointsResult.isNotEmpty){
+      decodedPolyLinePointsResult.forEach((PointLatLng pointlatlng) {
+        pLineCoordinates.add(LatLng(pointlatlng.latitude, pointlatlng.longitude));
+      });
+    }
+
+    polyLineSet.clear();
+
+    setState(() {
+      Polyline polyline = Polyline(
+        color: Colors.pink,
+        polylineId: PolylineId("PolylineID"),
+        jointType: JointType.round,
+        points: pLineCoordinates,
+        width: 5,
+        startCap: Cap.roundCap,
+        endCap: Cap.roundCap,
+        geodesic: true,
+      );
+      polyLineSet.add(polyline); //added in here
+    });
+
+    LatLngBounds latlngbounds;
+    if(startLatLng.latitude > endLatLng.latitude && startLatLng.longitude > endLatLng.longitude){
+      latlngbounds = LatLngBounds(southwest: endLatLng, northeast: startLatLng);
+    }
+    else if(startLatLng.longitude > endLatLng.longitude){
+      latlngbounds = LatLngBounds(southwest: LatLng(startLatLng.latitude, endLatLng.longitude), northeast: LatLng(endLatLng.latitude, startLatLng.longitude));
+    }
+    else if(startLatLng.latitude > endLatLng.latitude){
+      latlngbounds = LatLngBounds(southwest: LatLng(endLatLng.latitude, startLatLng.longitude), northeast: LatLng(startLatLng.latitude, endLatLng.longitude));
+    }
+    else{
+      latlngbounds = LatLngBounds(southwest: startLatLng, northeast: endLatLng);
+    }
+
+    newGoogleMapController.animateCamera(CameraUpdate.newLatLngBounds(latlngbounds, 70));
+
+    Marker startLocationMarker = Marker(
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
+      infoWindow: InfoWindow(title: initPos.placeName, snippet: "My location"),
+      position: startLatLng,
+      markerId: MarkerId("startId"),
+    );
+
+    Marker endLocationMarker = Marker(
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      infoWindow: InfoWindow(title: finalPos.placeName, snippet: "Parking Location"),
+      position: endLatLng,
+      markerId: MarkerId("endId"),
+    );
+
+    setState(() {
+      markersSet.add(startLocationMarker);
+      markersSet.add(endLocationMarker);
+    });
+
+
+    Circle startCircle = Circle(
+      fillColor: Colors.lightGreen,
+      center: startLatLng,
+      radius: 12,
+      strokeWidth: 4,
+      strokeColor: Colors.lightGreenAccent,
+      circleId: CircleId("startId"),
+    );
+
+    Circle endCircle = Circle(
+      fillColor: Colors.lightBlue,
+      center: endLatLng,
+      radius: 12,
+      strokeWidth: 4,
+      strokeColor: Colors.lightBlueAccent,
+      circleId: CircleId("endId"),
+    );
+
+    setState(() {
+      circlesSet.add(startCircle);
+      circlesSet.add(endCircle);
+    });
+
+  }
+
+
+  Future<void> getRoutePlaceDirection() async{ //bool started added
     var initPos = Provider.of<AppData>(context, listen: false).startLocation;
     var finalPos = Provider.of<AppData>(context, listen: false).endLocation;
 
