@@ -244,7 +244,6 @@ class FirebaseProvider {
             duration: duration,
             progress: "AwaitingConfirmation",
         );
-        await parkingRequests.doc(pid).set({"pid": pid});
         await parkingRequests.doc(pid).collection('requests').doc(uid).set(
             parkingRequest.toMap(parkingRequest));
         await parkingUsers.doc(uid).collection('requests').doc(prid).set(
