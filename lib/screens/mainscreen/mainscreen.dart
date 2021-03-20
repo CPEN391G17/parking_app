@@ -508,8 +508,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                             var timeOfBooking = DateTime.now();
                             var timeOfCreation = DateTime.now();
                             var prid = 'r_${pid}h_${uid}d_t_${DateTime.now()}${new Random().nextInt(100)}';
-                            createdRequest = await _firebaseProvider.createParkingRequest(prid,
-                                uid, pid, lat, lng, timeOfBooking, timeOfCreation, duration);
+                            createdRequest = await _firebaseProvider.createParkingRequest(prid, uid, pid, lat, lng,
+                                timeOfBooking, timeOfCreation, duration);
                             if(createdRequest) {
                               setState(() {
                                 createdRequest = false;

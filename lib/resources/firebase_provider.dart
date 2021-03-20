@@ -244,7 +244,9 @@ class FirebaseProvider {
             duration: duration,
             progress: "AwaitingConfirmation",
         );
-        await parkingRequests.doc(uid).collection('parking').doc(prid).set(
+        await parkingRequests.doc(pid).collection('requests').doc(uid).set(
+            parkingRequest.toMap(parkingRequest));
+        await parkingUsers.doc(uid).collection('requests').doc(prid).set(
             parkingRequest.toMap(parkingRequest));
         createParking(pid, lat, lng);
       } on Exception catch(e){
@@ -254,30 +256,30 @@ class FirebaseProvider {
       return true;
     }
 
-    Future deleteParkingRequest(String uid, String prid) async {
-      parkingRequests.doc(uid).collection('parking').doc(prid).get().then((doc) {
+    Future deleteParkingRequest(String uid, String pid) async {
+      parkingRequests.doc(pid).collection('requests').doc(uid).get().then((doc) {
         if(doc.exists) {
           doc.reference.delete();
         }
       });
     }
 
-  Future<void> updateParkingRequestDuration(String uid, String prid, double duration) async {
+  Future<void> updateParkingRequestDuration(String uid, String pid, double duration) async {
     Map<String, dynamic> map = Map();
     map['duration'] = duration;
-    return await parkingRequests.doc(uid).collection('parking').doc(prid).update(map);
+    return await parkingRequests.doc(pid).collection('requests').doc(uid).update(map);
   }
 
-  Future<void> confirmParkingRequestProgress(String uid, String prid) async {
+  Future<void> confirmParkingRequestProgress(String uid, String pid) async {
     Map<String, dynamic> map = Map();
     map['progress'] = "Confirmed";
-    return await parkingRequests.doc(uid).collection('parking').doc(prid).update(map);
+    return await parkingRequests.doc(pid).collection('requests').doc(uid).update(map);
   }
 
-  Future<void> endParkingRequestProgress(String uid, String prid, double duration) async {
+  Future<void> endParkingRequestProgress(String uid, String pid, double duration) async {
     Map<String, dynamic> map = Map();
     map['progress'] = "OldRequest";
-    return await parkingRequests.doc(uid).collection('parking').doc(prid).update(map);
+    return await parkingRequests.doc(pid).collection('requests').doc(uid).update(map);
   }
 
   // parking functions
