@@ -77,7 +77,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   verifyLpr() async {
     var loc = Provider.of<AppData>(context, listen: false).endLocation;
     String progress = await _firebaseProvider.getParkingRequestProgress(uid, loc.placeId);
-    while(progress != "AwaitingConfirmation") {
+    while(progress == "AwaitingConfirmation") {
       progress = await _firebaseProvider.getParkingRequestProgress(uid, loc.placeId);
     }
     if(progress == 'LprFailed') {
