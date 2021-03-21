@@ -46,7 +46,7 @@ class ParkingRequest {
       'uid': parkingRequest.uid,
       'pid': parkingRequest.pid,
       'ppid': parkingRequest.ppid,
-      'timeOfBooking': parkingRequest.timeOfBooking,
+      'timeOfBooking': parkingRequest.timeOfBooking.toIso8601String(),
       'duration': parkingRequest.duration,
       'qrInput': parkingRequest.qrInput,
       'progress': parkingRequest.progress,
@@ -59,7 +59,7 @@ class ParkingRequest {
     uid = mapData['uid'];
     pid = mapData['pid'];
     ppid = mapData['ppid'];
-    timeOfBooking = mapData['timeOfBooking'];
+    timeOfBooking = mapData['timeOfBooking'].toIso8601String();
     duration = mapData['duration'];
     qrInput = mapData['qrInput'];
     progress = mapData['progress'];
