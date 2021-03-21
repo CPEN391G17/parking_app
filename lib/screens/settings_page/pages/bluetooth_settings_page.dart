@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:parking_app/resources/firebase_provider.dart';
+import 'package:parking_app/models/bt_key.dart';
 
 class BluetoothPage extends StatefulWidget {
   @override
@@ -14,6 +15,7 @@ class BluetoothPage extends StatefulWidget {
 }
 
 class _BluetoothPageState extends State<BluetoothPage> {
+  FirebaseProvider _firebaseProvider = FirebaseProvider();
   // Initializing the Bluetooth connection state to be unknown
   BluetoothState _bluetoothState = BluetoothState.UNKNOWN;
   // Initializing a global key, as it would help us in showing a SnackBar later
@@ -306,6 +308,7 @@ class _BluetoothPageState extends State<BluetoothPage> {
                                     ),
                                   ),
                                 ),
+                                /*
                                 TextButton(
                                   onPressed: _connected
                                       ? _sendOnMessageToBluetooth
@@ -319,6 +322,8 @@ class _BluetoothPageState extends State<BluetoothPage> {
                                       : null,
                                   child: Text("OFF"),
                                 ),
+
+                                 */
 
                                 TextButton(
                                   onPressed: _connected
@@ -475,13 +480,68 @@ class _BluetoothPageState extends State<BluetoothPage> {
   // Method to send message,
   // for turning the Bluetooth device on
   void _sendKeyToBluetooth() async {
-    var key = "ABCDEFGH";
+    var key = "ABCDEFGH   HEY MAX!@flda \n\r";
+    bool wait = true;
     connection.output.add(utf8.encode(";" + key + ";"));
     await connection.output.allSent;
     show('Sent a key \'${key}\'');
     setState(() {
       _deviceState = 15; // device on
     });
+  }
+
+  // Method to send message,
+  // for turning the Bluetooth device on
+  void _ConnectAndSendKey(String key) async {
+    String key = "ThisIsBluetoothKey SET";
+
+    bool wait = true;
+    while (wait) {
+      for (var device in _devicesList) {
+        if(device.name.contains("HC-05")) {
+          _device = device;
+          wait = false;
+        }
+      }
+    }
+
+    while(!_connected) {
+      _connect();
+    }
+
+    _firebaseProvider.SetKey(key);
+    _firebaseProvider.SetKeyTime();
+
+    wait = true;
+    while(wait) {
+      connection.output.add(utf8.encode(";" + key + ";"));
+      await connection.output.allSent;
+      show('Sent a key \'${key}\'');
+      setState(() {
+        _deviceState = 15; // device on
+      });
+
+      connection.output.add(utf8.encode(";" + key + ";"));
+      await connection.output.allSent;
+      show('Sent a key \'${key}\'');
+      setState(() {
+        _deviceState = 15; // device on
+      });
+    }
+
+    /*
+     * We need the app to pass the key to the RFS module
+     * Then the RFS module needs to upload the received key to Firestore
+     * Then the code below will check if the key on the cloud matches the key we sent.
+     */
+
+    BT_key bt_key = _firebaseProvider.GetKey() as BT_key;
+    if(bt_key.key == key) {
+      print("KEY EXCHANGE SUCCEEDED \n");
+    } else {
+      print("KEY EXCHANGE FAILED \n");
+    }
+
   }
 
   // Method to send message,

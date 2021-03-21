@@ -5,7 +5,9 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:parking_app/models/coin.dart';
+import 'package:parking_app/models/bt_key.dart';
 import 'package:parking_app/models/parking_user.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
@@ -29,9 +31,13 @@ class FirebaseProvider {
       .collection("ParkingSpace");
   final CollectionReference parkingRequest = FirebaseFirestore.instance
       .collection("ParkingRequest");
+  final CollectionReference bluetoothTest = FirebaseFirestore.instance
+      .collection("BluetoothTest");
+
 
   ParkingUser parkingUser;
   Coin parkoin;
+  BT_key bluetooth_key;
 
   //time
   final DateTime timestamp = DateTime.now();
@@ -223,5 +229,44 @@ class FirebaseProvider {
           return coin;
           });
     }
+
+
+  Future<BT_key> SetKey(String key_str) async {
+    User authUser = firebaseAuth.currentUser;
+    await bluetoothTest.doc(authUser.uid).collection('Key').doc('userIdentify').update({
+      "initial_access_time": 0,
+      "key": key_str,
+    });
+    print("user updates the key");
+    BT_key bt_key = BT_key();
+    bt_key.initial_access_time = 0 as DateTime;
+    bt_key.key = key_str;
+    return bt_key;
+  }
+
+  Future<DateTime> SetKeyTime() async {
+    User authUser = firebaseAuth.currentUser;
+    await bluetoothTest.doc(authUser.uid).collection('Key').doc('userIdentify').update({
+      "initial_access_time": timestamp,
+    });
+    print("user updates the key initial_access_time");
+    DateTime time = timestamp;
+    return time;
+  }
+
+  Future<BT_key> GetKey() async {
+    User authUser = firebaseAuth.currentUser;
+    var future_key = await bluetoothTest.doc(authUser.uid).collection('Key').doc('userIdentify').get().then(
+            (_documentSnapshot) {
+          BT_key key =
+          BT_key.fromMap(_documentSnapshot.data());
+          print("user get the BT_key from the server");
+          bluetooth_key = key;
+          return key;
+        });
+    SetKeyTime();
+    return future_key;
+  }
+
 
 }
