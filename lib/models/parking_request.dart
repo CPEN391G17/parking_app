@@ -12,6 +12,7 @@ class ParkingRequest {
   String qrInput;
   String qrEntryValue;
   String progress;
+  bool inParking;
 
   ParkingRequest({
     @required this.prid,
@@ -19,9 +20,9 @@ class ParkingRequest {
     @required this.pid,
     @required this.ppid,
     @required this.timeOfBooking,
-    @required this.timeOfCreation,
+    this.inParking,
     this.duration,
-    @required this.progress,
+    this.progress,
     this.qrInput,
   });
 
@@ -32,10 +33,10 @@ class ParkingRequest {
       pid: doc.get('pid'),
       ppid: doc.get('ppid'),
       timeOfBooking: DateTime.tryParse(doc.get('timeOfBooking')),
-      timeOfCreation: DateTime.tryParse(doc.get('timeOfCreation')),
       duration: doc.get('duration'),
       qrInput: doc.get('qrInput'),
       progress: doc.get('progress'),
+      inParking: doc.get('inParking'),
     );
   }
 
@@ -46,10 +47,10 @@ class ParkingRequest {
       'pid': parkingRequest.pid,
       'ppid': parkingRequest.ppid,
       'timeOfBooking': parkingRequest.timeOfBooking,
-      'timeOfCreation': parkingRequest.timeOfCreation,
       'duration': parkingRequest.duration,
       'qrInput': parkingRequest.qrInput,
       'progress': parkingRequest.progress,
+      'inParking': parkingRequest.inParking,
     };
   }
 
@@ -59,9 +60,9 @@ class ParkingRequest {
     pid = mapData['pid'];
     ppid = mapData['ppid'];
     timeOfBooking = mapData['timeOfBooking'];
-    timeOfCreation = mapData['timeOfCreation'];
     duration = mapData['duration'];
     qrInput = mapData['qrInput'];
     progress = mapData['progress'];
+    inParking = mapData['inParking'];
   }
 }

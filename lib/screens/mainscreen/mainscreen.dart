@@ -62,6 +62,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   bool drawerOpen = true;
   bool createdRequest = false;
   bool isButtonEnabled = false;
+  bool startingLpr = false;
 
   @override
   void initState() {
@@ -71,6 +72,23 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
   void getUid() async {
     uid = await _firebaseProvider.currentUser();
+  }
+
+  verifyLpr() async {
+    var loc = Provider.of<AppData>(context, listen: false).endLocation;
+    String progress = await _firebaseProvider.getParkingRequestProgress(uid, loc.placeId);
+    while(progress != "AwaitingConfirmation") {
+      progress = await _firebaseProvider.getParkingRequestProgress(uid, loc.placeId);
+    }
+    if(progress == 'LprFailed') {
+      setState(() {
+        startingLpr = false;
+        isButtonEnabled = true;
+      });
+    }
+    else if(progress == 'Confirmed') {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => TimerPage()));
+    }
   }
 
   reRoute() async {
@@ -91,9 +109,12 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
     print("exited reroute");
     locateRoutePosition();
     await getRoutePlaceDirection();
+    var loc = Provider.of<AppData>(context, listen: false).endLocation;
+    _firebaseProvider.updateParkingRequestInParking(uid, loc.placeId, true);
     setState(() {
-      isButtonEnabled = true;
+      startingLpr = true;
     });
+    verifyLpr();
     print("reached destination");
   }
 
@@ -662,13 +683,39 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                     SizedBox(height: 12.0,),
                     SizedBox(
                       width: double.infinity,
-                      child: isButtonEnabled ?
+                      child:
+                      isButtonEnabled ? // check if qrButton enabled
+                      ColorizeAnimatedTextKit(
+                        onTap: () {
+                          print("Tap Event");
+                        },
+                        text: [
+                          "LPR failed! Please use QR to verify",
+                        ],
+                        textStyle: TextStyle(
+                          fontSize: 35.0,
+                          fontFamily: "Helvetica Neue",
+                        ),
+                        colors: [
+                          Colors.blueGrey,
+                          Colors.blueAccent,
+                          Colors.lightBlueAccent,
+                          Colors.lightBlue,
+                          Colors.blue,
+                          Colors.cyanAccent,
+                          Colors.cyan,
+                        ],
+                        textAlign: TextAlign.center,
+                        isRepeatingAnimation: true,
+                        repeatForever: true,
+                      )
+                          : startingLpr ? // check if lpr began
                         ColorizeAnimatedTextKit(
                         onTap: () {
                           print("Tap Event");
                         },
                         text: [
-                          "Reached parking, please verify booking",
+                          "Reached parking, performing lpr",
                         ],
                         textStyle: TextStyle(
                           fontSize: 35.0,
@@ -687,7 +734,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                         isRepeatingAnimation: true,
                         repeatForever: true,
                         )
-                          :ColorizeAnimatedTextKit(
+                          : ColorizeAnimatedTextKit( // still not reached parking
                         onTap: () {
                           print("Tap Event");
                         },
@@ -713,7 +760,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                       ),
                     ),
                     SizedBox(height: 22.0,),
-
                     GestureDetector(
                       onTap: isButtonEnabled == true ? () {
                         Navigator.push(
