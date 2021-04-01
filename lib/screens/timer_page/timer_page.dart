@@ -83,7 +83,7 @@ class _TimerPageState extends State<TimerPage> {
             isTimerTextShown: true,
 
             // Handles the timer start.
-            autoStart: false,
+            autoStart: true,
 
             onStart: (){
               setState(() {
@@ -111,8 +111,8 @@ class _TimerPageState extends State<TimerPage> {
           //   onPressed:  !started ? ()=> _controller.start() : null , // ? null : () =>_controller.start()
           //   child: Text('Pay 200 parKoins'),
           // ),
-          _button(title: "Pay 200 Parkoin to Start", onPressed: !started ? ()=> _controller.start() : null), //() => _controller.start()
-
+          // _button(title: "Pay 200 Parkoin to Start", onPressed: !started ? ()=> _controller.start() : null), //() => _controller.start()
+          _button(title: "Pay 200 to extend", onPressed: started==false ? ()=>  _controller.restart(duration: _duration) : null), //() => _controller.start()
           // MaterialButton(
           //   onPressed: () {
           //     if(started == false) {

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +36,12 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
   FirebaseProvider _firebaseProvider = FirebaseProvider();
 
+  CountDownController _controller = CountDownController();
+  int _timerduration = 3600;
+  bool started = false;
+  String id = 'parKoin';
+  bool startTimer = false;
+
   String uid;
 
   Completer<GoogleMapController> _controllerGoogleMap = Completer();
@@ -57,6 +64,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   double searchContainerHeight = 300.0;
   double requestRideContainerHeight = 0;
   double verifyRideContainerHeight = 0.0;
+  double timerContainerHeight = 0.0;
   double duration = 1.0;
 
   bool drawerOpen = true;
@@ -74,6 +82,32 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
     uid = await _firebaseProvider.currentUser();
   }
 
+  void displayTimerContainer() {
+    setState(() {
+      timerContainerHeight = 1000.0;
+      verifyRideContainerHeight = 0;
+      requestRideContainerHeight = 0.0;
+      rideDetailsContainerHeight = 0;
+      bottomPaddingofMap = 230.0;
+      drawerOpen = true;
+      startTimer = true;
+      _controller.start();
+    });
+  }
+
+  _button({String title, VoidCallback onPressed}) {
+    return Expanded(
+        child: ElevatedButton(
+          child: Text(
+            title,
+            style: TextStyle(color: Colors.white),
+          ),
+          onPressed: onPressed,//onPressed,
+
+          //color: Colors.blue,
+        ));
+  }
+
   verifyLpr() async {
     var loc = Provider.of<AppData>(context, listen: false).endLocation;
     String progress = await _firebaseProvider.getParkingRequestProgress(uid, loc.placeId);
@@ -87,7 +121,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
       });
     }
     else if(progress == 'Confirmed') {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => TimerPage()));
+      //Navigator.push(context, MaterialPageRoute(builder: (context) => TimerPage()));
+      displayTimerContainer();
     }
   }
 
@@ -99,7 +134,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
     while(Geolocator.distanceBetween(
         endLatLng.latitude, endLatLng.longitude,
-        startLatLng.latitude, startLatLng.longitude) > 10) {
+        startLatLng.latitude, startLatLng.longitude) > 15) {
         print("Reroute called");
         locateRoutePosition();
         await getRoutePlaceDirection();
@@ -120,6 +155,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
   void displayVerifyRequestContainer() {
     setState(() {
+      timerContainerHeight = 0.0;
       verifyRideContainerHeight = 250.0;
       requestRideContainerHeight = 0.0;
       rideDetailsContainerHeight = 0;
@@ -131,6 +167,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   void displayRequestContainer(){
     setState(() {
       verifyRideContainerHeight = 0;
+      timerContainerHeight = 0.0;
       requestRideContainerHeight = 250.0;
       rideDetailsContainerHeight = 0;
       bottomPaddingofMap = 230.0;
@@ -140,6 +177,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
   resetApp(){
     setState(() {
+      timerContainerHeight = 0;
       drawerOpen = true;
       searchContainerHeight = 300.0;
       rideDetailsContainerHeight = 0.0;
@@ -150,6 +188,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
       markersSet.clear();
       circlesSet.clear();
       pLineCoordinates.clear();
+      startTimer = false;
     });
     locatePosition();
   }
@@ -158,6 +197,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
     await getPlaceDirection();
     setState(() {
       searchContainerHeight = 0.0;
+      timerContainerHeight = 0.0;
       rideDetailsContainerHeight = 240.0;
       bottomPaddingofMap = 230.0;
       drawerOpen = false;
@@ -300,6 +340,161 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
               locatePosition();
             },
           ),
+
+
+          ///////////
+
+          Positioned(
+            bottom: 0.0,
+            left: 0.0,
+            right: 0.0,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0)),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    spreadRadius: 0.5,
+                    blurRadius: 16.0,
+                    color: Colors.black54,
+                    offset: Offset(0.7, 0.7),
+                  ),
+                ],
+              ),
+              height: timerContainerHeight,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  children: [
+                    SizedBox(height: 12.0,),
+                    SizedBox(
+                      width: double.infinity,
+                      child: Center(
+                          child: CircularCountDownTimer(
+                            // Countdown duration in Seconds.
+                            duration: _timerduration,
+
+                            // Countdown initial elapsed Duration in Seconds.
+                            initialDuration: 0,
+
+                            // Controls (i.e Start, Pause, Resume, Restart) the Countdown Timer.
+                            controller: _controller,
+
+                            // Width of the Countdown Widget.
+                            width: MediaQuery.of(context).size.width / 2,
+
+                            // Height of the Countdown Widget.
+                            height: 1.1*MediaQuery.of(context).size.height,
+
+                            // Ring Color for Countdown Widget.
+                            ringColor: Colors.grey[300],
+
+                            // Ring Gradient for Countdown Widget.
+                            ringGradient: null,
+
+                            // Filling Color for Countdown Widget.
+                            fillColor: Colors.blueAccent[100],
+
+                            // Filling Gradient for Countdown Widget.
+                            fillGradient: null,
+
+                            // Background Color for Countdown Widget.
+                            backgroundColor: Colors.blue[500],
+
+                            // Background Gradient for Countdown Widget.
+                            backgroundGradient: null,
+
+                            // Border Thickness of the Countdown Ring.
+                            strokeWidth: 20.0,
+
+                            // Begin and end contours with a flat edge and no extension.
+                            strokeCap: StrokeCap.round,
+
+                            // Text Style for Countdown Text.
+                            textStyle: TextStyle(
+                                fontSize: 33.0, color: Colors.white, fontWeight: FontWeight.bold),
+
+                            // Format for the Countdown Text.
+                            textFormat: CountdownTextFormat.MM_SS,
+
+                            // Handles Countdown Timer (true for Reverse Countdown (max to 0), false for Forward Countdown (0 to max)).
+                            isReverse: true,
+
+                            // Handles Animation Direction (true for Reverse Animation, false for Forward Animation).
+                            isReverseAnimation: false,
+
+                            // Handles visibility of the Countdown Text.
+                            isTimerTextShown: true,
+
+                            // Handles the timer start.
+                            autoStart: false,
+
+                            onStart: (){
+                              setState(() {
+                                //delete_coins();
+                                _firebaseProvider.addCoin(id, "-200");
+                                started = true;
+                              });
+                            },
+
+                            onComplete: (){
+                              setState(() {
+                                started = false;
+                              });
+                            },
+                          ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        // restart timer
+                        if(started == false){
+                            _controller.start();
+                        }
+                        else{
+                          print("here i tapped");
+                        }
+                      },
+                      child: Container(
+                        height: 30.0,
+                        width: 30.0,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(26.0),
+                          border: Border.all(width: 2.0, color: Colors.grey[300]),
+                        ),
+                        child: Icon(Icons.more_time, size: 26.0,),
+                      ),
+                    ),
+
+                    GestureDetector(
+                      onTap: (){
+                        // restart timer
+                        resetApp();
+                      },
+                      child: Container(
+                        height: 30.0,
+                        width: 30.0,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(26.0),
+                          border: Border.all(width: 2.0, color: Colors.grey[300]),
+                        ),
+                        child: Icon(Icons.cancel, size: 26.0,),
+                      ),
+                    ),
+
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+
+
+          ///////////
+
+
 
           //HamburgerButton for Drawer
           Positioned(
@@ -550,6 +745,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                                 createdRequest = false;
                                 requestRideContainerHeight = 0.0;
                                 verifyRideContainerHeight = 250;
+                                //_duration = duration.round();
                                 //here I have to call checker that updates user start point
                               });
                             }
@@ -712,6 +908,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                           : startingLpr ? // check if lpr began
                         ColorizeAnimatedTextKit(
                         onTap: () {
+                          // resetApp();
                           print("Tap Event");
                         },
                         text: [
@@ -784,7 +981,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
               ),
             ),
           ),
-
 
         ],
       ),

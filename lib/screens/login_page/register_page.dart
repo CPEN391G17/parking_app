@@ -31,7 +31,7 @@ class _RegisterPageState extends State<RegisterPage> {
           width: MediaQuery.of(context).size.width, //fill entire width of screen
           height: MediaQuery.of(context).size.height, //fill entire height of screen
           decoration: BoxDecoration(
-            color: Colors.blue,
+            color: Colors.lightBlueAccent,
           ),
           child: SingleChildScrollView(
             child:Column( //place everything positioned vertically
@@ -127,7 +127,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         width: MediaQuery.of(context).size.width / 1.3,
                         child: TextFormField(
                           inputFormatters: [
-                            MaskedInputFormater('##########')
+                            MaskedInputFormatter("#########"),
                           ],
                           style: TextStyle(color: Colors.white),
                           controller: _phoneField,

@@ -28,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
            width: MediaQuery.of(context).size.width, //fill entire width of screen
            height: MediaQuery.of(context).size.height, //fill entire height of screen
            decoration: BoxDecoration(
-             color: Colors.blue,
+             color: Colors.lightBlueAccent,
            ),
            child: Column( //place everything positioned vertically
              mainAxisAlignment: MainAxisAlignment.center,
