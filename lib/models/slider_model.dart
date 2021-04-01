@@ -38,21 +38,21 @@ List <SliderModel> getSlides() {
   //1
   sliderModel.setImageAssetPath("assets/images/test.jpg");
   sliderModel.setTitle("Slide 1");
-  sliderModel.setDescription("description for this slide goes here");
+  sliderModel.setDescription("Search destination");
   slides.add(sliderModel);
 
   sliderModel = new SliderModel();
   //2
   sliderModel.setImageAssetPath("assets/images/test.jpg");
   sliderModel.setTitle("Slide 2");
-  sliderModel.setDescription("description for this slide goes here");
+  sliderModel.setDescription("Book parking");
   slides.add(sliderModel);
 
   sliderModel = new SliderModel();
   //3
   sliderModel.setImageAssetPath("assets/images/test.jpg");
   sliderModel.setTitle("Slide 3");
-  sliderModel.setDescription("description for this slide goes here");
+  sliderModel.setDescription("Verify at parking");
   slides.add(sliderModel);
 
   return slides;
