@@ -57,6 +57,7 @@ dependencies:
   image: ^3.0.1
   mask_text_input_formatter: ^1.2.1
   duration_picker: ^1.0.1
+  riverpod: ^0.13.1
 
   # flutter_polyline_points: ^0.2.4
   # geoflutterfire: ^2.2.2
