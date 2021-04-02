@@ -37,10 +37,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   FirebaseProvider _firebaseProvider = FirebaseProvider();
 
   CountDownController _controller = CountDownController();
-  int _timerduration = 3600;
+  double _timerduration = 3600;
   bool started = false;
   String id = 'parKoin';
   bool startTimer = false;
+  double timerCost = 0;
 
   String uid;
 
@@ -72,6 +73,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   bool isButtonEnabled = false;
   bool startingLpr = false;
 
+  double refundCost = 0.0;
+
   @override
   void initState() {
     super.initState();
@@ -91,7 +94,31 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
       bottomPaddingofMap = 230.0;
       drawerOpen = true;
       startTimer = true;
-      _controller.start();
+      print("...................Sign of the times...................");
+      print(_timerduration);
+      print( (_timerduration*3600).toInt());
+      _controller.restart(duration: (_timerduration*3600).toInt());
+    });
+  }
+
+  void cancelParking(){
+    setState(() {
+      _controller.pause();
+      // String chars  =_controller.getTime();
+      //
+      // if(_controller.getTime().isNotEmpty) {
+      //   double currTime = double.parse("${_controller.getTime()}");
+      //   print("curr time :: ");
+      //   print(currTime);
+      //
+      //   double difference = _timerduration - currTime;
+      //   refundCost = timerCost - 200 * difference;
+      //   if (refundCost > 0) {
+      //     _firebaseProvider.addCoin(
+      //         id, "$refundCost"); //refund coins if cancelled early
+      //   }
+      // }
+      resetApp();
     });
   }
 
@@ -286,10 +313,10 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                 context,
                 MaterialPageRoute(builder: (context) => QRPage()),
               )}),
-              CustomListTile(Icons.timer, "Timer", ()=>{ Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => TimerPage()),
-              )}),
+              // CustomListTile(Icons.timer, "Timer", ()=>{ Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => TimerPage()),
+              // )}),
               CustomListTile(Icons.history, "Booking History", ()=>{}),
               CustomListTile(Icons.help, "Help", ()=>{}),
               CustomListTile(Icons.settings, "Settings", ()=>{}),
@@ -372,7 +399,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                       child: Center(
                           child: CircularCountDownTimer(
                             // Countdown duration in Seconds.
-                            duration: _timerduration,
+                            duration: 3600,
 
                             // Countdown initial elapsed Duration in Seconds.
                             initialDuration: 0,
@@ -415,7 +442,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                                 fontSize: 33.0, color: Colors.white, fontWeight: FontWeight.bold),
 
                             // Format for the Countdown Text.
-                            textFormat: CountdownTextFormat.MM_SS,
+                            textFormat: CountdownTextFormat.HH_MM_SS,
 
                             // Handles Countdown Timer (true for Reverse Countdown (max to 0), false for Forward Countdown (0 to max)).
                             isReverse: true,
@@ -432,7 +459,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                             onStart: (){
                               setState(() {
                                 //delete_coins();
-                                _firebaseProvider.addCoin(id, "-200");
+                                _firebaseProvider.addCoin(id, "-$timerCost"); //dynamically delte required coins on starting timer
                                 started = true;
                               });
                             },
@@ -442,47 +469,57 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                                 started = false;
                               });
                             },
+
+
+
                           ),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: (){
-                        // restart timer
-                        if(started == false){
-                            _controller.start();
-                        }
-                        else{
-                          print("here i tapped");
-                        }
-                      },
-                      child: Container(
-                        height: 30.0,
-                        width: 30.0,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(26.0),
-                          border: Border.all(width: 2.0, color: Colors.grey[300]),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 30,
                         ),
-                        child: Icon(Icons.more_time, size: 26.0,),
-                      ),
+                        _button(title: "Pay Parkoin $timerCost to extend parking?", onPressed: started==false ? ()=>  _controller.restart(duration: _timerduration.toInt()*3600) : null),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        _button(title: "Leave Parking?", onPressed: () => cancelParking()), //_controller.pause()
+                        //_button(title: "Pay 200 to extend", onPressed: started==false ? ()=>  _controller.restart(duration: _duration) : null), //() => _controller.start()
+                        // MaterialButton(
+                        //   onPressed: () {
+                        //     if(started == false) {
+                        //       delete_coins();
+                        //       _controller.start();
+                        //     }
+                        //     else {
+                        //       null;
+                        //     }
+                        //   },
+                        //   child: Text("Pay 200 parKoins"),
+                        // ),
+
+                        // SizedBox(
+                        //   width: 10,
+                        // ),
+                        // _button(title: "Pause", onPressed: () => _controller.pause()),
+                        // SizedBox(
+                        //   width: 10,
+                        // ),
+                        // _button(title: "Resume", onPressed: () => _controller.resume()),
+                        // SizedBox(
+                        //   width: 10,
+                        // ),
+                        // _button(
+                        //     title: "Restart",
+                        //     onPressed: () => _controller.restart(duration: _duration))
+                      ],
+                      // _button(title: "Pay 200 to extend", onPressed: started==false ? ()=>  _controller.restart(duration: _timerduration) : null),
+                      // _button(title: "Want to leave?", onPressed: () => _controller.pause()),
                     ),
 
-                    GestureDetector(
-                      onTap: (){
-                        // restart timer
-                        resetApp();
-                      },
-                      child: Container(
-                        height: 30.0,
-                        width: 30.0,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(26.0),
-                          border: Border.all(width: 2.0, color: Colors.grey[300]),
-                        ),
-                        child: Icon(Icons.cancel, size: 26.0,),
-                      ),
-                    ),
+
 
                   ],
                 ),
@@ -745,7 +782,12 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                                 createdRequest = false;
                                 requestRideContainerHeight = 0.0;
                                 verifyRideContainerHeight = 250;
-                                //_duration = duration.round();
+                                _timerduration = duration;
+                                timerCost = AssistantMethods.calculateFares(tripdirectiondetails, duration);
+                                print("time duration ::");
+                                print(_timerduration);
+                                print("duration ::");
+                                print(duration);
                                 //here I have to call checker that updates user start point
                               });
                             }
