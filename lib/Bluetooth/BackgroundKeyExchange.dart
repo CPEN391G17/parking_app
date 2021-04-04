@@ -17,12 +17,12 @@ class DataSample {
   });
 }
 
-class BackgroundCollectingTask extends Model {
-  static BackgroundCollectingTask of(
-    BuildContext context, {
-    bool rebuildOnChange = false,
-  }) =>
-      ScopedModel.of<BackgroundCollectingTask>(
+class BackgroundKeyExchange extends Model {
+  static BackgroundKeyExchange of(
+      BuildContext context, {
+        bool rebuildOnChange = false,
+      }) =>
+      ScopedModel.of<BackgroundKeyExchange>(
         context,
         rebuildOnChange: rebuildOnChange,
       );
@@ -34,11 +34,11 @@ class BackgroundCollectingTask extends Model {
   // (via `Stream<DataSample>` preferably) and then saved for later
   // displaying on chart (or even stright prepare for displaying).
   // @TODO ? should be shrinked at some point, endless colleting data would cause memory shortage.
-  List<DataSample> samples = List<DataSample>();
+  List<DataSample> samples = <DataSample>[];
 
   bool inProgress;
 
-  BackgroundCollectingTask._fromConnection(this._connection) {
+  BackgroundKeyExchange._fromConnection(this._connection) {
     _connection.input.listen((data) {
       _buffer += data;
 
@@ -68,11 +68,11 @@ class BackgroundCollectingTask extends Model {
     });
   }
 
-  static Future<BackgroundCollectingTask> connect(
+  static Future<BackgroundKeyExchange> connect(
       BluetoothDevice server) async {
     final BluetoothConnection connection =
-        await BluetoothConnection.toAddress(server.address);
-    return BackgroundCollectingTask._fromConnection(connection);
+    await BluetoothConnection.toAddress(server.address);
+    return BackgroundKeyExchange._fromConnection(connection);
   }
 
   void dispose() {

@@ -9,11 +9,6 @@ import 'package:parking_app/Bluetooth/ChatPage.dart';
 import 'package:parking_app/Bluetooth/BackgroundCollectingTask.dart';
 import 'package:parking_app/Bluetooth/BackgroundCollectedPage.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
-import 'package:parking_app/resources/firebase_provider.dart';
-import 'package:parking_app/models/bt_key.dart';
-
 // import './helpers/LineChart.dart';
 
 class BluetoothPage extends StatefulWidget {
