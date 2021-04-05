@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:parking_app/resources/firebase_provider.dart';
 import 'package:parking_app/screens/coin_page/coin_page.dart';
 import 'package:parking_app/screens/profile_page/edit_profile.dart';
+import 'package:parking_app/widgets/Divider.dart';
 import 'package:parking_app/widgets/progress.dart';
 import 'package:parking_app/models/parking_user.dart';
 import 'package:parking_app/models/coin.dart';
@@ -67,21 +68,22 @@ class _ProfilePage extends State<ProfilePage> {
           Coin coin = Coin.fromDocument(snapshot.data[1]);
           return Stack(
             children: <Widget>[
-              Column(
-                children: [
-                  Expanded(
-                    flex: 6,
-                    child: Container(
-                      color: Colors.blue,
-                    ),
+              Container(
+                height: double.infinity,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xFF73AEF5),
+                      Color(0xFF61A4F1),
+                      Color(0xFF478DE0),
+                      Color(0xFF398AE5),
+                    ],
+                    stops: [0.1, 0.4, 0.7, 0.9],
                   ),
-                  Expanded(
-                    flex: 4,
-                    child: Container(
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
+                ),
               ),
               Column(
                 children: <Widget>[
@@ -93,7 +95,7 @@ class _ProfilePage extends State<ProfilePage> {
                       },
                       child: Icon(Icons.arrow_back_ios),
                     ),
-                    backgroundColor: Colors.blue,
+                    backgroundColor: Color(0xFF73AEF5),
                     actions: <Widget>[
                       IconButton(
                         icon: const Icon(Icons.edit),
@@ -108,6 +110,7 @@ class _ProfilePage extends State<ProfilePage> {
                   ),
                   Column(
                     children: <Widget>[
+                      SizedBox(height: 30,),
                       Container(
                         margin: EdgeInsets.all(20),
                         width: 150,
@@ -125,14 +128,22 @@ class _ProfilePage extends State<ProfilePage> {
                       Container(
                         child: Text(parkingUser.displayName,
                           style: TextStyle(
-                              fontSize: 30
+                            color: Colors.white,
+                            letterSpacing: 1.5,
+                            fontSize: 30.0,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'OpenSans',
                           ),
                         ),
                       ),
+                      SizedBox(height: 5,),
                       Container(
-                        child: Text("LPN: " + parkingUser.lpn,
+                        child: Text(parkingUser.lpn,
                           style: TextStyle(
-                              fontSize: 20
+                            color: Colors.white,
+                            letterSpacing: 1.5,
+                            fontSize: 20.0,
+                            fontFamily: 'OpenSans',
                           ),
                         ),
                       ),
@@ -141,9 +152,12 @@ class _ProfilePage extends State<ProfilePage> {
                           .size
                           .height / 14,),
                       Container(
-                        child: Text("Balance = " + coin.amount.toString() + " coins",
+                        child: Text("Balance = " + coin.amount.toString() + " ParKoins",
                           style: TextStyle(
-                              fontSize: 20
+                              color: Colors.white,
+                              letterSpacing: 1.5,
+                              fontSize: 20.0,
+                              fontFamily: 'OpenSans',
                           ),
                         ),
                       ),
@@ -179,9 +193,17 @@ class _ProfilePage extends State<ProfilePage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                  Icon(Icons.account_balance_wallet),
+                                  Icon(Icons.account_balance_wallet, color: Colors.blueAccent,),
                                   Text(
-                                      'Add coins', textAlign: TextAlign.center),
+                                      'Add coins',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.blueAccent,
+                                      letterSpacing: 1.5,
+                                      fontSize: 17.0,
+                                      fontFamily: 'OpenSans',
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),

@@ -127,7 +127,7 @@ class _Onboarding extends State<Onboarding>{
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w600,
-              fontSize: 30,
+              fontSize: 25,
             ),
           ),
       ),

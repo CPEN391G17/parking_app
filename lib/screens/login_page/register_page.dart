@@ -137,7 +137,7 @@ class _RegisterPageState extends State<RegisterPage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          'LPN',
+          'License plate number',
           style: kLabelStyle,
         ),
         SizedBox(height: 10.0),

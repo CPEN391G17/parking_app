@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:parking_app/models/parking_user.dart';
 import 'package:parking_app/resources/firebase_provider.dart';
+import 'package:parking_app/utilities/constants.dart';
 import 'package:parking_app/widgets/progress.dart';
 import 'package:parking_app/widgets/text_formatter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -127,6 +129,154 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
+  Widget _buildNameTF() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Name',
+          style: kLabelStyle,
+        ),
+        SizedBox(height: 10.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: kBoxDecorationStyle,
+          height: 50.0,
+          child: TextFormField(
+            controller: _nameController,
+            keyboardType: TextInputType.emailAddress,
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'OpenSans',
+            ),
+            decoration: InputDecoration(
+              hintText: 'Enter your name',
+              hintStyle: kHintTextStyle,
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.only(top: 14.0),
+              prefixIcon: Icon(
+                Icons.person,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEmailTF() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Email',
+          style: kLabelStyle,
+        ),
+        SizedBox(height: 10.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: kBoxDecorationStyle,
+          height: 50.0,
+          child: TextFormField(
+            controller: _emailController,
+            keyboardType: TextInputType.emailAddress,
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'OpenSans',
+            ),
+            decoration: InputDecoration(
+              hintText: 'Enter your email',
+              hintStyle: kHintTextStyle,
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.only(top: 14.0),
+              prefixIcon: Icon(
+                Icons.email,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLpnTF() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'License plate number',
+          style: kLabelStyle,
+        ),
+        SizedBox(height: 10.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: kBoxDecorationStyle,
+          height: 50.0,
+          child: TextFormField(
+            inputFormatters: [
+              UpperCaseTextFormatter(),
+            ],
+            controller: _lpnController,
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'OpenSans',
+            ),
+            decoration: InputDecoration(
+              hintText: 'Enter your LPN',
+              hintStyle: kHintTextStyle,
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.only(top: 14.0),
+              prefixIcon: Icon(
+                Icons.directions_car,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPhoneTF() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Phone',
+          style: kLabelStyle,
+        ),
+        SizedBox(height: 10.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: kBoxDecorationStyle,
+          height: 50.0,
+          child: TextFormField(
+            inputFormatters: [
+              MaskedInputFormatter("##########"),
+            ],
+            controller: _phoneController,
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'OpenSans',
+            ),
+            decoration: InputDecoration(
+              hintText: 'Enter your phone number',
+              hintStyle: kHintTextStyle,
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.only(top: 14.0),
+              prefixIcon: Icon(
+                Icons.phone,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return _isLoading ? circularProgress()
@@ -139,7 +289,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           },
           child:Icon(Icons.arrow_back_ios),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFF73AEF5),
         iconTheme: IconThemeData(
           color: Colors.black,
         ),
@@ -147,81 +297,54 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         GestureDetector(
               child: Padding(
                 padding: const EdgeInsets.only(right: 12.0),
-                child: Icon(Icons.done, color: Colors.blue),
+                child: Icon(Icons.done, color: Colors.black, size: 25),
               ),
               onTap: () => updateProfileData(context),
             )
         ],
       ),
-      body: // _isLoading
-          //? Center(child: circularProgress())
-      Container(
-          color: Colors.white,
-          child: ListView(children: <Widget>[
-            Column(
-              children: <Widget>[
-                editImage(),
-              ],
-            ),
-            Column(
-            children: <Widget>[
-              Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Container(
-                color: Colors.white,
-                child: Column(
-                children: <Widget>[
-                TextField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    labelText: 'Display name',
-                    errorText: _displayNameValid ? null : "Display Name too short",
-                    errorStyle: TextStyle(
-                      color: Colors.red,
-                    ),
-                    labelStyle: GoogleFonts.josefinSans(
-                        textStyle:
-                        TextStyle(color: Colors.blue, fontSize: 20)),
-                  ),
-                ),
-                TextField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    labelStyle: GoogleFonts.josefinSans(
-                        textStyle:
-                        TextStyle(color: Colors.blue, fontSize: 20)),
-                  ),
-                ),
-                TextField(
-                  controller: _phoneController,
-                  decoration: InputDecoration(
-                    labelText: 'Phone number',
-                    labelStyle: GoogleFonts.josefinSans(
-                        textStyle:
-                        TextStyle(color: Colors.blue, fontSize: 20)),
-                  ),
-                ),
-                TextField(
-                  inputFormatters: [
-                    UpperCaseTextFormatter(),
-                  ],
-                  controller: _lpnController,
-                  decoration: InputDecoration(
-                    labelText: 'License plate number',
-                    labelStyle: GoogleFonts.josefinSans(
-                        textStyle:
-                        TextStyle(color: Colors.blue, fontSize: 20)),
-                  ),
-                ),
-              ],
-            ),
+      body: Stack(
+        children: <Widget>[
+          Container(
+          height: double.infinity,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color(0xFF73AEF5),
+                  Color(0xFF61A4F1),
+                  Color(0xFF478DE0),
+                  Color(0xFF398AE5),
+                ],
+                stops: [0.1, 0.4, 0.7, 0.9],
+              ),
             ),
           ),
-          ],
+          Container(
+            height: double.infinity,
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              padding: EdgeInsets.symmetric(
+                horizontal: 40.0,
+                vertical: 10.0,
+              ),
+              child: Column(children: <Widget>[
+                editImage(),
+                SizedBox(height: 30.0,),
+                _buildNameTF(),
+                SizedBox(height: 30.0,),
+                _buildEmailTF(),
+                SizedBox(height: 30.0,),
+                _buildLpnTF(),
+                SizedBox(height: 30.0,),
+                _buildPhoneTF(),
+              ],
+              ),
+            ),
           ),
         ],
-        ),
       ),
     );
   }
@@ -236,7 +359,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           content: new Text(body),
           actions: <Widget>[
             new TextButton(
-              child: new Text(isComplex ? "Yes" : "Ok"),
+              child: new Text(isComplex ? "Yes" : "Ok",
+                style: TextStyle(fontFamily: 'OpenSans'),
+              ),
               onPressed: () {
                 Navigator.of(context).pop(true);
                 Navigator.of(context).pop(true);
@@ -268,7 +393,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     width: 150.0,
                     height: 150.0,
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.blue, width: 2),
+                      border: Border.all(color: Colors.white, width: 2),
                       borderRadius: BorderRadius.circular(80.0),
                       image: new DecorationImage(
                           image: widget.photoUrl == null
@@ -285,7 +410,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               onTap: _showImageDialog,
               child: Icon(
                 Icons.camera_alt,
-                color: Colors.blue,
+                color: Colors.white,
                 size: 30,
               ),
             ),
@@ -304,7 +429,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             children: <Widget>[
               SimpleDialogOption(
                 child: Text('Choose from Gallery',
-                    style: GoogleFonts.josefinSans(textStyle: TextStyle())),
+                  style: TextStyle(fontFamily: 'OpenSans'),
+                ),
                 onPressed: () {
                   _pickImage('Gallery').then((selectedImage) {
                     setState(() {
@@ -331,7 +457,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               SimpleDialogOption(
                 child: Text('Take Photo',
-                    style: GoogleFonts.josefinSans(textStyle: TextStyle())),
+                    style: TextStyle(fontFamily: 'OpenSans'),
+                ),
                 onPressed: () {
                   _pickImage('Camera').then((selectedImage) {
                     setState(() {
@@ -356,7 +483,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               SimpleDialogOption(
                 child: Text('Cancel',
-                    style: GoogleFonts.josefinSans(textStyle: TextStyle())),
+                  style: TextStyle(fontFamily: 'OpenSans'),
+                ),
                 onPressed: () {
                   Navigator.pop(context);
                 },
