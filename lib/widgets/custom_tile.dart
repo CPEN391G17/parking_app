@@ -14,10 +14,11 @@ class CustomListTile extends StatelessWidget{
       padding: const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
       child: Container(
         decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: Colors.grey.shade400))
+            border: Border(bottom: BorderSide(color: Colors.grey.shade400)),
         ),
+
         child: InkWell(
-          splashColor: Colors.lightBlueAccent,
+          splashColor: Colors.blueAccent,
           onTap: onTap,
           child: Container(
             height: 50,
@@ -30,13 +31,15 @@ class CustomListTile extends StatelessWidget{
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(text, style: TextStyle(
-                        fontSize: 16.0,
                         color: Colors.black,
+                        fontSize: 20.0,
+                        // fontWeight: FontWeight.bold,
+                        fontFamily: 'OpenSans',
                       ),),
                     ),
                   ],
                 ),
-                Icon(Icons.arrow_right),
+                // Icon(Icons.arrow_right),
               ],
             ),
           ),

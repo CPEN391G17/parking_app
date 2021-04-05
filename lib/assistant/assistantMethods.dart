@@ -24,7 +24,7 @@ class AssistantMethods{
     if (response != "failed"){
 
       placeAddress = response["results"][0]["formatted_address"];
-      // st1 = response["results"][0]["address_components"][0]["long_name"]; //[0]house num
+      // st1 = response["results"][0]["address_components"][3]["long_name"]; //[0]house num
       // st2 = response["results"][0]["address_components"][4]["long_name"];
       // st3 = response["results"][0]["address_components"][5]["long_name"];
       // st4 = response["results"][0]["address_components"][6]["long_name"];

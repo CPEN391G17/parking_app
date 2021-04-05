@@ -25,17 +25,33 @@ class _SearchScreenState extends State<SearchScreen> {
     String placeAddress = Provider.of<AppData>(context).startLocation.placeName ?? "";
     startPointTextEditingController.text = placeAddress;
 
-    return Scaffold(
+    return startPointTextEditingController.text == null ?
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => Center(child: CircularProgressIndicator(),)//ProgressDialog(message: "Setting Destination, Please Wait...",),
+      ):Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Column(
         children: [
           Container(
             height: 215.0,
             decoration: BoxDecoration(
-              color: Colors.white,
+              // color: Colors.white,
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color(0xFF73AEF5),
+                  Color(0xFF61A4F1),
+                  Color(0xFF478DE0),
+                  Color(0xFF398AE5),
+                ],
+                stops: [0.1, 0.4, 0.7, 0.9],
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black,
-                  blurRadius: 6.0,
+                  color: Colors.grey, //black, 6
+                  blurRadius: 3.0,
                   spreadRadius: 0.5,
                   offset: Offset(0.7,0.7),
                 ),
@@ -53,11 +69,17 @@ class _SearchScreenState extends State<SearchScreen> {
                           Navigator.pop(context);
                         },
                         child: Icon(
-                            Icons.arrow_back
+                            Icons.arrow_back,
+                            color: Colors.white,
+                            size: 25.0,
                         ),
                       ),
                       Center(
-                        child: Text("Set Destination", style: TextStyle(fontSize: 18.0, fontFamily: "Brand-Bold"),),
+                        child: Text("Select Destination", style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22.5,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'OpenSans',),),
                       ),
                     ],
                   ),
@@ -65,23 +87,35 @@ class _SearchScreenState extends State<SearchScreen> {
 
                   Row(
                     children: [
-                      Image.asset("assets/images/pin_location.png", height: 16.0, width: 16.0,),
+                      Image.asset("assets/images/pin_location.png", height: 25.0, width: 25.0,),
                       SizedBox(
                         width: 18.0,
                       ),
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.grey[400],
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(5.0),
                           ),
                           child: Padding(
                             padding: EdgeInsets.all(3.0),
                             child: TextField(
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'OpenSans',
+                              ),
                               controller: startPointTextEditingController,
                               decoration: InputDecoration(
                                 hintText: "Starting Point",
-                                fillColor: Colors.grey[400],
+                                hintStyle: TextStyle(
+                                  color: Colors.blueAccent,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'OpenSans',
+                                ),
+                                fillColor: Colors.white,
                                 filled: true,
                                 border: InputBorder.none,
                                 isDense: true,
@@ -98,26 +132,38 @@ class _SearchScreenState extends State<SearchScreen> {
 
                   Row(
                     children: [
-                      Image.asset("assets/images/destination.png", height: 16.0, width: 16.0,),
+                      Image.asset("assets/images/destination.png", height: 25.0, width: 25.0,),
                       SizedBox(
                         width: 18.0,
                       ),
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.grey[400],
+                            color: Colors.white,
                             borderRadius: BorderRadius.circular(5.0),
                           ),
                           child: Padding(
                             padding: EdgeInsets.all(3.0),
                             child: TextField(
+                              style: TextStyle(
+                                color: Colors.blueAccent,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'OpenSans',
+                              ),
                               onChanged: (val){
                                 findPlace(val);
                               },
                               controller: endPointTextEditingController,
                               decoration: InputDecoration(
                                 hintText: "Where to?",
-                                fillColor: Colors.grey[400],
+                                hintStyle: TextStyle(
+                                  color: Colors.blueAccent,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'OpenSans',
+                                ),
+                                fillColor: Colors.white,
                                 filled: true,
                                 border: InputBorder.none,
                                 isDense: true,
@@ -136,17 +182,21 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
           //tile to display predictions
           SizedBox(height: 10.0,),
+
           (placePredictionList.length > 0) ? Padding(
             padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-            child: ListView.separated(
-              padding: EdgeInsets.all(0.0),
-              itemBuilder: (context, index){
-                return PredictionTile(placePredictions: placePredictionList[index],);
-              },
-              separatorBuilder: (BuildContext context, int index) => DividerWidget(),
-              itemCount: placePredictionList.length,
-              shrinkWrap: true,
-              physics: ClampingScrollPhysics(),
+            child: Container(
+              // color: Colors.pink,
+              child: ListView.separated(
+                padding: EdgeInsets.all(0.0),
+                itemBuilder: (context, index){
+                  return Container(child: PredictionTile(placePredictions: placePredictionList[index],));
+                },
+                separatorBuilder: (BuildContext context, int index) => DividerWidget(),
+                itemCount: placePredictionList.length,
+                shrinkWrap: true,
+                physics: ClampingScrollPhysics(),
+              ),
             ),
           ) : Container(),
         ],
@@ -187,41 +237,48 @@ class PredictionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
-      padding: EdgeInsets.all(0.0),
-      onPressed: (){
-        getPlaceAddressDetails(placePredictions.place_id, context);
-      },
-      child: Container(
-        child: Column(
-          children: [
-            SizedBox(width: 10.0,),
-            Row(
-              children: [
-                Icon(Icons.add_location),
-                SizedBox(
-                  width: 14.0,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 8.0,),
-                      Text(placePredictions.main_text, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 16.0),),
-                      SizedBox(height: 2.0,),
-                      Text(placePredictions.secondary_text, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12.0, color: Colors.grey),),
-                      SizedBox(height: 8.0,),
-                    ],
+    return TextButton(
+        // padding: EdgeInsets.all(0.0),
+        onPressed: (){
+          getPlaceAddressDetails(placePredictions.place_id, context);
+        },
+        child: Container(
+          child: Column(
+            children: [
+              SizedBox(width: 10.0,),
+              Row(
+                children: [
+                  Icon(Icons.location_on, size: 25.0, color: Colors.blueAccent,),
+                  SizedBox(
+                    width: 14.0,
                   ),
-                ),
-              ],
-            ),
-            SizedBox(width: 10.0,),
-          ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 8.0,),
+                        Text(placePredictions.main_text, overflow: TextOverflow.ellipsis, style: TextStyle(
+                          color: Colors.blueAccent,
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'OpenSans',),),
+                        SizedBox(height: 2.0,),
+                        Text(placePredictions.secondary_text, overflow: TextOverflow.ellipsis, style: TextStyle(
+                          color: Colors.blueAccent,
+                          fontSize: 14.0,
+                          // fontWeight: FontWeight.bold,
+                          fontFamily: 'OpenSans',),),
+                        SizedBox(height: 8.0,),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(width: 10.0,),
+            ],
+          ),
         ),
-
-      ),
-    );
+      );
   }
   void getPlaceAddressDetails(String placeId, context) async{
 

@@ -146,6 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                 color: Colors.white,
                 fontSize: 18.0,
                 fontWeight: FontWeight.w400,
+                fontFamily: 'OpenSans',
               ),
             ),
             TextSpan(
@@ -154,6 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                 color: Colors.white,
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
+                fontFamily: 'OpenSans',
               ),
             ),
           ],

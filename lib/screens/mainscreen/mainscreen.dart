@@ -118,6 +118,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
       //         id, "$refundCost"); //refund coins if cancelled early
       //   }
       // }
+      print(_controller.getTime());
       resetApp();
     });
   }
@@ -266,9 +267,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   Widget build(BuildContext context){
     return Scaffold(
       key: scaffoldKey,
-      // appBar: AppBar(
-      //   title: Text("Map"),
-      // ),
       drawer: Container(
         color: Colors.white,
         width: 255.0,
@@ -277,42 +275,50 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
             children: [
               //Drawer Header
               Container(
-                height: 165.0,
+                height: 200.0,
+                // color: Colors.blueAccent,
                 child: DrawerHeader(
                   decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: <Color>[
-                        Colors.blue,
-                        Colors.lightBlueAccent,
-                      ])
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color(0xFF73AEF5),
+                        Color(0xFF61A4F1),
+                        Color(0xFF478DE0),
+                        Color(0xFF398AE5),
+                      ],
+                      stops: [0.1, 0.4, 0.7, 0.9],
+                    ),
                   ),
-                  child: Row(
-                    children: [
-                      Image.asset("assets/images/profilepic.jpg", height: 65.0, width: 65.0,),
-                      SizedBox(width: 16.0,),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("Profile Name", style: TextStyle(fontSize: 16.0, fontFamily: "Brand-Bold"),),
-                          SizedBox(height: 6.0,),
-                          Text("Visit Profile"),
-                        ],
-                      ),
-                    ],
-                  ),
+                  // child: Row(
+                  //   // children: [
+                  //   //   Image.asset("assets/images/profilepic.jpg", height: 65.0, width: 65.0,),
+                  //   //   SizedBox(width: 16.0,),
+                  //   //   Column(
+                  //   //     mainAxisAlignment: MainAxisAlignment.center,
+                  //   //     // children: [
+                  //   //     //   Text("Profile Name", style: TextStyle(fontSize: 16.0, fontFamily: "Brand-Bold"),),
+                  //   //     //   SizedBox(height: 6.0,),
+                  //   //     //   Text("Visit Profile"),
+                  //   //     // ],
+                  //   //   ),
+                  //   // ],
+                  // ),
                 ),
               ),
 
-              DividerWidget(),
+              //DividerWidget(),
 
-              SizedBox(height: 12.0,),
+              //SizedBox(height: 12.0,),
 
               CustomListTile(Icons.person, "Profile", ()=>{
                 Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage())),
               }),
-              CustomListTile(Icons.qr_code_scanner, "QR Scanner", ()=>{ Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => QRPage()),
-              )}),
+              // CustomListTile(Icons.qr_code_scanner, "QR Scanner", ()=>{ Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => QRPage()),
+              // )}),
               // CustomListTile(Icons.timer, "Timer", ()=>{ Navigator.push(
               //   context,
               //   MaterialPageRoute(builder: (context) => TimerPage()),
@@ -325,7 +331,23 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                 Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
               },
               ),
-
+              // Container(
+              //   child: DrawerHeader(
+              //     decoration: BoxDecoration(
+              //       gradient: LinearGradient(
+              //         begin: Alignment.topCenter,
+              //         end: Alignment.bottomCenter,
+              //         colors: [
+              //           Color(0xFF73AEF5),
+              //           Color(0xFF61A4F1),
+              //           Color(0xFF478DE0),
+              //           Color(0xFF398AE5),
+              //         ],
+              //         stops: [0.1, 0.4, 0.7, 0.9],
+              //       ),
+              //     ),
+              //   ),
+              // ),
               //Drawer Body Controls
               // ListTile(
               //  leading: Icon(Icons.history),
@@ -582,7 +604,18 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
               child: Container(
                 height: searchContainerHeight,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  // color: Colors.white,
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xFF73AEF5),
+                      Color(0xFF61A4F1),
+                      Color(0xFF478DE0),
+                      Color(0xFF398AE5),
+                    ],
+                    stops: [0.1, 0.4, 0.7, 0.9],
+                  ),
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(18.0), topRight: Radius.circular(18.0)),
                   boxShadow: [
                     BoxShadow(
@@ -599,11 +632,24 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 6.0),
-                      Text("Hi there,", style: TextStyle(fontSize: 12.0, fontFamily: "Brand-Bold"),),
-                      Text("Where to?", style: TextStyle(fontSize: 20.0, fontFamily: "Brand-Bold"),),
+                      Text("Hi there,", style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'OpenSans',
+                      ),
+                      ),
+                  Text("Where to?", style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'OpenSans',
+                  ),
+                  ),
                       SizedBox(height: 20.0),
                       GestureDetector(
                         onTap: () async{
+
                           var res = await Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen()));
 
                           if (res == "obtainDirection"){
@@ -618,8 +664,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                             borderRadius: BorderRadius.circular(5.0),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black54,
-                                blurRadius: 6.0,
+                                color: Colors.grey,
+                                blurRadius: 3.0,
                                 spreadRadius: 0.5,
                                 offset: Offset(0.7, 0.7),
                               ),
@@ -629,9 +675,14 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                             padding: const EdgeInsets.all(12.0),
                             child: Row(
                               children: [
-                                Icon(Icons.search, color: Colors.blueAccent,),
+                                Icon(Icons.search, color: Colors.blueAccent, size: 30.0,),
                                 SizedBox(width: 10.0,),
-                                Text("Search parking location"),
+                                Text("Search Parking Location", style:
+                                TextStyle(
+                                  color: Colors.blueAccent,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'OpenSans',)),
                               ],
                             ),
                           ),
@@ -640,37 +691,49 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                       SizedBox(height: 24.0),
                       Row(
                         children: [
-                          Icon(Icons.home, color: Colors.grey,),
+                          Icon(Icons.home, color: Colors.white, size: 30.0,),
                           SizedBox(width: 9.0), //12.0 orig 9.0 works
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                Provider.of<AppData>(context).startLocation != null ? Provider.of<AppData>(context).startLocation.placeName : "Add Home"
-                              ),
-                              SizedBox(height: 4.0,),
-                              Text("Your home address", style: TextStyle(color: Colors.black54, fontSize: 12.0),),
-                            ],
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  Provider.of<AppData>(context).startLocation != null ? Provider.of<AppData>(context).startLocation.placeName : "Add Home",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'OpenSans',),
+                                ),
+                                SizedBox(height: 4.0,),
+                                Text("Your current location", style:
+                                  TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'OpenSans',)),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                       SizedBox(height: 10.0),
                       DividerWidget(),
-                      SizedBox(height: 16.0),
-                      Row(
-                        children: [
-                          Icon(Icons.work, color: Colors.grey,),
-                          SizedBox(width: 12.0),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Add Work"),
-                              SizedBox(height: 4.0,),
-                              Text("Your office address", style: TextStyle(color: Colors.black54, fontSize: 12.0),),
-                            ],
-                          ),
-                        ],
-                      ),
+                      // SizedBox(height: 16.0),
+                      // Row(
+                      //   children: [
+                      //     Icon(Icons.work, color: Colors.grey,),
+                      //     SizedBox(width: 12.0),
+                      //     Column(
+                      //       crossAxisAlignment: CrossAxisAlignment.start,
+                      //       children: [
+                      //         Text("Add Work"),
+                      //         SizedBox(height: 4.0,),
+                      //         Text("Your office address", style: TextStyle(color: Colors.black54, fontSize: 12.0),),
+                      //       ],
+                      //     ),
+                      //   ],
+                      // ),
                     ],
                   ),
                 )
@@ -689,7 +752,18 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
               child: Container(
                 height: rideDetailsContainerHeight,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  // color: Colors.white,
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xFF73AEF5),
+                      Color(0xFF61A4F1),
+                      Color(0xFF478DE0),
+                      Color(0xFF398AE5),
+                    ],
+                    stops: [0.1, 0.4, 0.7, 0.9],
+                  ),
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(16.0), topRight:Radius.circular(16.0)),
                   boxShadow: [
                     BoxShadow(
@@ -707,7 +781,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                     children: [
                       Container(
                         width: double.infinity,
-                        color: Color.fromRGBO(54, 79, 107, 1),
+                        //color: Colors.blueAccent,
                         // color: Colors.lightBlueAccent,
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 18.0),
@@ -720,16 +794,29 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Parking", style: TextStyle(fontSize: 18.0, fontFamily: "Brand-Bold", color: Colors.grey),
+                                    "Parking", style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'OpenSans',),
                                   ),
                                   Text(
-                                    ((tripdirectiondetails != null) ? tripdirectiondetails.distanceText : ""), style: TextStyle(fontSize: 18.0, color: Colors.grey,),
+                                    ((tripdirectiondetails != null) ? tripdirectiondetails.distanceText : ""),
+                                    style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'OpenSans',),
                                   ),
                                 ],
                               ),
                               Expanded(child: Container()),
                               Text(
-                                ((tripdirectiondetails != null) ? '\ Parkoin ${AssistantMethods.calculateFares(tripdirectiondetails, duration)}' : ''), style: TextStyle(fontSize: 18.0, color: Colors.grey, fontFamily: "Brand-Bold",),
+                                ((tripdirectiondetails != null) ? '${AssistantMethods.calculateFares(tripdirectiondetails, duration)}\ Parkoin ' : ''), style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'OpenSans',),
                               ),
                             ],
                           ),
@@ -743,7 +830,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                           children: [
                             IconButton(
                               hoverColor: Colors.blue,
-                              icon: Icon(Icons.access_time, size: 24.0, color: Colors.black54,),
+                              icon: Icon(Icons.access_time, size: 25.0, color: Colors.white,),
                               onPressed: () async {
                                   var resultingDuration = await showDurationPicker(
                                     context: context,
@@ -756,7 +843,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                                 },
                             ),
                             SizedBox(width: 16.0,),
-                            Text("duration: ${duration.toStringAsFixed(2)} hours", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),),
+                            Text("Duration: ${duration.toStringAsFixed(2)} hours", style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'OpenSans',),),
                           ],
                         ),
                       ),
@@ -764,7 +855,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                       SizedBox(height: 24.0,),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.0),
-                        child: ElevatedButton(
+                        child: RaisedButton(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
                           onPressed: () async {
                             print("Parking Requested");
                             displayRequestContainer();
@@ -800,8 +895,12 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("Request", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.white),),
-                                Icon(FontAwesomeIcons.parking, color: Colors.white, size: 26.0,)
+                                Text("Request", style: TextStyle(
+                                  color: Colors.blueAccent,
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'OpenSans',),),
+                                Icon(FontAwesomeIcons.parking, color: Colors.blueAccent, size: 27.0,)
                               ],
                             ),
                           ),
@@ -1068,7 +1167,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
     setState(() {
       Polyline polyline = Polyline(
-        color: Colors.pink,
+        color: Colors.blueAccent,
         polylineId: PolylineId("PolylineID"),
         jointType: JointType.round,
         points: pLineCoordinates,
@@ -1097,7 +1196,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
     newGoogleMapController.animateCamera(CameraUpdate.newLatLngBounds(latlngbounds, 70));
 
     Marker startLocationMarker = Marker(
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
       // icon: await BitmapDescriptor.fromAssetImage(
       //     ImageConfiguration(size: Size(5, 5)), 'assets/images/start.png'),
       infoWindow: InfoWindow(title: initPos.placeName, snippet: "My location"),
@@ -1106,7 +1205,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
     );
 
     Marker endLocationMarker = Marker(
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan),
       infoWindow: InfoWindow(title: finalPos.placeName, snippet: "Parking Location"),
       position: endLatLng,
       markerId: MarkerId("endId"),
@@ -1119,11 +1218,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
 
     Circle startCircle = Circle(
-      fillColor: Colors.lightGreen,
+      fillColor: Colors.red,
       center: startLatLng,
       radius: 12,
       strokeWidth: 4,
-      strokeColor: Colors.lightGreenAccent,
+      strokeColor: Colors.redAccent,
       circleId: CircleId("startId"),
     );
 
@@ -1183,7 +1282,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
     setState(() {
       Polyline polyline = Polyline(
-        color: Colors.pink,
+        color: Colors.blueAccent,
         polylineId: PolylineId("PolylineID"),
         jointType: JointType.round,
         points: pLineCoordinates,
@@ -1212,7 +1311,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
     // newGoogleMapController.animateCamera(CameraUpdate.newLatLngBounds(latlngbounds, 70));
 
     Marker startLocationMarker = Marker(
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
       // icon: await BitmapDescriptor.fromAssetImage(
       //     ImageConfiguration(size: Size(5, 5)), 'assets/images/start.png'),
       infoWindow: InfoWindow(title: initPos.placeName, snippet: "My location"),
@@ -1221,7 +1320,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
     );
 
     Marker endLocationMarker = Marker(
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan),
       infoWindow: InfoWindow(title: finalPos.placeName, snippet: "Parking Location"),
       position: endLatLng,
       markerId: MarkerId("endId"),
@@ -1234,11 +1333,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
 
     Circle startCircle = Circle(
-      fillColor: Colors.lightGreen,
+      fillColor: Colors.red,
       center: startLatLng,
       radius: 12,
       strokeWidth: 4,
-      strokeColor: Colors.lightGreenAccent,
+      strokeColor: Colors.redAccent,
       circleId: CircleId("startId"),
     );
 
