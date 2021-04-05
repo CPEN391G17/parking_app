@@ -6,6 +6,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:parking_app/Bluetooth/DiscoveryPage.dart';
 import 'package:parking_app/Bluetooth/SelectBondedDevicePage.dart';
 import 'package:parking_app/Bluetooth/ChatPage.dart';
+import 'package:parking_app/Bluetooth/UIPage.dart';
 import 'package:parking_app/Bluetooth/BackgroundCollectingTask.dart';
 import 'package:parking_app/Bluetooth/BackgroundCollectedPage.dart';
 
@@ -13,7 +14,7 @@ import 'package:parking_app/Bluetooth/BackgroundCollectedPage.dart';
 
 class BluetoothPage extends StatefulWidget {
   @override
-  _BluetoothPageState createState() => _BluetoothPageState();
+  _BluetoothPageState createState() => new _BluetoothPageState();
 }
 
 class _BluetoothPageState extends State<BluetoothPage> {
@@ -28,6 +29,7 @@ class _BluetoothPageState extends State<BluetoothPage> {
   BackgroundCollectingTask _collectingTask;
 
   bool _autoAcceptPairingRequests = false;
+
 
   @override
   void initState() {
@@ -256,6 +258,33 @@ class _BluetoothPageState extends State<BluetoothPage> {
                 },
               ),
             ),
+
+
+
+            ListTile(
+              title: ElevatedButton(
+                child: const Text('Send a key for user identification'),
+                onPressed: () async {
+                  final BluetoothDevice selectedDevice =
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return SelectBondedDevicePage(checkAvailability: false);
+                      },
+                    ),
+                  );
+
+                  if (selectedDevice != null) {
+                    print('Connect -> selected ' + selectedDevice.address);
+                    _startUI(context, selectedDevice);
+                  } else {
+                    print('Connect -> no device selected');
+                  }
+                },
+              ),
+            ),
+
+
             Divider(),
             ListTile(title: const Text('Multiple connections example')),
             ListTile(
@@ -325,6 +354,16 @@ class _BluetoothPageState extends State<BluetoothPage> {
     );
   }
 
+  void _startUI(BuildContext context, BluetoothDevice server) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return UIPage(server: server);
+        },
+      ),
+    );
+  }
+
   Future<void> _startBackgroundTask(
       BuildContext context,
       BluetoothDevice server,
@@ -356,3 +395,60 @@ class _BluetoothPageState extends State<BluetoothPage> {
     }
   }
 }
+
+
+/*
+// Method to send message,
+  // for turning the Bluetooth device on
+  void _ConnectAndSendKey(String key) async {
+    String key = "ThisIsBluetoothKey SET";
+
+    bool wait = true;
+    while (wait) {
+      for (var device in _devicesList) {
+        if(device.name.contains("HC-05")) {
+          _device = device;
+          wait = false;
+        }
+      }
+    }
+
+    while(!_connected) {
+      _connect();
+    }
+
+    _firebaseProvider.SetKey(key);
+    _firebaseProvider.SetKeyTime();
+
+    wait = true;
+    while(wait) {
+      connection.output.add(utf8.encode(";" + key + ";"));
+      await connection.output.allSent;
+      show('Sent a key \'${key}\'');
+      setState(() {
+        _deviceState = 15; // device on
+      });
+
+      connection.output.add(utf8.encode(";" + key + ";"));
+      await connection.output.allSent;
+      show('Sent a key \'${key}\'');
+      setState(() {
+        _deviceState = 15; // device on
+      });
+    }
+
+    /*
+     * We need the app to pass the key to the RFS module
+     * Then the RFS module needs to upload the received key to Firestore
+     * Then the code below will check if the key on the cloud matches the key we sent.
+     */
+
+    BT_key bt_key = _firebaseProvider.GetKey() as BT_key;
+    if(bt_key.key == key) {
+      print("KEY EXCHANGE SUCCEEDED \n");
+    } else {
+      print("KEY EXCHANGE FAILED \n");
+    }
+
+  }
+ */

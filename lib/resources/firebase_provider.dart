@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:parking_app/models/coin.dart';
 import 'package:parking_app/models/bt_key.dart';
 import 'package:parking_app/models/parking_user.dart';
+import 'package:parking_app/models/parking.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 class FirebaseProvider {
@@ -36,6 +37,7 @@ class FirebaseProvider {
 
 
   ParkingUser parkingUser;
+  Parking parking;
   Coin parkoin;
   BT_key bluetooth_key;
 
@@ -266,6 +268,23 @@ class FirebaseProvider {
         });
     SetKeyTime();
     return future_key;
+  }
+
+  Future<String> getUID() async {
+    User authUser = firebaseAuth.currentUser;
+    DocumentSnapshot _documentSnapshot =
+    await parkingUsers.doc(authUser.uid).get();
+    return ParkingUser.fromMap(_documentSnapshot.data()).uid;
+  }
+
+  Future<String> getPID() async {
+    User authUser = firebaseAuth.currentUser;
+    DocumentSnapshot _documentSnapshot =
+    await parkingSpace.doc(
+        //authUser.pid
+        authUser.uid // This is not correct
+    ).get();
+    return Parking.fromMap(_documentSnapshot.data()).pid;
   }
 
 
