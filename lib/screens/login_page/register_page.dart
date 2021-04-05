@@ -1,10 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_multi_formatter/formatters/masked_input_formatter.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:parking_app/resources/firebase_provider.dart';
 import 'package:parking_app/screens/login_page/login_page.dart';
 import 'package:parking_app/screens/onboarding/onboarding.dart';
+import 'package:parking_app/utilities/constants.dart';
 import 'package:parking_app/widgets/text_formatter.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -23,181 +24,338 @@ class _RegisterPageState extends State<RegisterPage> {
   TextEditingController _lpnField = TextEditingController();
   TextEditingController _phoneField = TextEditingController();
 
+  Widget _buildNameTF() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Name',
+          style: kLabelStyle,
+        ),
+        SizedBox(height: 10.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: kBoxDecorationStyle,
+          height: 50.0,
+          child: TextFormField(
+            controller: _nameField,
+            keyboardType: TextInputType.emailAddress,
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'OpenSans',
+            ),
+            decoration: InputDecoration(
+              hintText: 'Enter your name',
+              hintStyle: kHintTextStyle,
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.only(top: 14.0),
+              prefixIcon: Icon(
+                Icons.person,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEmailTF() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Email',
+          style: kLabelStyle,
+        ),
+        SizedBox(height: 10.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: kBoxDecorationStyle,
+          height: 50.0,
+          child: TextFormField(
+            controller: _emailField,
+            keyboardType: TextInputType.emailAddress,
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'OpenSans',
+            ),
+            decoration: InputDecoration(
+              hintText: 'Enter your email',
+              hintStyle: kHintTextStyle,
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.only(top: 14.0),
+              prefixIcon: Icon(
+                Icons.email,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPasswordTF() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Password',
+          style: kLabelStyle,
+        ),
+        SizedBox(height: 10.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: kBoxDecorationStyle,
+          height: 50.0,
+          child: TextFormField(
+            controller: _passwordField,
+            obscureText: true,
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'OpenSans',
+            ),
+            decoration: InputDecoration(
+              hintText: 'Enter your password',
+              hintStyle: kHintTextStyle,
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.only(top: 14.0),
+              prefixIcon: Icon(
+                Icons.lock,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLpnTF() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'LPN',
+          style: kLabelStyle,
+        ),
+        SizedBox(height: 10.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: kBoxDecorationStyle,
+          height: 50.0,
+          child: TextFormField(
+            inputFormatters: [
+              UpperCaseTextFormatter(),
+            ],
+            controller: _lpnField,
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'OpenSans',
+            ),
+            decoration: InputDecoration(
+              hintText: 'Enter your LPN',
+              hintStyle: kHintTextStyle,
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.only(top: 14.0),
+              prefixIcon: Icon(
+                Icons.directions_car,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPhoneTF() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Phone',
+          style: kLabelStyle,
+        ),
+        SizedBox(height: 10.0),
+        Container(
+          alignment: Alignment.centerLeft,
+          decoration: kBoxDecorationStyle,
+          height: 50.0,
+          child: TextFormField(
+            inputFormatters: [
+               MaskedInputFormatter("##########"),
+            ],
+            controller: _phoneField,
+            style: TextStyle(
+              color: Colors.white,
+              fontFamily: 'OpenSans',
+            ),
+            decoration: InputDecoration(
+              hintText: 'Enter your phone number',
+              hintStyle: kHintTextStyle,
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.only(top: 14.0),
+              prefixIcon: Icon(
+                Icons.phone,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCreateBtn() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 25.0),
+      width: double.infinity,
+      child: RaisedButton(
+        elevation: 5.0,
+        onPressed: () async {
+          if(_nameField.text.length < 2) {
+            Fluttertoast.showToast(msg: "Name must be at least 2 characters");
+          }
+          else if(!_emailField.text.contains("@")) {
+            Fluttertoast.showToast(msg: "Invalid email");
+          }
+          else if(_lpnField.text.isEmpty) {
+            Fluttertoast.showToast(msg: "Please enter Licence plate number");
+          }
+          else if(_passwordField.text.length < 6) {
+            Fluttertoast.showToast(msg: "Password must be at least 6 characters");
+          }
+          else if(_phoneField.text.length < 10) {
+            Fluttertoast.showToast(msg: "Invalid phone number");
+          }
+          else {
+            bool auth = await _firebaseProvider.register(_nameField.text,
+                _emailField.text,
+                _passwordField.text,
+                _lpnField.text,
+                _phoneField.text,
+            );
+            if(auth) {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Onboarding()));
+            }
+          }
+        },
+        padding: EdgeInsets.all(15.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        color: Colors.white,
+        child: Text(
+          'Create Account',
+          style: TextStyle(
+            color: Color(0xFF527DAA),
+            letterSpacing: 1.5,
+            fontSize: 18.0,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'OpenSans',
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginBtn() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
+      },
+      child: RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: 'Already have an Account? ',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18.0,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            TextSpan(
+              text: 'Login here!',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          width: MediaQuery.of(context).size.width, //fill entire width of screen
-          height: MediaQuery.of(context).size.height, //fill entire height of screen
-          decoration: BoxDecoration(
-            color: Colors.lightBlueAccent,
-          ),
-          child: SingleChildScrollView(
-            child:Column( //place everything positioned vertically
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Stack(
+            children: <Widget>[
+              Container(
+                height: double.infinity,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xFF73AEF5),
+                      Color(0xFF61A4F1),
+                      Color(0xFF478DE0),
+                      Color(0xFF398AE5),
+                    ],
+                    stops: [0.1, 0.4, 0.7, 0.9],
+                  ),
+                ),
+              ),
+              Container(
+                height: double.infinity,
+                child: SingleChildScrollView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 40.0,
+                    vertical: 60.0,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      SizedBox(height: 25.0,),
-                      Image(
-                        image: AssetImage("assets/images/logo.png"),
-                        width: 200.0,
-                        height: 200.0,
-                        alignment: Alignment.center,
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 1.3,
-                        child: TextFormField(
-                          style: TextStyle(color: Colors.white),
-                          controller: _nameField,
-                          decoration: InputDecoration(
-                            hintText: "John Doe",
-                            hintStyle: TextStyle(
-                              color: Colors.grey[700],
-                              fontWeight: FontWeight.w300,
-                            ),
-                            labelText: "Name",
-                            labelStyle: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
+                      Text(
+                        'Sign Up',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'OpenSans',
+                          fontSize: 30.0,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.height / 35,),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 1.3,
-                        child: TextFormField(
-                          style: TextStyle(color: Colors.white),
-                          controller: _emailField,
-                          decoration: InputDecoration(
-                            hintText: "something@email.com",
-                            hintStyle: TextStyle(
-                              color: Colors.grey[700],
-                              fontWeight: FontWeight.w300,
-                            ),
-                            labelText: "Email",
-                            labelStyle: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height / 35,),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 1.3,
-                        child: TextFormField(
-                          obscureText: true,
-                          style: TextStyle(color: Colors.white),
-                          controller: _passwordField,
-                          decoration: InputDecoration(
-                            hintText: "password",
-                            hintStyle: TextStyle(
-                              color: Colors.grey[700],
-                              fontWeight: FontWeight.w300,
-                            ),
-                            labelText: "Password",
-                            labelStyle: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height / 35,),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 1.3,
-                        child: TextFormField(
-                            inputFormatters: [
-                              UpperCaseTextFormatter(),
-                            ],
-                          style: TextStyle(color: Colors.white),
-                          controller: _lpnField,
-                          decoration: InputDecoration(
-                            hintText: "XXXXXX",
-                            hintStyle: TextStyle(
-                              color: Colors.grey[700],
-                              fontWeight: FontWeight.w300,
-                            ),
-                            labelText: "Licence Plate Number",
-                            labelStyle: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height / 35,),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 1.3,
-                        child: TextFormField(
-                          inputFormatters: [
-                            MaskedInputFormatter("#########"),
-                          ],
-                          style: TextStyle(color: Colors.white),
-                          controller: _phoneField,
-                          decoration: InputDecoration(
-                            hintText: "7783259322",
-                            hintStyle: TextStyle(
-                              color: Colors.grey[700],
-                              fontWeight: FontWeight.w300,
-                            ),
-                            labelText: "Phone Number",
-                            labelStyle: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.height / 35,),
-                      Container(
-                        width: MediaQuery.of(context).size.width / 1.4, //give me a width based on size of device
-                        height: 45,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15.0),
-                          color: Colors.white
-                        ),
-                        child: MaterialButton(
-                          onPressed: () async {
-                              if(_nameField.text.length < 2) {
-                                Fluttertoast.showToast(msg: "Name must be at least 2 characters");
-                              }
-                              else if(!_emailField.text.contains("@")) {
-                                Fluttertoast.showToast(msg: "Invalid email");
-                              }
-                              else if(_lpnField.text.isEmpty) {
-                                Fluttertoast.showToast(msg: "Please enter Licence plate number");
-                              }
-                              else if(_passwordField.text.length < 6) {
-                                Fluttertoast.showToast(msg: "Password must be at least 6 characters");
-                              }
-                              else if(_phoneField.text.length < 10) {
-                                Fluttertoast.showToast(msg: "Invalid phone number");
-                              }
-                              else {
-                                bool auth = await _firebaseProvider.register(_nameField.text,
-                                    _emailField.text,
-                                    _passwordField.text,
-                                    _lpnField.text,
-                                    _phoneField.text,
-                                );
-                                if(auth) {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => Onboarding()));
-                                }
-                              }
-                            },
-                          child: Text("Create Account"),
-                        ),
-                      ),
-                      SizedBox(height: 10,),
-                      TextButton(
-                          onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
-                          },
-                          child: Text(
-                            "Already have an Account? Login here!",
-                            style: TextStyle(
-                                color: Colors.black
-                            ),
-                          )
-                      ),
+                      SizedBox(height: 30.0,),
+                      _buildNameTF(),
+                      SizedBox(height: 20.0,),
+                      _buildEmailTF(),
+                      SizedBox(height: 20.0,),
+                      _buildPasswordTF(),
+                      SizedBox(height: 20.0,),
+                      _buildLpnTF(),
+                      SizedBox(height: 20.0,),
+                      _buildPhoneTF(),
+                      SizedBox(height: 20.0,),
+                      _buildCreateBtn(),
+                      SizedBox(height: 20.0,),
+                      _buildLoginBtn(),
                     ],
                   ),
+                ),
+              )
+            ],
           ),
         ),
       ),

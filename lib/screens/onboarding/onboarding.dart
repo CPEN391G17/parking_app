@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:parking_app/models/slider_model.dart';
 import 'package:parking_app/screens/home_page/home_page.dart';
 import 'package:parking_app/widgets/slider_tile.dart';
@@ -38,76 +39,99 @@ class _Onboarding extends State<Onboarding>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: PageView.builder(
-        controller: pageController,
-        itemCount: slides.length,
-        onPageChanged: (val) {
-          setState(() {
-            currentIndex = val;
-          });
-        },
-        itemBuilder: (context, index) {
-          return SliderTile(
-            imageAssetPath: slides[index].imagePath,
-            title: slides[index].title,
-            description: slides[index].description,
-          );
-        },
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).unfocus(),
+          child: Stack(
+            children: <Widget>[
+              PageView.builder(
+                controller: pageController,
+                itemCount: slides.length,
+                onPageChanged: (val) {
+                  setState(() {
+                    currentIndex = val;
+                  });
+                },
+                itemBuilder: (context, index) {
+                  return SliderTile(
+                    imageAssetPath: slides[index].imagePath,
+                    title: slides[index].title,
+                    description: slides[index].description,
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
       ),
       bottomSheet: currentIndex != slides.length - 1 ? Container(
-        height: Platform.isIOS ? 70 : 60,
-        padding: EdgeInsets.symmetric(horizontal: 20),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            GestureDetector(
-              onTap: (){
-                pageController.animateToPage(
-                    slides.length - 1,
-                    duration: Duration(milliseconds: 400),
-                    curve: Curves.linear
-                );
-              },
-              child: Text("Skip"),
-            ),
-            Row(
+            color: Color(0xFF398AE5),
+            height: Platform.isIOS ? 70 : 60,
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                for(int i = 0; i < slides.length; i++) currentIndex == i ? pageIndexIndicator(true) : pageIndexIndicator(false),
+                GestureDetector(
+                  onTap: (){
+                    pageController.animateToPage(
+                        slides.length - 1,
+                        duration: Duration(milliseconds: 400),
+                        curve: Curves.linear
+                    );
+                  },
+                  child: Text(
+                    "Skip",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'OpenSans',
+                    ),
+                  ),
+                ),
+                Row(
+                  children: <Widget>[
+                    for(int i = 0; i < slides.length; i++) currentIndex == i ? pageIndexIndicator(true) : pageIndexIndicator(false),
+                  ],
+                ),
+                GestureDetector(
+                  onTap: (){
+                    pageController.animateToPage(
+                        currentIndex + 1,
+                        duration: Duration(milliseconds: 400),
+                        curve: Curves.linear
+                    );
+                  },
+                  child: Text(
+                    "Next",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'OpenSans',
+                    ),
+                  ),
+                ),
               ],
             ),
-            GestureDetector(
-              onTap: (){
-                pageController.animateToPage(
-                    currentIndex + 1,
-                    duration: Duration(milliseconds: 400),
-                    curve: Curves.linear
-                );
-              },
-              child: Text("Next"),
-            ),
-          ],
-        ),
-      ): Container(
-        width: MediaQuery.of(context).size.width,
-        height: Platform.isIOS ? 70 : 60,
-        color: Colors.blue,
-        alignment: Alignment.center,
-        child: GestureDetector(
-          onTap: (){
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()));
-          },
+          ): Container(
+          width: MediaQuery.of(context).size.width,
+          height: Platform.isIOS ? 70 : 60,
+          color: Color(0xFF398AE5),
+          alignment: Alignment.center,
+          child: GestureDetector(
+            onTap: (){
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()));
+            },
           child: Text(
             "Get started now!",
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w600,
+              fontSize: 30,
             ),
           ),
-        ),
       ),
+     ),
     );
   }
 }
