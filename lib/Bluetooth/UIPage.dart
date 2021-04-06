@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:parking_app/resources/firebase_provider.dart';
 import 'package:parking_app/models/bt_key.dart';
-import 'package:parking_app/models/parking_user.dart';
-import 'package:parking_app/models/parking.dart';
 
 class UIPage extends StatefulWidget {
   final BluetoothDevice server;
+  final bool start = true;
 
   const UIPage({this.server});
 
@@ -29,6 +28,14 @@ class _UIPage extends State<UIPage> {
   // Initializing a global key, as it would help us in showing a SnackBar later
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  BluetoothState _bluetoothState = BluetoothState.UNKNOWN;
+
+  String _address = "...";
+  String _name = "...";
+
+  Timer _discoverableTimeoutTimer;
+  int _discoverableTimeoutSecondsLeft = 0;
+
 
   static final clientID = 0;
   BluetoothConnection connection;
@@ -46,6 +53,34 @@ class _UIPage extends State<UIPage> {
   bool isDisconnecting = false;
   bool keyExchangeSuccessful = false;
   String onScreenMessage = "-";
+
+
+  // _________________ ↓ DiscoveryPage.dart ______________________
+
+  StreamSubscription<BluetoothDiscoveryResult> _streamSubscription;
+  List<BluetoothDiscoveryResult> results = <BluetoothDiscoveryResult>[];
+  bool isDiscovering;
+  bool _autoAcceptPairingRequests = false;
+
+
+  void _startDiscovery() {
+    _streamSubscription =
+        FlutterBluetoothSerial.instance.startDiscovery().listen((r) {
+          setState(() {
+            results.add(r);
+          });
+        });
+
+    _streamSubscription.onDone(() {
+      setState(() {
+        isDiscovering = false;
+      });
+    });
+  }
+  // _________________ ↑ DiscoveryPage.dart ______________________
+
+
+
 
   @override
   void initState() {
@@ -78,6 +113,58 @@ class _UIPage extends State<UIPage> {
     }).catchError((error) {
       print('Cannot connect, exception occured');
       print(error);
+    });
+
+
+
+    isDiscovering = widget.start;
+    if (isDiscovering) {
+      _startDiscovery();
+    }
+
+    // ABOVE is code from DiscoveryPage.dart
+    // BELOW is code from BT_settings_page.dart
+
+    // Get current state
+    FlutterBluetoothSerial.instance.state.then((state) {
+      setState(() {
+        _bluetoothState = state;
+      });
+    });
+
+    Future.doWhile(() async {
+      // Wait if adapter not enabled
+      if (await FlutterBluetoothSerial.instance.isEnabled) {
+        return false;
+      }
+      await Future.delayed(Duration(milliseconds: 0xDD));
+      return true;
+    }).then((_) {
+      // Update the address field
+      FlutterBluetoothSerial.instance.address.then((address) {
+        setState(() {
+          _address = address;
+        });
+      });
+    });
+
+    FlutterBluetoothSerial.instance.name.then((name) {
+      setState(() {
+        _name = name;
+      });
+    });
+
+    // Listen for futher state changes
+    FlutterBluetoothSerial.instance
+        .onStateChanged()
+        .listen((BluetoothState state) {
+      setState(() {
+        _bluetoothState = state;
+
+        // Discoverable mode is disabled when Bluetooth gets disabled
+        _discoverableTimeoutTimer = null;
+        _discoverableTimeoutSecondsLeft = 0;
+      });
     });
   }
 
@@ -148,7 +235,9 @@ class _UIPage extends State<UIPage> {
               child: IconButton(
                   icon: const Icon(Icons.send),
                   onPressed: isConnected
-                      ? () => _sendKey()
+                      ? () =>
+                      //_sendKey()
+                      _BackgroundUI()
                       : null),
             ),
           ],
@@ -273,14 +362,14 @@ class _UIPage extends State<UIPage> {
         //#############################
         String uid = _firebaseProvider.getUID() as String;
         String pid = "ChIJDfytRslyhlQRjB7JJRA9fSo";
-        String lastTenUID = uid.substring(uid.length - 5);
+        String lastTenUID = uid.substring(uid.length - 10);
 
         String response = messages.last.text;
         int ans = _hash(lastTenUID, pid);
         print("hash = $ans , last message = $response \n");
         onScreenMessage = "hash = $ans , last message = $response \n";
 
-        if(response == ";3250604574;") {
+        if(response == ";$ans;") {
           show("KEY EXCHANGE SUCCEEDED \n");
         } else {
           show("KEY EXCHANGE FAILED \n");
@@ -292,6 +381,113 @@ class _UIPage extends State<UIPage> {
         // Ignore error, but notify state
       }
     }
+  }
+
+  void _BackgroundUI() async {
+    print("Started _BackgroundUI\n");
+    List<BluetoothDiscoveryResult> candidates = <BluetoothDiscoveryResult>[];
+
+    setState(() {
+      _autoAcceptPairingRequests = true;
+    });
+    FlutterBluetoothSerial.instance.setPairingRequestHandler(
+            (BluetoothPairingRequest request) {
+          print("Trying to auto-pair with Pin 1234");
+          if (request.pairingVariant == PairingVariant.Pin) {
+            return Future.value("1234");
+          }
+          return null;
+        });
+
+    results.forEach((result) async {
+      try {
+        bool bonded = false;
+        if (!result.device.isBonded && (result.device.name.contains("hc05") || result.device.name.contains("HC05"))) {
+          print('Bonding with ${result.device.address}...');
+          bonded = await FlutterBluetoothSerial.instance
+              .bondDeviceAtAddress(result.device.address);
+          print(
+              'Bonding with ${result.device.address} has ${bonded ? 'succed' : 'failed'}.');
+        }
+        setState(() {
+          results[results.indexOf(result)] = BluetoothDiscoveryResult(
+              device: BluetoothDevice(
+                name: result.device.name ?? '',
+                address: result.device.address,
+                type: result.device.type,
+                bondState: bonded
+                    ? BluetoothBondState.bonded
+                    : BluetoothBondState.none,
+              ),
+              rssi: result.rssi);
+        });
+
+        // Add to successful candidates
+        candidates.add(result);
+      } catch (ex) {
+        print('Error while connecting to discovered devices');
+      }
+    });
+
+    for(int i=0; i<candidates.length; i++) {
+      Navigator.of(context).pop(candidates[i].device);
+
+
+      // _________________ ↓ UIPage.dart ______________________
+      String keyStr = "GeeXoX9Td2";
+      BT_key key = BT_key();
+      key.key = keyStr.trim();
+      key.initial_access_time = DateTime.now();
+
+      bool wait = true;
+      _firebaseProvider.SetKey(key.key);
+      _firebaseProvider.SetKeyTime();
+      //######################
+
+      textEditingController.clear();
+
+      if (key.key.length > 0) {
+        try {
+          connection.output.add(utf8.encode(";" + key.key + ";" + "\r\n"));
+          await connection.output.allSent;
+
+          setState(() {
+            messages.add(_Message(clientID, key.key));
+          });
+
+          Future.delayed(Duration(milliseconds: 333)).then((_) {
+            listScrollController.animateTo(
+                listScrollController.position.maxScrollExtent,
+                duration: Duration(milliseconds: 333),
+                curve: Curves.easeOut);
+          });
+
+          //#############################
+          String uid = _firebaseProvider.getUID() as String;
+          String pid = "ChIJDfytRslyhlQRjB7JJRA9fSo";
+          String lastTenUID = uid.substring(uid.length - 10);
+
+          String response = messages.last.text;
+          int ans = _hash(lastTenUID, pid);
+          print("hash = $ans , last message = $response \n");
+
+          if(response == (";" + ans.toString() + ";") ) {
+            show("KEY EXCHANGE SUCCEEDED \n");
+            // Break out of the loop to finish UI process
+            break;
+          } else {
+            show("KEY EXCHANGE FAILED \n");
+          }
+          // _________________ ↑ UIPage.dart ______________________
+
+
+        } catch (e) {
+          // Ignore error, but notify state
+          print('Failed to send the key to the paired device');
+        }
+      }
+    }
+
   }
 
   int _hash(String key, String pid) {

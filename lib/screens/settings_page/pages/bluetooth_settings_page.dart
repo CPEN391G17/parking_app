@@ -601,7 +601,9 @@ class _BluetoothPageState extends State<BluetoothPage> {
 
       // _________________ ↑ UIPage.dart initState()______________________
 
+      // I need a way to safely disconnect and reconnect with other devices in the candidates list.
 
+      //This is wrong
       //Navigator.of(context).pop(candidates[i].device);
       //print("is connected  = " + connection.isConnected.toString() + " \n");
 
