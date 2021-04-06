@@ -16,7 +16,7 @@ class DiscoveryPage extends StatefulWidget {
 
 class _DiscoveryPage extends State<DiscoveryPage> {
   StreamSubscription<BluetoothDiscoveryResult> _streamSubscription;
-  List<BluetoothDiscoveryResult> results = List<BluetoothDiscoveryResult>();
+  List<BluetoothDiscoveryResult> results = <BluetoothDiscoveryResult>[];
   bool isDiscovering;
 
   _DiscoveryPage();

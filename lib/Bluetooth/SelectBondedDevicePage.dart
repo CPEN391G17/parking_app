@@ -97,6 +97,29 @@ class _SelectBondedDevicePage extends State<SelectBondedDevicePage> {
     });
   }
 
+  // Written by me
+  void _ConnectHC05() {
+    _discoveryStreamSubscription =
+        FlutterBluetoothSerial.instance.startDiscovery().listen((r) {
+          setState(() {
+            Iterator i = devices.iterator;
+            while (i.moveNext()) {
+              var _device = i.current;
+              if (_device.device == r.device) {
+                _device.availability = _DeviceAvailability.yes;
+                _device.rssi = r.rssi;
+              }
+            }
+          });
+        });
+
+    _discoveryStreamSubscription.onDone(() {
+      setState(() {
+        _isDiscovering = false;
+      });
+    });
+  }
+
   @override
   void dispose() {
     // Avoid memory leak (`setState` after dispose) and cancel discovery
@@ -107,6 +130,8 @@ class _SelectBondedDevicePage extends State<SelectBondedDevicePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    /*
     List<BluetoothDeviceListEntry> list = devices
         .map((_device) => BluetoothDeviceListEntry(
               device: _device.device,
@@ -117,6 +142,22 @@ class _SelectBondedDevicePage extends State<SelectBondedDevicePage> {
               },
             ))
         .toList();
+     */
+    List<BluetoothDeviceListEntry> list = devices
+      .map((_device) => BluetoothDeviceListEntry(
+        device: _device.device,
+        rssi: _device.rssi,
+        enabled: _device.availability == _DeviceAvailability.yes,
+        onTap: () {
+          Navigator.of(context).pop(_device.device);
+        },
+      ))
+      .toList();
+/*
+    Navigator.of(context).pop(() => ConnectHC05(
+    ));
+ */
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Select device'),
