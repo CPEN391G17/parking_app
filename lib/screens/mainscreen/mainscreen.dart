@@ -644,8 +644,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
           ),
 
 
-          //HamburgerButton for Drawer
-          Positioned(
+          //MyLocation
+          myLocationIconVisible? Positioned(
             bottom: 325.0,
             right: 22.0,
             child: GestureDetector(
@@ -675,7 +675,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                 ),
               ),
             ),
-          ),
+          ):Container(),
 
 
           Positioned(
@@ -914,8 +914,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                         child: Row(
                           children: [
                             IconButton(
-                              hoverColor: Colors.blue,
-                              icon: Icon(Icons.access_time, size: 25.0, color: Colors.white,),
+                              splashColor: Colors.pink,
+                              splashRadius: 15.0,
+                              icon: Icon(Icons.access_time, size: 30.0, color: Colors.white,),
                               onPressed: () async {
                                   var resultingDuration = await showDurationPicker(
                                     context: context,
@@ -1323,7 +1324,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
     setState(() {
       Polyline polyline = Polyline(
-        color: Colors.blueAccent,
+        color: Colors.pinkAccent,
         polylineId: PolylineId("PolylineID"),
         jointType: JointType.round,
         points: pLineCoordinates,
@@ -1438,7 +1439,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
     setState(() {
       Polyline polyline = Polyline(
-        color: Colors.blueAccent,
+        color: Colors.pinkAccent,
         polylineId: PolylineId("PolylineID"),
         jointType: JointType.round,
         points: pLineCoordinates,
