@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
+import 'dart:typed_data';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:barcode_scan_fix/barcode_scan.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:parking_app/DataHandler/appData.dart';
@@ -17,14 +20,13 @@ import 'package:parking_app/models/directionDetails.dart';
 import 'package:parking_app/resources/firebase_provider.dart';
 import 'package:parking_app/screens/login_page/login_page.dart';
 import 'package:parking_app/screens/profile_page/profile_page.dart';
-import 'package:parking_app/screens/qrscanner_page/qrscanner_page.dart';
 import 'package:parking_app/screens/searchScreen/searhScreen.dart';
-import 'package:parking_app/screens/timer_page/timer_page.dart';
 import 'package:parking_app/widgets/Divider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:parking_app/widgets/custom_tile.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 
 //parking app billing needs to enabled once it has been verified to enable Geocoding
 class MainScreen extends StatefulWidget{
@@ -47,6 +49,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   double timerCost = 0;
 
   String uid;
+  String pid;
 
   Completer<GoogleMapController> _controllerGoogleMap = Completer();
   GoogleMapController newGoogleMapController;
@@ -874,7 +877,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                             print("Parking Requested");
                             displayRequestContainer();
                             var loc = Provider.of<AppData>(context, listen: false).endLocation;
-                            var pid = loc.placeId;
+                            pid = loc.placeId;
                             var lat = loc.latitude;
                             var lng = loc.longitude;
                             var timeOfBooking = DateTime.now();
@@ -1177,11 +1180,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                         ),
                         GestureDetector(
                           onTap: isButtonEnabled == true ? () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) => BTPay()),
-                            // );
-                            print("BT Tap Event");
+                            _blueToothVerification(uid, pid);
                           } : null,
                           child: isButtonEnabled ? Container(
                             height: 60.0,
@@ -1436,6 +1435,58 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
       circlesSet.add(endCircle);
     });
 
+  }
+
+  String _hash(String key, String pid) {
+    print("_hash : key = $key\n");
+    print("_hash : pid = $key\n");
+
+    var str = key + pid;
+    int hash = 0, i, chr, len;
+    len = str.length;
+    if (len == 0) return hash.toString();
+
+    for(int i = 0; i < len; i++) {
+      chr   = str.codeUnitAt(i);
+      hash  = ((hash << 5) - hash) + chr;
+      hash |= 0; // Convert to 32bit integer
+    }
+    return hash.toString();
+  }
+
+  void _blueToothVerification(String uid, String pid) async {
+    String result = "";
+    String address = "20:18:11:21:23:23";
+    try {
+      BluetoothConnection connection = await BluetoothConnection.toAddress(address);
+      print('Connected to the device');
+
+      String lastTenUID = uid.substring(uid.length - 10);
+      print("Lets send the key over the connection\n");
+      connection.output.add(utf8.encode(";" + lastTenUID + ";" + "\r\n"));
+      await connection.output.allSent;
+      connection.input.listen((Uint8List data) {
+        print('Data incoming: ${ascii.decode(data)}');
+        //connection.output.add(data); // Sending data
+        result += ascii.decode(data);
+        if (ascii.decode(data).contains("@")) {
+          connection.finish(); // Closing connection
+          print('Disconnecting by local host');
+        }
+      }).onDone(() {
+        print('Disconnected by remote request');
+        result = result.replaceAll(RegExp(r'[@;]'), '');
+        String ans = _hash(lastTenUID, pid);
+        if(ans == result) {
+            displayTimerContainer();
+        }
+        else {
+          Fluttertoast.showToast(msg: "BlueTooth Auth failed, Try QR");
+        }
+      });
+    } catch (exception) {
+      Fluttertoast.showToast(msg: 'Cannot connect, try again or use QR');
+    }
   }
 
 }
