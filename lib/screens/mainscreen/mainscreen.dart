@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:barcode_scan_fix/barcode_scan.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -74,6 +75,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   bool startingLpr = false;
 
   double refundCost = 0.0;
+
+  String qrCodeResult = "Not Yet Scanned";
 
   @override
   void initState() {
@@ -1136,11 +1139,23 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         GestureDetector(
-                          onTap: isButtonEnabled == true ? () {
-                            Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => QRPage()),
-                            );
+                          onTap: isButtonEnabled == true ? () async {
+                            String codeSanner = await BarcodeScanner.scan();
+                            setState(() {
+                              qrCodeResult = codeSanner;
+                            });
+
+                            if(qrCodeResult == Provider.of<AppData>(context, listen: false).endLocation.placeId){
+                              displayTimerContainer();
+                              print("QR verification successful");
+                            }
+                            else{
+                              print("QR verification failed");
+                            }
+                            // Navigator.push(
+                            // context,
+                            // MaterialPageRoute(builder: (context) => QRPage()),
+                            // );
                           } : null,
                           child: isButtonEnabled ? Container(
                             height: 60.0,

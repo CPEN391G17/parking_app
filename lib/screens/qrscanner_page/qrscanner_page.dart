@@ -59,6 +59,12 @@ class _QRPageState extends State<QRPage> {
                 setState(() {
                   qrCodeResult = codeSanner;
                 });
+                if(qrCodeResult == "ChIJDfytRslyhlQRjB7JJRA9fSo"){
+                  print("QR verification successful");
+                }
+                else{
+                  print("QR verification failed");
+                }
               },
               child: Text("Open Scanner",style: TextStyle(color: Colors.black),),
               //Button having rounded rectangle border
