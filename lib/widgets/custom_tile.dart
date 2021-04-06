@@ -27,12 +27,12 @@ class CustomListTile extends StatelessWidget{
               children: [
                 Row(
                   children: <Widget>[
-                    Icon(icon),
+                    Icon(icon, color: Colors.blueAccent,),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(text, style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20.0,
+                        color: Colors.blueAccent,
+                        fontSize: 22.0,
                         // fontWeight: FontWeight.bold,
                         fontFamily: 'OpenSans',
                       ),),
