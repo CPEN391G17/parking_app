@@ -18,6 +18,7 @@ import 'package:parking_app/DataHandler/appData.dart';
 import 'package:parking_app/assistant/assistantMethods.dart';
 import 'package:parking_app/models/directionDetails.dart';
 import 'package:parking_app/resources/firebase_provider.dart';
+import 'package:parking_app/screens/booking_history_page/booking_history_page.dart';
 import 'package:parking_app/screens/login_page/login_page.dart';
 import 'package:parking_app/screens/profile_page/profile_page.dart';
 import 'package:parking_app/screens/searchScreen/searhScreen.dart';
@@ -351,7 +352,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
               //   context,
               //   MaterialPageRoute(builder: (context) => TimerPage()),
               // )}),
-              CustomListTile(Icons.history, "Booking History", ()=>{}),
+              CustomListTile(Icons.history, "Booking History", ()=>{
+                Navigator.push(context, MaterialPageRoute(builder: (context) => BookingHistoryPage())),
+              }),
               CustomListTile(Icons.help, "Help", ()=>{}),
               // CustomListTile(Icons.settings, "Settings", ()=>{}),
               CustomListTile(Icons.logout, "Log Out", () {
@@ -960,7 +963,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                             var timeOfCreation = DateTime.now();
                             var prid = 'r_${pid}h_${uid}d_t_${DateTime.now()}${new Random().nextInt(100)}';
                             createdRequest = await _firebaseProvider.createParkingRequest(prid, uid, pid, lat, lng,
-                                timeOfBooking, timeOfCreation, duration);
+                                timeOfBooking, timeOfCreation, duration, loc.placeName);
                             if(createdRequest) {
                               setState(() {
                                 createdRequest = false;

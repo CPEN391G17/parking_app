@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:parking_app/models/booking_history.dart';
 import 'package:parking_app/models/coin.dart';
 import 'package:parking_app/models/parking.dart';
 import 'package:parking_app/models/parking_request.dart';
@@ -232,7 +233,7 @@ class FirebaseProvider {
 
     // parking request functions
     Future<bool> createParkingRequest(String prid, String uid, String pid, double lat, double lng,
-        DateTime timeOfBooking, DateTime timeOfCreation, double duration) async {
+        DateTime timeOfBooking, DateTime timeOfCreation, double duration, String location) async {
       try {
         createParking(pid, lat, lng);
         parkingRequest = ParkingRequest(
@@ -244,6 +245,7 @@ class FirebaseProvider {
             duration: duration,
             inParking: false,
             progress: "AwaitingConfirmation",
+            location: location,
         );
         await parkingRequests.doc(pid).collection('requests').doc(uid).set(
             parkingRequest.toMap(parkingRequest));
@@ -254,6 +256,7 @@ class FirebaseProvider {
           ppid: pid,
           timeOfBooking: timeOfBooking,
           duration: duration,
+          location: location,
         );
         await parkingUsers.doc(uid).collection('requests').doc(prid).set(
             parkingRequest.toMap(parkingRequest));
@@ -339,6 +342,21 @@ class FirebaseProvider {
         return Parking.fromMap(documentSnapshot.data());
       },
     );
+  }
+
+  // ignore: missing_return
+  Future<List<BookingHistory>> getBookingHistory() async {
+    QuerySnapshot querySnapshot;
+    var list;
+    List<BookingHistory> returnList = [];
+      await currentUser().then((uid) async {
+        querySnapshot = await parkingUsers.doc(uid).collection("requests").get();
+        list = querySnapshot.docs;
+      });
+    for(QueryDocumentSnapshot snapShot in list) {
+      returnList.add(BookingHistory.fromDocument(snapShot));
+    }
+    return returnList;
   }
 
 }

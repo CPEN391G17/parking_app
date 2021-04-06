@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:parking_app/models/address.dart';
+import 'package:parking_app/resources/firebase_provider.dart';
 import 'package:provider/provider.dart';
 
-class AppData extends ChangeNotifier{
+class AppData extends ChangeNotifier {
 
   Address startLocation, endLocation;
 
@@ -15,5 +16,4 @@ class AppData extends ChangeNotifier{
     endLocation = endPoint;
     notifyListeners(); //handle changes
   }
-
 }

@@ -18,13 +18,27 @@ class _SearchScreenState extends State<SearchScreen> {
   TextEditingController endPointTextEditingController = TextEditingController();
   List<PlacePredictions> placePredictionList = [];
 
+  bool _isLoading = false;
+  bool _isInit = true;
+
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      setState(() {
+        _isLoading = true;
+      });
+      String placeAddress = Provider.of<AppData>(context).startLocation.placeName?? "";
+      startPointTextEditingController.text = placeAddress;
+      setState(() {
+        _isLoading = false;
+      });
+      _isInit = false;
+      super.didChangeDependencies();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    String placeAddress = Provider.of<AppData>(context).startLocation.placeName ?? "";
-    startPointTextEditingController.text = placeAddress;
-
     return startPointTextEditingController.text == null ?
       showDialog(
           context: context,

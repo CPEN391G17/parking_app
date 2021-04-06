@@ -13,6 +13,7 @@ class ParkingRequest {
   String qrEntryValue;
   String progress;
   bool inParking;
+  String location;
 
   ParkingRequest({
     @required this.prid,
@@ -24,6 +25,7 @@ class ParkingRequest {
     this.duration,
     this.progress,
     this.qrInput,
+    this.location,
   });
 
   factory ParkingRequest.fromDocument(DocumentSnapshot doc) {
@@ -37,6 +39,7 @@ class ParkingRequest {
       qrInput: doc.get('qrInput'),
       progress: doc.get('progress'),
       inParking: doc.get('inParking'),
+      location: doc.get('location'),
     );
   }
 
@@ -51,6 +54,7 @@ class ParkingRequest {
       'qrInput': parkingRequest.qrInput,
       'progress': parkingRequest.progress,
       'inParking': parkingRequest.inParking,
+      'location': parkingRequest.location,
     };
   }
 
@@ -64,5 +68,6 @@ class ParkingRequest {
     qrInput = mapData['qrInput'];
     progress = mapData['progress'];
     inParking = mapData['inParking'];
+    location = mapData['location'];
   }
 }
