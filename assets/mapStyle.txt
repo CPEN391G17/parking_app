@@ -167,10 +167,21 @@
   },
   {
     "featureType": "water",
+    "stylers": [
+      {
+        "color": "#49aee2"
+      },
+      {
+        "weight": 3.5
+      }
+    ]
+  },
+  {
+    "featureType": "water",
     "elementType": "geometry",
     "stylers": [
       {
-        "color": "#000000"
+        "color": "#33a7ff"
       }
     ]
   },

@@ -79,6 +79,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   bool isButtonEnabled = false;
   bool startingLpr = false;
 
+  bool myLocationIconVisible = true;
+
   double refundCost = 0.0;
 
   String qrCodeResult = "Not Yet Scanned";
@@ -100,6 +102,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
   void displayTimerContainer() {
     setState(() {
+      myLocationIconVisible = false;
       timerContainerHeight = 1000.0;
       verifyRideContainerHeight = 0;
       requestRideContainerHeight = 0.0;
@@ -138,10 +141,21 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
   _button({String title, VoidCallback onPressed}) {
     return Expanded(
-        child: ElevatedButton(
+        child: RaisedButton(
+          padding: EdgeInsets.all(15.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30.0),
+          ),
+          color: Colors.white,
           child: Text(
             title,
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(
+              color: Colors.blueAccent,
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'OpenSans',
+            ),
+            textAlign: TextAlign.center,
           ),
           onPressed: onPressed,//onPressed,
 
@@ -218,6 +232,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
   resetApp(){
     setState(() {
+      myLocationIconVisible = true;
       timerContainerHeight = 0;
       drawerOpen = true;
       searchContainerHeight = 300.0;
@@ -338,7 +353,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
               // )}),
               CustomListTile(Icons.history, "Booking History", ()=>{}),
               CustomListTile(Icons.help, "Help", ()=>{}),
-              CustomListTile(Icons.settings, "Settings", ()=>{}),
+              // CustomListTile(Icons.settings, "Settings", ()=>{}),
               CustomListTile(Icons.logout, "Log Out", () {
                 _firebaseProvider.signOut();
                 Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
@@ -383,11 +398,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
           GoogleMap(
             padding: EdgeInsets.only(bottom: bottomPaddingofMap),
             //mapType: MapType.normal,
-            myLocationButtonEnabled: true,
+            myLocationButtonEnabled: false,
             initialCameraPosition: _kGooglePlex,
             myLocationEnabled: true,
             zoomGesturesEnabled: true,
-            zoomControlsEnabled: true,
+            zoomControlsEnabled: false,
             polylines: polyLineSet,
             markers: markersSet,
             circles: circlesSet,
@@ -414,6 +429,17 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0)),
                 color: Colors.white,
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFF73AEF5),
+                    Color(0xFF61A4F1),
+                    Color(0xFF478DE0),
+                    Color(0xFF398AE5),
+                  ],
+                  stops: [0.1, 0.4, 0.7, 0.9],
+                ),
                 boxShadow: [
                   BoxShadow(
                     spreadRadius: 0.5,
@@ -424,140 +450,154 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                 ],
               ),
               height: timerContainerHeight,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  children: [
-                    SizedBox(height: 12.0,),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Center(
-                          child: CircularCountDownTimer(
-                            // Countdown duration in Seconds.
-                            duration: 3600,
+              child: Column(
+                children: [
+                  SizedBox(height: 300.0,),
+                  SizedBox(
+                    width: double.infinity,
+                    child: Center(
+                        child: CircularCountDownTimer(
+                          // Countdown duration in Seconds.
+                          duration: 3600,
 
-                            // Countdown initial elapsed Duration in Seconds.
-                            initialDuration: 0,
+                          // Countdown initial elapsed Duration in Seconds.
+                          initialDuration: 0,
 
-                            // Controls (i.e Start, Pause, Resume, Restart) the Countdown Timer.
-                            controller: _controller,
+                          // Controls (i.e Start, Pause, Resume, Restart) the Countdown Timer.
+                          controller: _controller,
 
-                            // Width of the Countdown Widget.
-                            width: MediaQuery.of(context).size.width / 2,
+                          // Width of the Countdown Widget.
+                          width: MediaQuery.of(context).size.width / 2,
 
-                            // Height of the Countdown Widget.
-                            height: 1.1*MediaQuery.of(context).size.height,
+                          // Height of the Countdown Widget.
+                          height: 0.7*MediaQuery.of(context).size.height,
 
-                            // Ring Color for Countdown Widget.
-                            ringColor: Colors.grey[300],
+                          // Ring Color for Countdown Widget.
+                          ringColor: Colors.lightBlueAccent,
 
-                            // Ring Gradient for Countdown Widget.
-                            ringGradient: null,
+                          // Ring Gradient for Countdown Widget.
+                          ringGradient: null,
 
-                            // Filling Color for Countdown Widget.
-                            fillColor: Colors.blueAccent[100],
+                          // Filling Color for Countdown Widget.
+                          fillColor: Colors.white,
 
-                            // Filling Gradient for Countdown Widget.
-                            fillGradient: null,
+                          // Filling Gradient for Countdown Widget.
+                          fillGradient: null,
+                          // fillGradient: LinearGradient(
+                          //   begin: Alignment.topCenter,
+                          //   end: Alignment.bottomCenter,
+                          //   colors: [
+                          //   Color(0xFF73AEF5),
+                          //   Color(0xFF61A4F1),
+                          //   Color(0xFF478DE0),
+                          //   Color(0xFF398AE5),
+                          //   ],
+                          //   stops: [0.1, 0.4, 0.7, 0.9],
+                          //   ),
 
-                            // Background Color for Countdown Widget.
-                            backgroundColor: Colors.blue[500],
+                          // Background Color for Countdown Widget.
+                          backgroundColor: Colors.transparent,
 
-                            // Background Gradient for Countdown Widget.
-                            backgroundGradient: null,
+                          // Background Gradient for Countdown Widget.
+                          backgroundGradient: null,
 
-                            // Border Thickness of the Countdown Ring.
-                            strokeWidth: 20.0,
+                          // Border Thickness of the Countdown Ring.
+                          strokeWidth: 20.0,
 
-                            // Begin and end contours with a flat edge and no extension.
-                            strokeCap: StrokeCap.round,
+                          // Begin and end contours with a flat edge and no extension.
+                          strokeCap: StrokeCap.round,
 
-                            // Text Style for Countdown Text.
-                            textStyle: TextStyle(
-                                fontSize: 33.0, color: Colors.white, fontWeight: FontWeight.bold),
+                          // Text Style for Countdown Text.
+                          textStyle: TextStyle(
+                            color: Colors.white,
+                            fontSize: 35.0,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'OpenSans',),
 
-                            // Format for the Countdown Text.
-                            textFormat: CountdownTextFormat.HH_MM_SS,
+                          // Format for the Countdown Text.
+                          textFormat: CountdownTextFormat.HH_MM_SS,
 
-                            // Handles Countdown Timer (true for Reverse Countdown (max to 0), false for Forward Countdown (0 to max)).
-                            isReverse: true,
+                          // Handles Countdown Timer (true for Reverse Countdown (max to 0), false for Forward Countdown (0 to max)).
+                          isReverse: true,
 
-                            // Handles Animation Direction (true for Reverse Animation, false for Forward Animation).
-                            isReverseAnimation: false,
+                          // Handles Animation Direction (true for Reverse Animation, false for Forward Animation).
+                          isReverseAnimation: false,
 
-                            // Handles visibility of the Countdown Text.
-                            isTimerTextShown: true,
+                          // Handles visibility of the Countdown Text.
+                          isTimerTextShown: true,
 
-                            // Handles the timer start.
-                            autoStart: false,
+                          // Handles the timer start.
+                          autoStart: false,
 
-                            onStart: (){
-                              setState(() {
-                                //delete_coins();
-                                _firebaseProvider.addCoin(id, "-$timerCost"); //dynamically delte required coins on starting timer
-                                started = true;
-                              });
-                            },
+                          onStart: (){
+                            setState(() {
+                              //delete_coins();
+                              _firebaseProvider.addCoin(id, "-$timerCost"); //dynamically delte required coins on starting timer
+                              started = true;
+                            });
+                          },
 
-                            onComplete: (){
-                              setState(() {
-                                started = false;
-                              });
-                            },
+                          onComplete: (){
+                            setState(() {
+                              started = false;
+                            });
+                          },
 
 
 
-                          ),
+                        ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 10,
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        SizedBox(
-                          width: 30,
-                        ),
-                        _button(title: "Pay $timerCost ParKoin  to extend parking?", onPressed: started==false ? ()=>  _controller.restart(duration: _timerduration.toInt()*3600) : null),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        _button(title: "Leave Parking?", onPressed: () => cancelParking()), //_controller.pause()
-                        //_button(title: "Pay 200 to extend", onPressed: started==false ? ()=>  _controller.restart(duration: _duration) : null), //() => _controller.start()
-                        // MaterialButton(
-                        //   onPressed: () {
-                        //     if(started == false) {
-                        //       delete_coins();
-                        //       _controller.start();
-                        //     }
-                        //     else {
-                        //       null;
-                        //     }
-                        //   },
-                        //   child: Text("Pay 200 parKoins"),
-                        // ),
+                      _button(title: "Extend parking", onPressed: started==false ? ()=>  _controller.restart(duration: _timerduration.toInt()*3600) : null),
+                      SizedBox(
+                        width: 10
+                      ),
+                      _button(title: "Leave Parking", onPressed: () => cancelParking()), //_controller.pause()
+                      SizedBox(
+                          width: 10
+                      ),
+                      //_button(title: "Pay 200 to extend", onPressed: started==false ? ()=>  _controller.restart(duration: _duration) : null), //() => _controller.start()
+                      // MaterialButton(
+                      //   onPressed: () {
+                      //     if(started == false) {
+                      //       delete_coins();
+                      //       _controller.start();
+                      //     }
+                      //     else {
+                      //       null;
+                      //     }
+                      //   },
+                      //   child: Text("Pay 200 parKoins"),
+                      // ),
 
-                        // SizedBox(
-                        //   width: 10,
-                        // ),
-                        // _button(title: "Pause", onPressed: () => _controller.pause()),
-                        // SizedBox(
-                        //   width: 10,
-                        // ),
-                        // _button(title: "Resume", onPressed: () => _controller.resume()),
-                        // SizedBox(
-                        //   width: 10,
-                        // ),
-                        // _button(
-                        //     title: "Restart",
-                        //     onPressed: () => _controller.restart(duration: _duration))
-                      ],
-                      // _button(title: "Pay 200 to extend", onPressed: started==false ? ()=>  _controller.restart(duration: _timerduration) : null),
-                      // _button(title: "Want to leave?", onPressed: () => _controller.pause()),
-                    ),
+                      // SizedBox(
+                      //   width: 10,
+                      // ),
+                      // _button(title: "Pause", onPressed: () => _controller.pause()),
+                      // SizedBox(
+                      //   width: 10,
+                      // ),
+                      // _button(title: "Resume", onPressed: () => _controller.resume()),
+                      // SizedBox(
+                      //   width: 10,
+                      // ),
+                      // _button(
+                      //     title: "Restart",
+                      //     onPressed: () => _controller.restart(duration: _duration))
+                    ],
+                    // _button(title: "Pay 200 to extend", onPressed: started==false ? ()=>  _controller.restart(duration: _timerduration) : null),
+                    // _button(title: "Want to leave?", onPressed: () => _controller.pause()),
+                  ),
 
 
 
-                  ],
-                ),
+                ],
               ),
             ),
           ),
@@ -605,6 +645,41 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
               ),
             ),
           ),
+
+
+          //MyLocation
+          myLocationIconVisible? Positioned(
+            bottom: 325.0,
+            right: 22.0,
+            child: GestureDetector(
+              onTap: (){
+                locatePosition();
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(22.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.white70,
+                      blurRadius: 6.0,
+                      spreadRadius: 0.5,
+                      offset: Offset(
+                          0.7,0.7
+                      ),
+                    ),
+                  ],
+                ),
+                child: CircleAvatar(
+                  backgroundColor: Colors.blueAccent,
+                  child: Icon(Icons.my_location, color: Colors.white,),
+                  radius: 20.0,
+
+                ),
+              ),
+            ),
+          ):Container(),
+
 
           Positioned(
             left: 0.0,
@@ -842,8 +917,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                         child: Row(
                           children: [
                             IconButton(
-                              hoverColor: Colors.blue,
-                              icon: Icon(Icons.access_time, size: 25.0, color: Colors.white,),
+                              splashColor: Colors.pink,
+                              splashRadius: 15.0,
+                              icon: Icon(Icons.access_time, size: 30.0, color: Colors.white,),
                               onPressed: () async {
                                   var resultingDuration = await showDurationPicker(
                                     context: context,
@@ -1247,7 +1323,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
     setState(() {
       Polyline polyline = Polyline(
-        color: Colors.blueAccent,
+        color: Colors.pinkAccent,
         polylineId: PolylineId("PolylineID"),
         jointType: JointType.round,
         points: pLineCoordinates,
@@ -1362,7 +1438,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
     setState(() {
       Polyline polyline = Polyline(
-        color: Colors.blueAccent,
+        color: Colors.pinkAccent,
         polylineId: PolylineId("PolylineID"),
         jointType: JointType.round,
         points: pLineCoordinates,
