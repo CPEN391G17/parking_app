@@ -6,6 +6,7 @@ import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:duration_picker/duration_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -23,6 +24,7 @@ import 'package:parking_app/widgets/Divider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:parking_app/widgets/custom_tile.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 //parking app billing needs to enabled once it has been verified to enable Geocoding
 class MainScreen extends StatefulWidget{
@@ -78,10 +80,15 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
   String qrCodeResult = "Not Yet Scanned";
 
+  String _mapStyle;
+
   @override
   void initState() {
     super.initState();
     getUid();
+    rootBundle.loadString('assets/mapStyle.txt').then((string) {
+      _mapStyle = string;
+    });
   }
 
   void getUid() async {
@@ -372,7 +379,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
         children: [
           GoogleMap(
             padding: EdgeInsets.only(bottom: bottomPaddingofMap),
-            mapType: MapType.normal,
+            //mapType: MapType.normal,
             myLocationButtonEnabled: true,
             initialCameraPosition: _kGooglePlex,
             myLocationEnabled: true,
@@ -384,7 +391,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
             onMapCreated: (GoogleMapController controller){
               _controllerGoogleMap.complete(controller);
               newGoogleMapController = controller;
-
+              newGoogleMapController.setMapStyle(_mapStyle);
               setState(() {
                 bottomPaddingofMap = 300.0;
               });
