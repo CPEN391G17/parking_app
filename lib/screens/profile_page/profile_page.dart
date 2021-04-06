@@ -93,12 +93,12 @@ class _ProfilePage extends State<ProfilePage> {
                       onTap: () {
                         Navigator.pop(context);
                       },
-                      child: Icon(Icons.arrow_back_ios),
+                      child: Icon(Icons.arrow_back_ios, color: Colors.white,),
                     ),
                     backgroundColor: Color(0xFF73AEF5),
                     actions: <Widget>[
                       IconButton(
-                        icon: const Icon(Icons.edit),
+                        icon: const Icon(Icons.edit, color: Colors.white,),
                         onPressed: () {
                               editProfile(context, parkingUser);
                             }
@@ -165,7 +165,7 @@ class _ProfilePage extends State<ProfilePage> {
                         height: MediaQuery
                             .of(context)
                             .size
-                            .height / 8,
+                            .height / 10,
                         width: MediaQuery
                             .of(context)
                             .size

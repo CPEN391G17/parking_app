@@ -59,14 +59,14 @@ class _AddCoinPageState extends State<AddCoinPage>{
           onTap: () {
             Navigator.pop(context);
           },
-          child:Icon(Icons.arrow_back_ios),
+          child:Icon(Icons.arrow_back_ios, color: Colors.white,),
         ),
         backgroundColor: Color(0xFF73AEF5),
         iconTheme: IconThemeData(
           color: Colors.black,
         ),
         actions: [
-          IconButton(icon: Icon(Icons.done),
+          IconButton(icon: Icon(Icons.done, color: Colors.white,),
               onPressed: () {Navigator.of(context).pop(true);}
           )
         ],
@@ -115,7 +115,7 @@ class _AddCoinPageState extends State<AddCoinPage>{
               SizedBox(height: 10),
               Container(
                 width: MediaQuery.of(context).size.width / 1.4,
-                height: 45,
+                height: 60,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.0),
                     color: Colors.white

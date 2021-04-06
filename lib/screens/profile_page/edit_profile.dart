@@ -147,6 +147,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(
               color: Colors.white,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
               fontFamily: 'OpenSans',
             ),
             decoration: InputDecoration(
@@ -183,6 +185,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(
               color: Colors.white,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
               fontFamily: 'OpenSans',
             ),
             decoration: InputDecoration(
@@ -221,6 +225,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             controller: _lpnController,
             style: TextStyle(
               color: Colors.white,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
               fontFamily: 'OpenSans',
             ),
             decoration: InputDecoration(
@@ -259,6 +265,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             controller: _phoneController,
             style: TextStyle(
               color: Colors.white,
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
               fontFamily: 'OpenSans',
             ),
             decoration: InputDecoration(
@@ -287,7 +295,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           onTap: () {
             Navigator.pop(context);
           },
-          child:Icon(Icons.arrow_back_ios),
+          child:Icon(Icons.arrow_back_ios, color: Colors.white,),
         ),
         backgroundColor: Color(0xFF73AEF5),
         iconTheme: IconThemeData(
@@ -297,7 +305,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         GestureDetector(
               child: Padding(
                 padding: const EdgeInsets.only(right: 12.0),
-                child: Icon(Icons.done, color: Colors.black, size: 25),
+                child: Icon(Icons.done, color: Colors.white, size: 25),
               ),
               onTap: () => updateProfileData(context),
             )
@@ -360,7 +368,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           actions: <Widget>[
             new TextButton(
               child: new Text(isComplex ? "Yes" : "Ok",
-                style: TextStyle(fontFamily: 'OpenSans'),
+                style: TextStyle(
+                  color: Colors.blueAccent,
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'OpenSans',),
               ),
               onPressed: () {
                 Navigator.of(context).pop(true);
@@ -369,7 +381,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
             isComplex
                 ? new TextButton(
-              child: new Text("No"),
+              child: new Text("No", style: TextStyle(
+                color: Colors.blueAccent,
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'OpenSans',
+              ),),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -429,7 +446,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             children: <Widget>[
               SimpleDialogOption(
                 child: Text('Choose from Gallery',
-                  style: TextStyle(fontFamily: 'OpenSans'),
+                  style: TextStyle(
+                    color: Colors.blueAccent,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'OpenSans',),
                 ),
                 onPressed: () {
                   _pickImage('Gallery').then((selectedImage) {
@@ -457,7 +478,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               SimpleDialogOption(
                 child: Text('Take Photo',
-                    style: TextStyle(fontFamily: 'OpenSans'),
+                    style: TextStyle(
+                      color: Colors.blueAccent,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'OpenSans',),
                 ),
                 onPressed: () {
                   _pickImage('Camera').then((selectedImage) {
@@ -483,7 +508,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
               SimpleDialogOption(
                 child: Text('Cancel',
-                  style: TextStyle(fontFamily: 'OpenSans'),
+                  style: TextStyle(
+                    color: Colors.blueAccent,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'OpenSans',),
                 ),
                 onPressed: () {
                   Navigator.pop(context);

@@ -503,7 +503,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                         SizedBox(
                           width: 30,
                         ),
-                        _button(title: "Pay Parkoin $timerCost to extend parking?", onPressed: started==false ? ()=>  _controller.restart(duration: _timerduration.toInt()*3600) : null),
+                        _button(title: "Pay $timerCost ParKoin  to extend parking?", onPressed: started==false ? ()=>  _controller.restart(duration: _timerduration.toInt()*3600) : null),
                         SizedBox(
                           width: 10,
                         ),
@@ -574,7 +574,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                   borderRadius: BorderRadius.circular(22.0),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black54,
+                      color: Colors.white70,
                       blurRadius: 6.0,
                       spreadRadius: 0.5,
                       offset: Offset(
@@ -584,8 +584,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                   ],
                 ),
                 child: CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: Icon( (drawerOpen) ? Icons.menu : Icons.close, color: Colors.black,),
+                  backgroundColor: Colors.blueAccent,
+                  child: Icon( (drawerOpen) ? Icons.menu : Icons.close, color: Colors.white,),
                   radius: 20.0,
 
                 ),
@@ -812,7 +812,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                               ),
                               Expanded(child: Container()),
                               Text(
-                                ((tripdirectiondetails != null) ? '${AssistantMethods.calculateFares(tripdirectiondetails, duration)}\ Parkoin ' : ''), style: TextStyle(
+                                ((tripdirectiondetails != null) ? '${AssistantMethods.calculateFares(tripdirectiondetails, duration)}\ ParKoin  ' : ''), style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
@@ -921,7 +921,18 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0)),
-                color: Colors.white,
+                //color: Colors.white,
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFF73AEF5),
+                    Color(0xFF61A4F1),
+                    Color(0xFF478DE0),
+                    Color(0xFF398AE5),
+                  ],
+                  stops: [0.1, 0.4, 0.7, 0.9],
+                ),
                 boxShadow: [
                   BoxShadow(
                     spreadRadius: 0.5,
@@ -949,17 +960,19 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                       "Finding Parking",
                     ],
                     textStyle: TextStyle(
-                    fontSize: 35.0,
-                    fontFamily: "Helvetica Neue",
+                      color: Colors.white,
+                      fontSize: 35.0,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'OpenSans',
                     ),
                     colors: [
+                      Colors.white,
+                      Colors.white60,
+                      Colors.white70,
+                      Colors.grey,
                       Colors.blueGrey,
-                      Colors.blueAccent,
-                      Colors.lightBlueAccent,
-                      Colors.lightBlue,
-                      Colors.blue,
-                      Colors.cyanAccent,
-                      Colors.cyan,
+                      Colors.black26,
+                      Colors.black54,
                     ],
                     textAlign: TextAlign.center,
                     isRepeatingAnimation: true,
@@ -981,13 +994,17 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                           borderRadius: BorderRadius.circular(26.0),
                           border: Border.all(width: 2.0, color: Colors.grey[300]),
                         ),
-                        child: Icon(Icons.close, size: 26.0,),
+                        child: Icon(Icons.close, size: 26.0, color: Colors.blueAccent,),
                       ),
                     ),
                     SizedBox(height: 10.0,),
                     Container(
                       width: double.infinity,
-                      child: Text("Cancel booking", textAlign: TextAlign.center, style: TextStyle(fontSize: 12.0, fontFamily: "Brand-Bold" ,fontWeight: FontWeight.bold),),
+                      child: Text("Cancel booking", textAlign: TextAlign.center, style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'OpenSans',),),
                     ),
                   ],
                 ),
@@ -1002,7 +1019,18 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0)),
-                color: Colors.white,
+                // color: Colors.white,
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFF73AEF5),
+                    Color(0xFF61A4F1),
+                    Color(0xFF478DE0),
+                    Color(0xFF398AE5),
+                  ],
+                  stops: [0.1, 0.4, 0.7, 0.9],
+                ),
                 boxShadow: [
                   BoxShadow(
                     spreadRadius: 0.5,
@@ -1027,20 +1055,22 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                           print("Tap Event");
                         },
                         text: [
-                          "LPR failed! Please use QR to verify",
+                          "LPR failed! Please use QR or BT to verify",
                         ],
                         textStyle: TextStyle(
+                          color: Colors.white,
                           fontSize: 35.0,
-                          fontFamily: "Helvetica Neue",
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'OpenSans',
                         ),
                         colors: [
+                          Colors.white,
+                          Colors.white60,
+                          Colors.white70,
+                          Colors.grey,
                           Colors.blueGrey,
-                          Colors.blueAccent,
-                          Colors.lightBlueAccent,
-                          Colors.lightBlue,
-                          Colors.blue,
-                          Colors.cyanAccent,
-                          Colors.cyan,
+                          Colors.black26,
+                          Colors.black54,
                         ],
                         textAlign: TextAlign.center,
                         isRepeatingAnimation: true,
@@ -1056,17 +1086,19 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                           "Reached parking, performing lpr",
                         ],
                         textStyle: TextStyle(
+                          color: Colors.white,
                           fontSize: 35.0,
-                          fontFamily: "Helvetica Neue",
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'OpenSans',
                         ),
                         colors: [
+                          Colors.white,
+                          Colors.white60,
+                          Colors.white70,
+                          Colors.grey,
                           Colors.blueGrey,
-                          Colors.blueAccent,
-                          Colors.lightBlueAccent,
-                          Colors.lightBlue,
-                          Colors.blue,
-                          Colors.cyanAccent,
-                          Colors.cyan,
+                          Colors.black26,
+                          Colors.black54,
                         ],
                           textAlign: TextAlign.center,
                         isRepeatingAnimation: true,
@@ -1080,43 +1112,70 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                           "Please reach parking to verify booking",
                         ],
                         textStyle: TextStyle(
+                          color: Colors.white,
                           fontSize: 35.0,
-                          fontFamily: "Helvetica Neue",
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'OpenSans',
                         ),
                         colors: [
+                          Colors.white,
+                          Colors.white60,
+                          Colors.white70,
+                          Colors.grey,
                           Colors.blueGrey,
-                          Colors.blueAccent,
-                          Colors.lightBlueAccent,
-                          Colors.lightBlue,
-                          Colors.blue,
-                          Colors.cyanAccent,
-                          Colors.cyan,
+                          Colors.black26,
+                          Colors.black54,
                         ],
                         textAlign: TextAlign.center,
                         isRepeatingAnimation: true,
                         repeatForever: true,
                       ),
                     ),
-                    SizedBox(height: 22.0,),
-                    GestureDetector(
-                      onTap: isButtonEnabled == true ? () {
-                        Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => QRPage()),
-                        );
-                      } : null,
-                      child: isButtonEnabled ? Container(
-                        height: 60.0,
-                        width: 60.0,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(26.0),
-                          border: Border.all(width: 2.0, color: Colors.grey[300]),
+                    // SizedBox(height: 18.0,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        GestureDetector(
+                          onTap: isButtonEnabled == true ? () {
+                            Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => QRPage()),
+                            );
+                          } : null,
+                          child: isButtonEnabled ? Container(
+                            height: 60.0,
+                            width: 60.0,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(25.0),
+                              border: Border.all(width: 2.0, color: Colors.grey[300]),
+                            ),
+                            child: Icon(Icons.qr_code_scanner , size: 25.0, color: Colors.blueAccent,),
+                          ) : Container(),
                         ),
-                        child: Icon(Icons.payment , size: 26.0,),
-                      ) : Container(),
+                        GestureDetector(
+                          onTap: isButtonEnabled == true ? () {
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(builder: (context) => BTPay()),
+                            // );
+                            print("BT Tap Event");
+                          } : null,
+                          child: isButtonEnabled ? Container(
+                            height: 60.0,
+                            width: 60.0,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(25.0),
+                              border: Border.all(width: 2.0, color: Colors.grey[300]),
+                            ),
+                            child: Icon(Icons.bluetooth , size: 25.0, color: Colors.blueAccent,),
+                          ) : Container(),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 10.0,),
+
+                    SizedBox(height: 5.0,),
                   ],
                 ),
               ),
