@@ -38,6 +38,8 @@ class _LoginPageState extends State<LoginPage> {
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(
               color: Colors.white,
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
               fontFamily: 'OpenSans',
             ),
             decoration: InputDecoration(
@@ -74,6 +76,8 @@ class _LoginPageState extends State<LoginPage> {
             obscureText: true,
             style: TextStyle(
               color: Colors.white,
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
               fontFamily: 'OpenSans',
             ),
             decoration: InputDecoration(
@@ -123,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
           style: TextStyle(
             color: Color(0xFF527DAA),
             letterSpacing: 1.5,
-            fontSize: 18.0,
+            fontSize: 20.0,
             fontWeight: FontWeight.bold,
             fontFamily: 'OpenSans',
           ),
@@ -144,16 +148,16 @@ class _LoginPageState extends State<LoginPage> {
               text: 'Don\'t have an Account? ',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 18.0,
-                fontWeight: FontWeight.w400,
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
                 fontFamily: 'OpenSans',
               ),
             ),
             TextSpan(
               text: 'Sign Up',
               style: TextStyle(
-                color: Colors.white,
-                fontSize: 18.0,
+                color: Colors.white70,
+                fontSize: 20.0,
                 fontWeight: FontWeight.bold,
                 fontFamily: 'OpenSans',
               ),

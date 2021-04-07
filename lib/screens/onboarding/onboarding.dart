@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:parking_app/models/slider_model.dart';
 import 'package:parking_app/screens/home_page/home_page.dart';
+import 'package:parking_app/screens/mainscreen/mainscreen.dart';
 import 'package:parking_app/widgets/slider_tile.dart';
 
 class Onboarding extends StatefulWidget {
@@ -84,6 +85,8 @@ class _Onboarding extends State<Onboarding>{
                     "Skip",
                     style: TextStyle(
                       color: Colors.white,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
                       fontFamily: 'OpenSans',
                     ),
                   ),
@@ -105,6 +108,8 @@ class _Onboarding extends State<Onboarding>{
                     "Next",
                     style: TextStyle(
                       color: Colors.white,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold,
                       fontFamily: 'OpenSans',
                     ),
                   ),
@@ -120,14 +125,15 @@ class _Onboarding extends State<Onboarding>{
             onTap: (){
               Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => HomePage()));
+                  MaterialPageRoute(builder: (context) => MainScreen()));
             },
           child: Text(
             "Get started now!",
             style: TextStyle(
               color: Colors.white,
-              fontWeight: FontWeight.w600,
-              fontSize: 25,
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'OpenSans',
             ),
           ),
       ),

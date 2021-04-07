@@ -42,6 +42,8 @@ class _RegisterPageState extends State<RegisterPage> {
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(
               color: Colors.white,
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
               fontFamily: 'OpenSans',
             ),
             decoration: InputDecoration(
@@ -78,6 +80,8 @@ class _RegisterPageState extends State<RegisterPage> {
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(
               color: Colors.white,
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
               fontFamily: 'OpenSans',
             ),
             decoration: InputDecoration(
@@ -114,6 +118,8 @@ class _RegisterPageState extends State<RegisterPage> {
             obscureText: true,
             style: TextStyle(
               color: Colors.white,
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
               fontFamily: 'OpenSans',
             ),
             decoration: InputDecoration(
@@ -152,6 +158,8 @@ class _RegisterPageState extends State<RegisterPage> {
             controller: _lpnField,
             style: TextStyle(
               color: Colors.white,
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
               fontFamily: 'OpenSans',
             ),
             decoration: InputDecoration(
@@ -190,6 +198,8 @@ class _RegisterPageState extends State<RegisterPage> {
             controller: _phoneField,
             style: TextStyle(
               color: Colors.white,
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
               fontFamily: 'OpenSans',
             ),
             decoration: InputDecoration(
@@ -252,7 +262,7 @@ class _RegisterPageState extends State<RegisterPage> {
           style: TextStyle(
             color: Color(0xFF527DAA),
             letterSpacing: 1.5,
-            fontSize: 18.0,
+            fontSize: 20.0,
             fontWeight: FontWeight.bold,
             fontFamily: 'OpenSans',
           ),
@@ -273,16 +283,18 @@ class _RegisterPageState extends State<RegisterPage> {
               text: 'Already have an Account? ',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 18.0,
-                fontWeight: FontWeight.w400,
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+                fontFamily: 'OpenSans',
               ),
             ),
             TextSpan(
               text: 'Login here!',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 18.0,
+                fontSize: 20.0,
                 fontWeight: FontWeight.bold,
+                fontFamily: 'OpenSans',
               ),
             ),
           ],

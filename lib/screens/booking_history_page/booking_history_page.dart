@@ -46,13 +46,13 @@ class _BookingHistoryPage extends State<BookingHistoryPage> {
           onTap: () {
             Navigator.pop(context);
           },
-          child:Icon(Icons.arrow_back_ios, color: Colors.white,),
+          child:Icon(Icons.arrow_back_ios, color: Colors.white, size: 25.0,),
           ),
           title: Text(
             "Booking History",
             style: TextStyle(
               color: Colors.white,
-              fontSize: 40.0,
+              fontSize: 35.0,
               fontWeight: FontWeight.bold,
               fontFamily: 'OpenSans',
             ),
@@ -102,7 +102,7 @@ class _BookingHistoryPage extends State<BookingHistoryPage> {
            Container(
              child:Card(
              shape: RoundedRectangleBorder(
-               borderRadius: BorderRadius.circular(10.0),
+               borderRadius: BorderRadius.circular(15.0),
              ),
              clipBehavior: Clip.antiAlias,
              child: Column(
@@ -124,17 +124,17 @@ class _BookingHistoryPage extends State<BookingHistoryPage> {
                    style: TextStyle(
                      color: Colors.blueAccent,
                      fontSize: 20.0,
-                     fontWeight: FontWeight.normal,
+                     fontWeight: FontWeight.bold,
                      fontFamily: 'OpenSans',
                    ),
                  ),
                Text(
-                 "duration: " + history.duration.toString(),
+                 "duration: " + history.duration.toString() + " hours",
                  textAlign: TextAlign.center,
                  style: TextStyle(
                    color: Colors.blueAccent,
                    fontSize: 20.0,
-                   fontWeight: FontWeight.normal,
+                   fontWeight: FontWeight.bold,
                    fontFamily: 'OpenSans',
                  ),
                ),

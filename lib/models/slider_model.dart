@@ -37,22 +37,22 @@ List <SliderModel> getSlides() {
 
   //1
   sliderModel.setImageAssetPath("assets/images/test.jpg");
-  sliderModel.setTitle("Slide 1");
-  sliderModel.setDescription("Search destination");
+  sliderModel.setTitle("Welcome to ParKing!");
+  sliderModel.setDescription("A revolutionary pay to park service");
   slides.add(sliderModel);
 
   sliderModel = new SliderModel();
   //2
   sliderModel.setImageAssetPath("assets/images/test.jpg");
-  sliderModel.setTitle("Slide 2");
-  sliderModel.setDescription("Book parking");
+  sliderModel.setTitle("Pay using ParKoins");
+  sliderModel.setDescription("Use ParKoins to park anywhere in Canada. Use License Plate Recognition, QR and BT to pay");
   slides.add(sliderModel);
 
   sliderModel = new SliderModel();
   //3
   sliderModel.setImageAssetPath("assets/images/test.jpg");
-  sliderModel.setTitle("Slide 3");
-  sliderModel.setDescription("Verify at parking");
+  sliderModel.setTitle("CPEN 391 Concept");
+  sliderModel.setDescription("This has been made for CPEN 391 by Group#17.");
   slides.add(sliderModel);
 
   return slides;
