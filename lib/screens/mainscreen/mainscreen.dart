@@ -100,9 +100,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
       _mapStyle = string;
     });
     _controllerCenterRight =
-        ConfettiController(duration: const Duration(seconds: 10));
+        ConfettiController(duration: const Duration(seconds: 3));
     _controllerCenterLeft =
-        ConfettiController(duration: const Duration(seconds: 10));
+        ConfettiController(duration: const Duration(seconds: 3));
     // _controllerTopCenter =
     //     ConfettiController(duration: const Duration(seconds: 10));
   }
@@ -467,12 +467,48 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
               height: timerContainerHeight,
               child: Column(
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      //CENTER LEFT - Emit right
+                      ConfettiWidget(
+                          confettiController: _controllerCenterLeft,
+                          blastDirection: 0, // radial value - RIGHT
+                          particleDrag: 0.05, // apply drag to the confetti
+                          emissionFrequency: 0.05, // how often it should emit
+                          numberOfParticles: 20, // number of particles to emit
+                          gravity: 0.05, // gravity - or fall speed
+                          shouldLoop: false,
+                          colors: const [
+                            Colors.green,
+                            Colors.blue,
+                            Colors.pink
+                          ],
+                        ),
+                      //CENTER RIGHT -- Emit left
+                      ConfettiWidget(
+                        confettiController: _controllerCenterRight,
+                        blastDirection: pi, // radial value - LEFT
+                        particleDrag: 0.05, // apply drag to the confetti
+                        emissionFrequency: 0.05, // how often it should emit
+                        numberOfParticles: 20, // number of particles to emit
+                        gravity: 0.05, // gravity - or fall speed
+                        shouldLoop: false,
+                        colors: const [
+                          Colors.green,
+                          Colors.blue,
+                          Colors.pink
+                        ], // manually specify the colors to be used
+                      ),
+                    ],
+                  ),
                   SizedBox(height: 300.0,),
                   SizedBox(
                     width: double.infinity,
                     child: Center(
                         child: Stack(
                           children: <Widget>[
+
                             CircularCountDownTimer(
                               // Countdown duration in Seconds.
                               duration: 3600,
@@ -562,38 +598,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                                 });
                               },
                             ),
-
-                            //CENTER RIGHT -- Emit left
-                            ConfettiWidget(
-                                  confettiController: _controllerCenterRight,
-                                  blastDirection: pi, // radial value - LEFT
-                                  particleDrag: 0.05, // apply drag to the confetti
-                                  emissionFrequency: 0.05, // how often it should emit
-                                  numberOfParticles: 20, // number of particles to emit
-                                  gravity: 0.05, // gravity - or fall speed
-                                  shouldLoop: false,
-                                  colors: const [
-                                    Colors.green,
-                                    Colors.blue,
-                                    Colors.pink
-                                  ], // manually specify the colors to be used
-                                ),
-
-                            //CENTER LEFT - Emit right
-                            ConfettiWidget(
-                                  confettiController: _controllerCenterLeft,
-                                  blastDirection: 0, // radial value - RIGHT
-                                  particleDrag: 0.05, // apply drag to the confetti
-                                  emissionFrequency: 0.05, // how often it should emit
-                                  numberOfParticles: 20, // number of particles to emit
-                                  gravity: 0.05, // gravity - or fall speed
-                                  shouldLoop: false,
-                                  colors: const [
-                                    Colors.green,
-                                    Colors.blue,
-                                    Colors.pink
-                                  ],
-                                ),
                           ],
                         ),
                     ),

@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:parking_app/DataHandler/appData.dart';
 import 'package:parking_app/models/booking_history.dart';
 import 'package:parking_app/resources/firebase_provider.dart';
-import 'package:parking_app/widgets/coloredCard.dart';
 
 class BookingHistoryPage extends StatefulWidget {
   @override
