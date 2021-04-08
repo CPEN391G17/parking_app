@@ -20,6 +20,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   bool _isLoading = false;
   bool _isInit = true;
+  // String rating;
 
   @override
   void didChangeDependencies() {
@@ -296,6 +297,8 @@ class PredictionTile extends StatelessWidget {
   }
   void getPlaceAddressDetails(String placeId, context) async{
 
+    double rating;
+
     showDialog(
         context: context,
         builder: (BuildContext context) => Center(child: CircularProgressIndicator(),)//ProgressDialog(message: "Setting Destination, Please Wait...",),
@@ -336,10 +339,16 @@ class PredictionTile extends StatelessWidget {
       }
       if(parking_response["status"] == "OK"){
         Address parking_address = Address();
-        parking_address.placeName = parking_response["results"][0]["name"];
-        parking_address.placeId = parking_response["results"][0]["place_id"];
-        parking_address.latitude = parking_response["results"][0]["geometry"]["location"]["lat"];
-        parking_address.longitude = parking_response["results"][0]["geometry"]["location"]["lng"];
+        parking_address.placeName = parking_response["results"][1]["name"];
+        parking_address.placeId = parking_response["results"][1]["place_id"];
+        parking_address.latitude = parking_response["results"][1]["geometry"]["location"]["lat"];
+        parking_address.longitude = parking_response["results"][1]["geometry"]["location"]["lng"];
+        //
+        // rating = parking_response["results"][1]["rating"];
+        // print("rating is ::");
+        // print(rating);
+
+        parking_address.rating = parking_response["results"][1]["rating"];
 
         Provider.of<AppData>(context, listen: false).updatEndLocationAddress(parking_address);
         print("This is Parking Location ::");

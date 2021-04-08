@@ -52,6 +52,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
   String uid;
   String pid;
+  String userName;
 
   Completer<GoogleMapController> _controllerGoogleMap = Completer();
   GoogleMapController newGoogleMapController;
@@ -96,6 +97,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   void initState() {
     super.initState();
     getUid();
+    getName();
     rootBundle.loadString('assets/mapStyle.txt').then((string) {
       _mapStyle = string;
     });
@@ -109,6 +111,16 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
   void getUid() async {
     uid = await _firebaseProvider.currentUser();
+    print("uid is ::");
+    print(uid);
+  }
+
+  String capitalize(String s) => s[0].toUpperCase() + s.substring(1).toLowerCase();
+
+  void getName() async {
+    userName = await _firebaseProvider.currentUserName();
+    print("UserName is ::");
+    print(userName);
   }
 
   void displayTimerContainer() {
@@ -224,7 +236,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   void displayVerifyRequestContainer() {
     setState(() {
       timerContainerHeight = 0.0;
-      verifyRideContainerHeight = 250.0;
+      verifyRideContainerHeight = 300.0;
       requestRideContainerHeight = 0.0;
       rideDetailsContainerHeight = 0;
       bottomPaddingofMap = 230.0;
@@ -236,7 +248,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
     setState(() {
       verifyRideContainerHeight = 0;
       timerContainerHeight = 0.0;
-      requestRideContainerHeight = 250.0;
+      requestRideContainerHeight = 300.0;
       rideDetailsContainerHeight = 0;
       bottomPaddingofMap = 230.0;
       drawerOpen = true;
@@ -267,7 +279,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
     setState(() {
       searchContainerHeight = 0.0;
       timerContainerHeight = 0.0;
-      rideDetailsContainerHeight = 240.0;
+      rideDetailsContainerHeight = 315.0;
       bottomPaddingofMap = 230.0;
       drawerOpen = false;
     });
@@ -770,7 +782,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 6.0),
-                      Text("Hi there,", style: TextStyle(
+                      Text("Hi ${capitalize(userName)},", style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
@@ -932,7 +944,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Parking", style: TextStyle(
+                                    "Distance", style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 20.0,
                                     fontWeight: FontWeight.bold,
@@ -960,8 +972,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                           ),
                         ),
                       ),
+                      Divider(),
+                      // SizedBox(height: 10.0,),
 
-                      SizedBox(height: 15.0,),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20.0),
                         child: Row(
@@ -969,29 +982,79 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                             IconButton(
                               splashColor: Colors.pink,
                               splashRadius: 15.0,
-                              icon: Icon(Icons.access_time, size: 30.0, color: Colors.white,),
-                              onPressed: () async {
-                                  var resultingDuration = await showDurationPicker(
-                                    context: context,
-                                    initialTime: Duration(minutes: (duration * 60).toInt()),
-                                  );
-                                  setState(() {
-                                    duration = (resultingDuration.inMinutes / 60);
-                                    print(duration);
-                                  });
-                                },
+                              icon: Icon(Icons.location_on, size: 25.0, color: Colors.white,),
+                              onPressed: (){
+
+                              },
                             ),
                             SizedBox(width: 16.0,),
-                            Text("Duration: ${duration.toStringAsFixed(2)} hours", style: TextStyle(
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Text("Parking Name: ${Provider.of<AppData>(context, listen: false).endLocation.placeName}", style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'OpenSans',),),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // SizedBox(height: 5.0,),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Row(
+                          children: [
+                            IconButton(
+                              splashColor: Colors.pink,
+                              splashRadius: 15.0,
+                              icon: Icon(Icons.star_rate, size: 25.0, color: Colors.white,),
+                              onPressed: (){
+
+                              },
+                            ),
+                            SizedBox(width: 16.0,),
+                            Text("Parking Rating: ${Provider.of<AppData>(context, listen: false).endLocation.rating}", style: TextStyle(
                               color: Colors.white,
-                              fontSize: 20.0,
+                              fontSize: 18.0,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'OpenSans',),),
                           ],
                         ),
                       ),
 
-                      SizedBox(height: 24.0,),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Row(
+                          children: [
+                            IconButton(
+                              splashColor: Colors.pink,
+                              splashRadius: 15.0,
+                              icon: Icon(Icons.access_time, size: 25.0, color: Colors.white,),
+                              onPressed: () async {
+                                var resultingDuration = await showDurationPicker(
+                                  context: context,
+                                  initialTime: Duration(minutes: (duration * 60).toInt()),
+                                );
+                                setState(() {
+                                  duration = (resultingDuration.inMinutes / 60);
+                                  print(duration);
+                                });
+                              },
+                            ),
+                            SizedBox(width: 16.0,),
+                            Text("Duration: ${duration.toStringAsFixed(2)} hours", style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'OpenSans',),),
+                          ],
+                        ),
+                      ),
+                      // SizedBox(height: 10.0,),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.0),
                         child: RaisedButton(
@@ -1003,6 +1066,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                             print("Parking Requested");
                             displayRequestContainer();
                             var loc = Provider.of<AppData>(context, listen: false).endLocation;
+                            print("Final Location ::");
+                            print(loc.placeName);
                             pid = loc.placeId;
                             var lat = loc.latitude;
                             var lng = loc.longitude;
