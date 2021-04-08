@@ -786,7 +786,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 6.0),
-                      Text("Hi ${capitalize(userName)},", style: TextStyle(
+                      Text( userName != null ? "Hi ${capitalize(userName)}," : "Hi there,", style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
