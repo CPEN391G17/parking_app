@@ -359,4 +359,10 @@ class FirebaseProvider {
     return returnList;
   }
 
+  Future<String> currentUserName() async {
+    User user = firebaseAuth.currentUser;
+    DocumentSnapshot documentSnapshot = await parkingUsers.doc(user.uid).get();
+    return ParkingUser.fromDocument(documentSnapshot).displayName;
+  }
+
 }
