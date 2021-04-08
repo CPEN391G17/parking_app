@@ -28,6 +28,7 @@ import 'package:parking_app/widgets/custom_tile.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:confetti/confetti.dart';
 
 //parking app billing needs to enabled once it has been verified to enable Geocoding
 class MainScreen extends StatefulWidget{
@@ -88,6 +89,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
   String _mapStyle;
 
+  ConfettiController _controllerCenterRight;
+  ConfettiController _controllerCenterLeft;
+  // ConfettiController _controllerTopCenter;
   @override
   void initState() {
     super.initState();
@@ -95,6 +99,12 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
     rootBundle.loadString('assets/mapStyle.txt').then((string) {
       _mapStyle = string;
     });
+    _controllerCenterRight =
+        ConfettiController(duration: const Duration(seconds: 10));
+    _controllerCenterLeft =
+        ConfettiController(duration: const Duration(seconds: 10));
+    // _controllerTopCenter =
+    //     ConfettiController(duration: const Duration(seconds: 10));
   }
 
   void getUid() async {
@@ -115,6 +125,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
       print(_timerduration);
       print( (_timerduration*3600).toInt());
       _controller.restart(duration: (_timerduration*3600).toInt());
+      // _controllerCenterRight.play();
+      // _controllerCenterLeft.play();
     });
   }
 
@@ -459,95 +471,130 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                   SizedBox(
                     width: double.infinity,
                     child: Center(
-                        child: CircularCountDownTimer(
-                          // Countdown duration in Seconds.
-                          duration: 3600,
+                        child: Stack(
+                          children: <Widget>[
+                            CircularCountDownTimer(
+                              // Countdown duration in Seconds.
+                              duration: 3600,
 
-                          // Countdown initial elapsed Duration in Seconds.
-                          initialDuration: 0,
+                              // Countdown initial elapsed Duration in Seconds.
+                              initialDuration: 0,
 
-                          // Controls (i.e Start, Pause, Resume, Restart) the Countdown Timer.
-                          controller: _controller,
+                              // Controls (i.e Start, Pause, Resume, Restart) the Countdown Timer.
+                              controller: _controller,
 
-                          // Width of the Countdown Widget.
-                          width: MediaQuery.of(context).size.width / 2,
+                              // Width of the Countdown Widget.
+                              width: MediaQuery.of(context).size.width / 2,
 
-                          // Height of the Countdown Widget.
-                          height: 0.7*MediaQuery.of(context).size.height,
+                              // Height of the Countdown Widget.
+                              height: 0.7*MediaQuery.of(context).size.height,
 
-                          // Ring Color for Countdown Widget.
-                          ringColor: Colors.lightBlueAccent,
+                              // Ring Color for Countdown Widget.
+                              ringColor: Colors.lightBlueAccent,
 
-                          // Ring Gradient for Countdown Widget.
-                          ringGradient: null,
+                              // Ring Gradient for Countdown Widget.
+                              ringGradient: null,
 
-                          // Filling Color for Countdown Widget.
-                          fillColor: Colors.white,
+                              // Filling Color for Countdown Widget.
+                              fillColor: Colors.white,
 
-                          // Filling Gradient for Countdown Widget.
-                          fillGradient: null,
-                          // fillGradient: LinearGradient(
-                          //   begin: Alignment.topCenter,
-                          //   end: Alignment.bottomCenter,
-                          //   colors: [
-                          //   Color(0xFF73AEF5),
-                          //   Color(0xFF61A4F1),
-                          //   Color(0xFF478DE0),
-                          //   Color(0xFF398AE5),
-                          //   ],
-                          //   stops: [0.1, 0.4, 0.7, 0.9],
-                          //   ),
+                              // Filling Gradient for Countdown Widget.
+                              fillGradient: null,
+                              // fillGradient: LinearGradient(
+                              //   begin: Alignment.topCenter,
+                              //   end: Alignment.bottomCenter,
+                              //   colors: [
+                              //   Color(0xFF73AEF5),
+                              //   Color(0xFF61A4F1),
+                              //   Color(0xFF478DE0),
+                              //   Color(0xFF398AE5),
+                              //   ],
+                              //   stops: [0.1, 0.4, 0.7, 0.9],
+                              //   ),
 
-                          // Background Color for Countdown Widget.
-                          backgroundColor: Colors.transparent,
+                              // Background Color for Countdown Widget.
+                              backgroundColor: Colors.transparent,
 
-                          // Background Gradient for Countdown Widget.
-                          backgroundGradient: null,
+                              // Background Gradient for Countdown Widget.
+                              backgroundGradient: null,
 
-                          // Border Thickness of the Countdown Ring.
-                          strokeWidth: 20.0,
+                              // Border Thickness of the Countdown Ring.
+                              strokeWidth: 20.0,
 
-                          // Begin and end contours with a flat edge and no extension.
-                          strokeCap: StrokeCap.round,
+                              // Begin and end contours with a flat edge and no extension.
+                              strokeCap: StrokeCap.round,
 
-                          // Text Style for Countdown Text.
-                          textStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 35.0,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'OpenSans',),
+                              // Text Style for Countdown Text.
+                              textStyle: TextStyle(
+                                color: Colors.white,
+                                fontSize: 35.0,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'OpenSans',),
 
-                          // Format for the Countdown Text.
-                          textFormat: CountdownTextFormat.HH_MM_SS,
+                              // Format for the Countdown Text.
+                              textFormat: CountdownTextFormat.HH_MM_SS,
 
-                          // Handles Countdown Timer (true for Reverse Countdown (max to 0), false for Forward Countdown (0 to max)).
-                          isReverse: true,
+                              // Handles Countdown Timer (true for Reverse Countdown (max to 0), false for Forward Countdown (0 to max)).
+                              isReverse: true,
 
-                          // Handles Animation Direction (true for Reverse Animation, false for Forward Animation).
-                          isReverseAnimation: false,
+                              // Handles Animation Direction (true for Reverse Animation, false for Forward Animation).
+                              isReverseAnimation: false,
 
-                          // Handles visibility of the Countdown Text.
-                          isTimerTextShown: true,
+                              // Handles visibility of the Countdown Text.
+                              isTimerTextShown: true,
 
-                          // Handles the timer start.
-                          autoStart: false,
+                              // Handles the timer start.
+                              autoStart: false,
 
-                          onStart: (){
-                            setState(() {
-                              //delete_coins();
-                              _firebaseProvider.addCoin(id, "-$timerCost"); //dynamically delte required coins on starting timer
-                              started = true;
-                            });
-                          },
+                              onStart: (){
+                                setState(() {
+                                  //delete_coins();
+                                  _firebaseProvider.addCoin(id, "-$timerCost"); //dynamically delte required coins on starting timer
+                                  _controllerCenterRight.play();
+                                  _controllerCenterLeft.play();
+                                  started = true;
+                                });
+                              },
 
-                          onComplete: (){
-                            setState(() {
-                              started = false;
-                            });
-                          },
+                              onComplete: (){
+                                setState(() {
+                                  started = false;
+                                });
+                              },
+                            ),
 
+                            //CENTER RIGHT -- Emit left
+                            ConfettiWidget(
+                                  confettiController: _controllerCenterRight,
+                                  blastDirection: pi, // radial value - LEFT
+                                  particleDrag: 0.05, // apply drag to the confetti
+                                  emissionFrequency: 0.05, // how often it should emit
+                                  numberOfParticles: 20, // number of particles to emit
+                                  gravity: 0.05, // gravity - or fall speed
+                                  shouldLoop: false,
+                                  colors: const [
+                                    Colors.green,
+                                    Colors.blue,
+                                    Colors.pink
+                                  ], // manually specify the colors to be used
+                                ),
 
-
+                            //CENTER LEFT - Emit right
+                            ConfettiWidget(
+                                  confettiController: _controllerCenterLeft,
+                                  blastDirection: 0, // radial value - RIGHT
+                                  particleDrag: 0.05, // apply drag to the confetti
+                                  emissionFrequency: 0.05, // how often it should emit
+                                  numberOfParticles: 20, // number of particles to emit
+                                  gravity: 0.05, // gravity - or fall speed
+                                  shouldLoop: false,
+                                  colors: const [
+                                    Colors.green,
+                                    Colors.blue,
+                                    Colors.pink
+                                  ],
+                                ),
+                          ],
                         ),
                     ),
                   ),
