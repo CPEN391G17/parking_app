@@ -786,7 +786,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 6.0),
-                      Text("Hi ${capitalize(userName)},", style: TextStyle(
+                      Text(userName != null ? "Hi ${capitalize(userName)}," : "Hi There,", style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
@@ -995,7 +995,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                             Expanded(
                               child: Column(
                                 children: [
-                                  Text("Parking Name: ${Provider.of<AppData>(context, listen: false).endLocation.placeName}", style: TextStyle(
+                                  Text( Provider.of<AppData>(context, listen: false).endLocation != null?
+                                    "Parking Name: ${Provider.of<AppData>(context, listen: false).endLocation.placeName}" : "Parking Name: N/A", style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 18.0,
                                     fontWeight: FontWeight.bold,
@@ -1021,7 +1022,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                               },
                             ),
                             SizedBox(width: 16.0,),
-                            Text("Parking Rating: ${Provider.of<AppData>(context, listen: false).endLocation.rating}", style: TextStyle(
+                            Text( Provider.of<AppData>(context, listen: false).endLocation != null ?
+                              "Parking Rating: ${Provider.of<AppData>(context, listen: false).endLocation.rating}" : "Parking Rating: N/A", style: TextStyle(
                               color: Colors.white,
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
