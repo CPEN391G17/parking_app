@@ -139,6 +139,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
       _controller.restart(duration: (_timerduration*3600).toInt());
       _controllerCenterRight.play();
       _controllerCenterLeft.play();
+      Fluttertoast.showToast(msg: "Payment Successful");
     });
   }
 

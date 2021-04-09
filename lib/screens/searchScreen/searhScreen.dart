@@ -221,7 +221,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   void findPlace(String placeName) async{
     if(placeName.length > 1){
-      String autoCompleteURL = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey&sessiontoken=1234567890&components=country:ca";
+      String autoCompleteURL = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$placeName&key=$mapKey&sessiontoken=1234567890";//&components=country:ca";
 
       var response = await RequestAssistant.getRequest(autoCompleteURL);
 
@@ -329,7 +329,8 @@ class PredictionTile extends StatelessWidget {
           builder: (BuildContext context) => Center(child: CircularProgressIndicator(),)//ProgressDialog(message: "Setting Destination, Please Wait...",),
       );
 
-      String parkingPlaceDetailsURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$lat,$lng&rankby=distance&type=parking&key=$mapKey";
+      String parkingPlaceDetailsURL = "https://maps.googleapis.com/maps/api/place/details/json?place_id=$placeId&key=$mapKey"; //comment if not using bt on phone
+      //String parkingPlaceDetailsURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$lat,$lng&rankby=distance&type=parking&key=$mapKey"; //uncommnet for Canadian parkings
       var parking_response = await RequestAssistant.getRequest(parkingPlaceDetailsURL);
 
       Navigator.pop(context);
@@ -339,16 +340,23 @@ class PredictionTile extends StatelessWidget {
       }
       if(parking_response["status"] == "OK"){
         Address parking_address = Address();
-        parking_address.placeName = parking_response["results"][1]["name"];
-        parking_address.placeId = parking_response["results"][1]["place_id"];
-        parking_address.latitude = parking_response["results"][1]["geometry"]["location"]["lat"];
-        parking_address.longitude = parking_response["results"][1]["geometry"]["location"]["lng"];
+        // parking_address.placeName = parking_response["results"][1]["name"];
+        // parking_address.placeId = parking_response["results"][1]["place_id"];
+        // parking_address.latitude = parking_response["results"][1]["geometry"]["location"]["lat"];
+        // parking_address.longitude = parking_response["results"][1]["geometry"]["location"]["lng"];
+        // //
+        // // rating = parking_response["results"][1]["rating"];
+        // // print("rating is ::");
+        // // print(rating);
         //
-        // rating = parking_response["results"][1]["rating"];
-        // print("rating is ::");
-        // print(rating);
+        // parking_address.rating = parking_response["results"][1]["rating"];
 
-        parking_address.rating = parking_response["results"][1]["rating"];
+        //next 4 lines for bt demo only
+        parking_address.placeName = parking_response["result"]["name"];;
+        parking_address.placeId = placeId;
+        parking_address.latitude = parking_response["result"]["geometry"]["location"]["lat"];
+        parking_address.longitude = parking_response["result"]["geometry"]["location"]["lng"];
+
 
         Provider.of<AppData>(context, listen: false).updatEndLocationAddress(parking_address);
         print("This is Parking Location ::");
