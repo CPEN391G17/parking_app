@@ -237,7 +237,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   void displayVerifyRequestContainer() {
     setState(() {
       timerContainerHeight = 0.0;
-      verifyRideContainerHeight = 300.0;
+      verifyRideContainerHeight = 320.0;
       requestRideContainerHeight = 0.0;
       rideDetailsContainerHeight = 0;
       bottomPaddingofMap = 230.0;
@@ -1359,6 +1359,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                             }
                             else{
                               print("QR verification failed");
+                              Fluttertoast.showToast(msg: "QR Auth failed, Try Bluetooth");
                             }
                             // Navigator.push(
                             // context,
