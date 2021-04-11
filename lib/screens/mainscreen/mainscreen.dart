@@ -71,7 +71,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   Set<Circle> circlesSet = {};
 
   double rideDetailsContainerHeight = 0;
-  double searchContainerHeight = 300.0;
+  double searchContainerHeight = 320.0;
   double requestRideContainerHeight = 0;
   double verifyRideContainerHeight = 0.0;
   double timerContainerHeight = 0.0;
@@ -92,6 +92,8 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
   ConfettiController _controllerCenterRight;
   ConfettiController _controllerCenterLeft;
+
+  // String subPid = "EQkWW";
   // ConfettiController _controllerTopCenter;
   @override
   void initState() {
@@ -215,7 +217,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
     while(Geolocator.distanceBetween(
         endLatLng.latitude, endLatLng.longitude,
-        startLatLng.latitude, startLatLng.longitude) > 15) {
+        startLatLng.latitude, startLatLng.longitude) > 150) {
         print("Reroute called");
         locateRoutePosition();
         await getRoutePlaceDirection();
@@ -261,7 +263,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
       myLocationIconVisible = true;
       timerContainerHeight = 0;
       drawerOpen = true;
-      searchContainerHeight = 300.0;
+      searchContainerHeight = 320.0;
       rideDetailsContainerHeight = 0.0;
       bottomPaddingofMap = 230.0;
       requestRideContainerHeight = 0.0;
@@ -271,6 +273,9 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
       circlesSet.clear();
       pLineCoordinates.clear();
       startTimer = false;
+      createdRequest = false;
+      isButtonEnabled = false;
+      startingLpr = false;
     });
     locatePosition();
   }
@@ -1266,7 +1271,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                           print("Tap Event");
                         },
                         text: [
-                          "LPR failed! Please use QR or BT to verify",
+                          "LPR failed! Please use BT and QR to verify",
                         ],
                         textStyle: TextStyle(
                           color: Colors.white,
@@ -1344,38 +1349,38 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                     ),
                     // SizedBox(height: 18.0,),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        GestureDetector(
-                          onTap: isButtonEnabled == true ? () async {
-                            String codeSanner = await BarcodeScanner.scan();
-                            setState(() {
-                              qrCodeResult = codeSanner;
-                            });
-
-                            if(qrCodeResult == Provider.of<AppData>(context, listen: false).endLocation.placeId){
-                              displayTimerContainer();
-                              print("QR verification successful");
-                            }
-                            else{
-                              print("QR verification failed");
-                            }
-                            // Navigator.push(
-                            // context,
-                            // MaterialPageRoute(builder: (context) => QRPage()),
-                            // );
-                          } : null,
-                          child: isButtonEnabled ? Container(
-                            height: 60.0,
-                            width: 60.0,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(25.0),
-                              border: Border.all(width: 2.0, color: Colors.grey[300]),
-                            ),
-                            child: Icon(Icons.qr_code_scanner , size: 25.0, color: Colors.blueAccent,),
-                          ) : Container(),
-                        ),
+                        // GestureDetector(
+                        //   onTap: isButtonEnabled == true ? () async {
+                        //     String codeSanner = await BarcodeScanner.scan();
+                        //     setState(() {
+                        //       qrCodeResult = codeSanner;
+                        //     });
+                        //
+                        //     if(qrCodeResult == Provider.of<AppData>(context, listen: false).endLocation.placeId){
+                        //       displayTimerContainer();
+                        //       print("QR verification successful");
+                        //     }
+                        //     else{
+                        //       print("QR verification failed");
+                        //     }
+                        //     // Navigator.push(
+                        //     // context,
+                        //     // MaterialPageRoute(builder: (context) => QRPage()),
+                        //     // );
+                        //   } : null,
+                        //   child: isButtonEnabled ? Container(
+                        //     height: 60.0,
+                        //     width: 60.0,
+                        //     decoration: BoxDecoration(
+                        //       color: Colors.white,
+                        //       borderRadius: BorderRadius.circular(25.0),
+                        //       border: Border.all(width: 2.0, color: Colors.grey[300]),
+                        //     ),
+                        //     child: Icon(Icons.qr_code_scanner , size: 25.0, color: Colors.blueAccent,),
+                        //   ) : Container(),
+                        // ),
                         GestureDetector(
                           onTap: isButtonEnabled == true ? () {
                             _blueToothVerification(uid, pid);
@@ -1637,7 +1642,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
   String _hash(String key, String pid) {
     print("_hash : key = $key\n");
-    print("_hash : pid = $key\n");
+    print("_hash : pid = $pid\n");
 
     var str = key + pid;
     int hash = 0, i, chr, len;
@@ -1654,11 +1659,10 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
   void _blueToothVerification(String uid, String pid) async {
     String result = "";
-    String address = "20:18:11:21:23:23";
+    String address = "20:18:11:21:23:05";
     try {
       BluetoothConnection connection = await BluetoothConnection.toAddress(address);
       print('Connected to the device');
-
       String lastTenUID = uid.substring(uid.length - 10);
       print("Lets send the key over the connection\n");
       connection.output.add(utf8.encode(";" + lastTenUID + ";" + "\r\n"));
@@ -1671,12 +1675,29 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
           connection.finish(); // Closing connection
           print('Disconnecting by local host');
         }
-      }).onDone(() {
+      }).onDone(() async {
         print('Disconnected by remote request');
         result = result.replaceAll(RegExp(r'[@;]'), '');
-        String ans = _hash(lastTenUID, pid);
-        if(ans == result) {
+        result = result.trim();
+        print("pid = "+pid);
+        print(result);
+        String subPid = pid.substring(19, 24).trim();
+        print(subPid);
+        print(subPid.compareTo(result) == 0);
+        if(subPid.compareTo(result) == 0) {
+          print('inside if statement');
+            // displayTimerContainer();
+          String codeScanner = await BarcodeScanner.scan();
+          setState(() {
+            qrCodeResult = codeScanner;
+          });
+          if(qrCodeResult == Provider.of<AppData>(context, listen: false).endLocation.placeId){
             displayTimerContainer();
+            print("QR verification successful");
+          }
+          else{
+            print("QR verification failed");
+          }
         }
         else {
           Fluttertoast.showToast(msg: "BlueTooth Auth failed, Try QR");
