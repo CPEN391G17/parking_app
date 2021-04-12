@@ -1138,7 +1138,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                           print("Tap Event");
                         },
                         text: [
-                          "Reached parking, performing lpr",
+                          "Reached parking, performing Lpr",
                         ],
                         textStyle: TextStyle(
                           color: Colors.white,
