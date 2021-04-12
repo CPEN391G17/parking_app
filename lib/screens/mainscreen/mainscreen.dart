@@ -650,7 +650,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 6.0),
-                      Text(userName != null ? "Hi ${capitalize(userName)}," : "Hi There,", style: TextStyle(
+                      Text(userName != null ? "Hi ${capitalize(userName)}," : "Hi there,", style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
@@ -1110,7 +1110,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                           print("Tap Event");
                         },
                         text: [
-                          "LPR failed! Please use BT and QR to verify",
+                          "LPR failed! Please use BT-QR Auth to verify",
                         ],
                         textStyle: TextStyle(
                           color: Colors.white,
@@ -1138,7 +1138,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                           print("Tap Event");
                         },
                         text: [
-                          "Reached parking, performing Lpr",
+                          "Reached parking, performing LPR",
                         ],
                         textStyle: TextStyle(
                           color: Colors.white,
@@ -1539,11 +1539,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
           }
         }
         else {
-          Fluttertoast.showToast(msg: "BlueTooth Auth failed, Try QR");
+          Fluttertoast.showToast(msg: "BlueTooth Auth failed, try again");
         }
       });
     } catch (exception) {
-      Fluttertoast.showToast(msg: 'Cannot connect, try again or use QR');
+      Fluttertoast.showToast(msg: "Cannot connect, try again");
     }
   }
 

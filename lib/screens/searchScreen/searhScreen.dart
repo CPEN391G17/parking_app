@@ -340,16 +340,16 @@ class PredictionTile extends StatelessWidget {
       }
       if(parking_response["status"] == "OK"){
         Address parking_address = Address();
-        parking_address.placeName = parking_response["results"][0]["name"];
-        parking_address.placeId = parking_response["results"][0]["place_id"];
-        parking_address.latitude = parking_response["results"][0]["geometry"]["location"]["lat"];
-        parking_address.longitude = parking_response["results"][0]["geometry"]["location"]["lng"];
+        parking_address.placeName = parking_response["results"][1]["name"];
+        parking_address.placeId = parking_response["results"][1]["place_id"];
+        parking_address.latitude = parking_response["results"][1]["geometry"]["location"]["lat"];
+        parking_address.longitude = parking_response["results"][1]["geometry"]["location"]["lng"];
         //
         // rating = parking_response["results"][1]["rating"];
         // print("rating is ::");
         // print(rating);
 
-        parking_address.rating = parking_response["results"][0]["rating"];
+        parking_address.rating = parking_response["results"][1]["rating"];
 
         //next 4 lines for bt demo only
         // parking_address.placeName = parking_response["result"]["name"];;
