@@ -30,13 +30,11 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:confetti/confetti.dart';
 
-//parking app billing needs to enabled once it has been verified to enable Geocoding
 class MainScreen extends StatefulWidget{
   static const String idScreen = "mainScreen";
 
   @override
   _MainScreenState createState() => _MainScreenState();
-
 }
 
 class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
@@ -44,6 +42,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   FirebaseProvider _firebaseProvider = FirebaseProvider();
 
   CountDownController _controller = CountDownController();
+
   double _timerduration = 3600;
   bool started = false;
   String id = 'parKoin';
@@ -92,8 +91,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
   ConfettiController _controllerCenterRight;
   ConfettiController _controllerCenterLeft;
-
-  // String subPid = "EQkWW";
   // ConfettiController _controllerTopCenter;
   @override
   void initState() {
@@ -103,26 +100,18 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
     rootBundle.loadString('assets/mapStyle.txt').then((string) {
       _mapStyle = string;
     });
-    _controllerCenterRight =
-        ConfettiController(duration: const Duration(seconds: 3));
-    _controllerCenterLeft =
-        ConfettiController(duration: const Duration(seconds: 3));
-    // _controllerTopCenter =
-    //     ConfettiController(duration: const Duration(seconds: 10));
+    _controllerCenterRight = ConfettiController(duration: const Duration(seconds: 3));
+    _controllerCenterLeft = ConfettiController(duration: const Duration(seconds: 3));
   }
 
   void getUid() async {
     uid = await _firebaseProvider.currentUser();
-    print("uid is ::");
-    print(uid);
   }
 
   String capitalize(String s) => s[0].toUpperCase() + s.substring(1).toLowerCase();
 
   void getName() async {
     userName = await _firebaseProvider.currentUserName();
-    print("UserName is ::");
-    print(userName);
   }
 
   void displayTimerContainer() {
@@ -135,9 +124,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
       bottomPaddingofMap = 230.0;
       drawerOpen = true;
       startTimer = true;
-      print("...................Sign of the times...................");
-      print(_timerduration);
-      print( (_timerduration*3600).toInt());
       _controller.restart(duration: (_timerduration*3600).toInt());
       _controllerCenterRight.play();
       _controllerCenterLeft.play();
@@ -148,20 +134,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
   void cancelParking(){
     setState(() {
       _controller.pause();
-      // String chars  =_controller.getTime();
-      //
-      // if(_controller.getTime().isNotEmpty) {
-      //   double currTime = double.parse("${_controller.getTime()}");
-      //   print("curr time :: ");
-      //   print(currTime);
-      //
-      //   double difference = _timerduration - currTime;
-      //   refundCost = timerCost - 200 * difference;
-      //   if (refundCost > 0) {
-      //     _firebaseProvider.addCoin(
-      //         id, "$refundCost"); //refund coins if cancelled early
-      //   }
-      // }
       print(_controller.getTime());
       resetApp();
     });
@@ -186,8 +158,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
             textAlign: TextAlign.center,
           ),
           onPressed: onPressed,//onPressed,
-
-          //color: Colors.blue,
         ));
   }
 
@@ -204,7 +174,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
       });
     }
     else if(progress == 'Confirmed') {
-      //Navigator.push(context, MaterialPageRoute(builder: (context) => TimerPage()));
       displayTimerContainer();
     }
   }
@@ -217,14 +186,12 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
     while(Geolocator.distanceBetween(
         endLatLng.latitude, endLatLng.longitude,
-        startLatLng.latitude, startLatLng.longitude) > 150) {
-        print("Reroute called");
+        startLatLng.latitude, startLatLng.longitude) > 15) {
         locateRoutePosition();
         await getRoutePlaceDirection();
         initPos = Provider.of<AppData>(context, listen: false).startLocation;
         startLatLng = LatLng(initPos.latitude, initPos.longitude);
     }
-    print("exited reroute");
     locateRoutePosition();
     await getRoutePlaceDirection();
     var loc = Provider.of<AppData>(context, listen: false).endLocation;
@@ -233,13 +200,12 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
       startingLpr = true;
     });
     verifyLpr();
-    print("reached destination");
   }
 
   void displayVerifyRequestContainer() {
     setState(() {
       timerContainerHeight = 0.0;
-      verifyRideContainerHeight = 300.0;
+      verifyRideContainerHeight = 320.0;
       requestRideContainerHeight = 0.0;
       rideDetailsContainerHeight = 0;
       bottomPaddingofMap = 230.0;
@@ -314,7 +280,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
     newGoogleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
 
     String address = await AssistantMethods.searchCoordinateAddress(_position, context);
-    print("This is your Address :: " + address);
   }
 
   static final CameraPosition _kGooglePlex = CameraPosition(
@@ -350,38 +315,12 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                       stops: [0.1, 0.4, 0.7, 0.9],
                     ),
                   ),
-                  // child: Row(
-                  //   // children: [
-                  //   //   Image.asset("assets/images/profilepic.jpg", height: 65.0, width: 65.0,),
-                  //   //   SizedBox(width: 16.0,),
-                  //   //   Column(
-                  //   //     mainAxisAlignment: MainAxisAlignment.center,
-                  //   //     // children: [
-                  //   //     //   Text("Profile Name", style: TextStyle(fontSize: 16.0, fontFamily: "Brand-Bold"),),
-                  //   //     //   SizedBox(height: 6.0,),
-                  //   //     //   Text("Visit Profile"),
-                  //   //     // ],
-                  //   //   ),
-                  //   // ],
-                  // ),
                 ),
               ),
-
-              //DividerWidget(),
-
-              //SizedBox(height: 12.0,),
 
               CustomListTile(Icons.person, "Profile", ()=>{
                 Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage())),
               }),
-              // CustomListTile(Icons.qr_code_scanner, "QR Scanner", ()=>{ Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => QRPage()),
-              // )}),
-              // CustomListTile(Icons.timer, "Timer", ()=>{ Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => TimerPage()),
-              // )}),
               CustomListTile(Icons.history, "Booking History", ()=>{
                 Navigator.push(context, MaterialPageRoute(builder: (context) => BookingHistoryPage())),
               }),
@@ -392,40 +331,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                 Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage()));
               },
               ),
-              // Container(
-              //   child: DrawerHeader(
-              //     decoration: BoxDecoration(
-              //       gradient: LinearGradient(
-              //         begin: Alignment.topCenter,
-              //         end: Alignment.bottomCenter,
-              //         colors: [
-              //           Color(0xFF73AEF5),
-              //           Color(0xFF61A4F1),
-              //           Color(0xFF478DE0),
-              //           Color(0xFF398AE5),
-              //         ],
-              //         stops: [0.1, 0.4, 0.7, 0.9],
-              //       ),
-              //     ),
-              //   ),
-              // ),
-              //Drawer Body Controls
-              // ListTile(
-              //  leading: Icon(Icons.history),
-              //  title: Text("Parking History", style: TextStyle(fontSize: 16.0,),),
-              // ),
-              // ListTile(
-              //   leading: Icon(Icons.person),
-              //   title: Text("Vist Profile", style: TextStyle(fontSize: 16.0,),),
-              // ),
-              // ListTile(
-              //   leading: Icon(Icons.info),
-              //   title: Text("About", style: TextStyle(fontSize: 16.0,),),
-              // ),
             ],
           ),
         ),
       ),
+
       body: Stack(
         children: [
           GoogleMap(
@@ -450,9 +360,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
               locatePosition();
             },
           ),
-
-
-          ///////////
 
           Positioned(
             bottom: 0.0,
@@ -519,17 +426,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
                               // Filling Gradient for Countdown Widget.
                               fillGradient: null,
-                              // fillGradient: LinearGradient(
-                              //   begin: Alignment.topCenter,
-                              //   end: Alignment.bottomCenter,
-                              //   colors: [
-                              //   Color(0xFF73AEF5),
-                              //   Color(0xFF61A4F1),
-                              //   Color(0xFF478DE0),
-                              //   Color(0xFF398AE5),
-                              //   ],
-                              //   stops: [0.1, 0.4, 0.7, 0.9],
-                              //   ),
 
                               // Background Color for Countdown Widget.
                               backgroundColor: Colors.transparent,
@@ -585,6 +481,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                         ),
                     ),
                   ),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -634,51 +531,12 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                       SizedBox(
                           width: 10
                       ),
-                      //_button(title: "Pay 200 to extend", onPressed: started==false ? ()=>  _controller.restart(duration: _duration) : null), //() => _controller.start()
-                      // MaterialButton(
-                      //   onPressed: () {
-                      //     if(started == false) {
-                      //       delete_coins();
-                      //       _controller.start();
-                      //     }
-                      //     else {
-                      //       null;
-                      //     }
-                      //   },
-                      //   child: Text("Pay 200 parKoins"),
-                      // ),
-
-                      // SizedBox(
-                      //   width: 10,
-                      // ),
-                      // _button(title: "Pause", onPressed: () => _controller.pause()),
-                      // SizedBox(
-                      //   width: 10,
-                      // ),
-                      // _button(title: "Resume", onPressed: () => _controller.resume()),
-                      // SizedBox(
-                      //   width: 10,
-                      // ),
-                      // _button(
-                      //     title: "Restart",
-                      //     onPressed: () => _controller.restart(duration: _duration))
                     ],
-                    // _button(title: "Pay 200 to extend", onPressed: started==false ? ()=>  _controller.restart(duration: _timerduration) : null),
-                    // _button(title: "Want to leave?", onPressed: () => _controller.pause()),
                   ),
-
-
-
                 ],
               ),
             ),
           ),
-
-
-
-          ///////////
-
-
 
           //HamburgerButton for Drawer
           Positioned(
@@ -809,14 +667,10 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                       SizedBox(height: 20.0),
                       GestureDetector(
                         onTap: () async{
-
                           var res = await Navigator.push(context, MaterialPageRoute(builder: (context) => SearchScreen()));
-
                           if (res == "obtainDirection"){
-                            // await getPlaceDirection();
                             displayRideDetailsContainer();
                           }
-
                           },
                         child: Container(
                           decoration: BoxDecoration(
@@ -879,21 +733,6 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
                       ),
                       SizedBox(height: 10.0),
                       DividerWidget(),
-                      // SizedBox(height: 16.0),
-                      // Row(
-                      //   children: [
-                      //     Icon(Icons.work, color: Colors.grey,),
-                      //     SizedBox(width: 12.0),
-                      //     Column(
-                      //       crossAxisAlignment: CrossAxisAlignment.start,
-                      //       children: [
-                      //         Text("Add Work"),
-                      //         SizedBox(height: 4.0,),
-                      //         Text("Your office address", style: TextStyle(color: Colors.black54, fontSize: 12.0),),
-                      //       ],
-                      //     ),
-                      //   ],
-                      // ),
                     ],
                   ),
                 )
@@ -1642,7 +1481,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin{
 
   String _hash(String key, String pid) {
     print("_hash : key = $key\n");
-    print("_hash : pid = $pid\n");
+    print("_hash : pid = $key\n");
 
     var str = key + pid;
     int hash = 0, i, chr, len;
